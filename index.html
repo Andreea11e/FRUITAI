@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FruitAI — nutriție în realitate augmentată</title>
-<meta name="description" content="Îndreaptă camera spre un fruct. FruitAI îl recunoaște direct în browser și îi ancorează alături eticheta nutrițională, calculată pentru porția ta.">
+<meta name="description" content="Îndreaptă camera spre un fruct. FruitAI îl recunoaște direct în browser și îi ancorează în imagine numele în română și engleză, împreună cu vitaminele lui.">
 <meta name="theme-color" content="#06080A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,8 +38,8 @@
     <div class="container hero-grid">
       <div>
         <span class="kicker">Recunoaștere AI + realitate augmentată, în browser</span>
-        <h1>Nutriția, <em>ancorată</em> în lumea reală.</h1>
-        <p class="lead">Îndreaptă camera spre un fruct. FruitAI îl recunoaște direct pe dispozitivul tău și îi prinde alături, în imagine, eticheta nutrițională calculată pentru porția ta.</p>
+        <h1>Fructele tale, <em>etichetate</em> în realitate.</h1>
+        <p class="lead">Îndreaptă camera spre unul sau mai multe fructe. FruitAI le recunoaște direct pe dispozitivul tău și le ancorează în imagine numele în română, în engleză și vitaminele, care rămân lipite de fruct când miști camera.</p>
         <div class="hero-cta">
           <button class="btn primary" type="button" data-start>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
@@ -50,7 +50,7 @@
         <div class="facts">
           <div><b data-count="scannable">—</b>fructe recunoscute</div>
           <div><b>Local</b>modelele rulează în browser</div>
-          <div><b>USDA</b>valori nutriționale</div>
+          <div><b>AR live</b>etichete ancorate pe fruct</div>
         </div>
       </div>
 
@@ -96,17 +96,7 @@
               </div>
             </div>
 
-            <div class="ar" id="ar" hidden aria-hidden="true">
-              <svg class="ar-link"><line id="arLine" x1="0" y1="0" x2="0" y2="0"/><circle id="arDot" r="3" cx="0" cy="0"/></svg>
-              <div class="ar-frame" id="arFrame"><i></i><i></i><i></i><i></i><span class="core"></span></div>
-              <div class="ar-card" id="arCard">
-                <div class="k" id="arKicker">Fruct identificat</div>
-                <div class="nm" id="arName">—</div>
-                <div class="sub" id="arSub"></div>
-                <div class="kc" id="arKc"><b id="arKcal">—</b><span id="arPortion">kcal · 100 g</span></div>
-                <div class="mac" id="arMac"></div>
-              </div>
-            </div>
+            <div class="ar" id="ar" hidden></div>
 
             <div class="hud" id="hud" hidden>
               <span class="chip"><i id="hudLightDot"></i>Lumină <b id="hudLight">—</b></span>
@@ -114,6 +104,8 @@
               <span class="chip" id="hudDistChip" hidden><i id="hudDistDot"></i>Distanță <b id="hudDist">—</b></span>
             </div>
             <div class="live-badge" id="live" hidden>AR LIVE</div>
+            <button class="btn sm imm-exit" id="btnExitImm" type="button" hidden aria-label="Ieși din ecran complet">Ieși</button>
+            <button class="btn sm imm-shot" id="btnImmShot" type="button" hidden>Salvează captura</button>
             <div class="guide" id="guide" hidden></div>
             <div class="scan" id="scan" hidden></div>
             <div class="progress" id="progress" hidden>
@@ -139,6 +131,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
               <span>Salvează captura</span>
             </button>
+            <button class="btn ar" id="btnImm" type="button" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+              <span>AR pe tot ecranul</span>
+            </button>
             <button class="btn ar" id="btnXR" type="button" hidden disabled>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>
               <span>Plasează în spațiu</span>
@@ -156,24 +152,11 @@
             <h2 id="roName">—</h2>
             <div class="en" id="enName"></div>
           </div>
-          <div class="insights" id="insights"></div>
           <div class="msg" id="msg" hidden></div>
-          <div class="nl" id="nl">
-            <h3>Valori nutriționale</h3>
-            <div class="serv">
-              <label for="portion">Porție</label>
-              <div class="portion">
-                <input type="range" id="portion" min="25" max="500" step="25" value="100" aria-label="Mărimea porției în grame">
-                <output id="portionOut" for="portion">100 g</output>
-              </div>
-            </div>
-            <div class="kcal"><span>Calorii</span><b id="kcal">89</b></div>
-            <div class="dvh">din doza zilnică*</div>
-            <div id="rows"></div>
-            <div class="src" id="src">USDA FoodData Central (SR Legacy).</div>
-          </div>
           <div class="r-facts" id="facts">
-            <div class="vm" id="vm"></div>
+            <div class="r-block"><h3>Vitamine</h3><div class="vm" id="vitList"></div></div>
+            <div class="r-block"><h3>Minerale</h3><div class="vm" id="minList"></div></div>
+            <p class="desc" id="desc"></p>
             <p class="fact"><b>Știai că?</b> <span id="fact"></span></p>
             <button class="btn sm" id="btnSheet" type="button">Fișa completă</button>
           </div>
@@ -184,7 +167,7 @@
         <div class="panel">
           <h4>Recente <small id="recentCount">0</small></h4>
           <div class="recent" id="recent"></div>
-          <p class="muted" id="recentEmpty">Aici apar ultimele fructe identificate. Atinge una ca să revezi valorile.</p>
+          <p class="muted" id="recentEmpty">Aici apar ultimele fructe identificate. Atinge unul ca să-l revezi.</p>
         </div>
       </div>
     </div>
@@ -224,7 +207,7 @@
         <div class="node"><span class="n">01</span><b>Cadrul</b><small>La fiecare 0,8 s, un cadru din cameră sau fotografia ta.</small></div>
         <div class="node"><span class="n">02</span><b>Detectare</b><small>OWL-ViT localizează fructul și separă mâini, fețe, persoane.</small></div>
         <div class="node"><span class="n">03</span><b>Identificare</b><small>CLIP alege dintre <span data-count="scannable">—</span> de fructe și <span data-count="nonfruits">—</span> de obiecte care nu sunt fructe.</small></div>
-        <div class="node"><span class="n">04</span><b>Ancorare AR</b><small>Eticheta USDA se prinde de fruct și îl urmărește în cadru.</small></div>
+        <div class="node"><span class="n">04</span><b>Ancorare AR</b><small>Numele și vitaminele se prind de fiecare fruct și îl urmăresc în cadru.</small></div>
       </div>
       <div class="grid-3">
         <div class="card reveal">
@@ -239,8 +222,8 @@
         </div>
         <div class="card reveal">
           <div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M7 15V9M12 15V5M17 15v-3"/></svg></div>
-          <h3>Valori pe porția ta</h3>
-          <p>Datele vin din USDA FoodData Central și sunt incluse în aplicație. Glisorul de porție recalculează totul, inclusiv eticheta din AR.</p>
+          <h3>Mai multe fructe deodată</h3>
+          <p>Până la trei fructe din același cadru primesc fiecare eticheta lui, cu numele în română și engleză și vitaminele.</p>
         </div>
       </div>
       <p class="tech-note">Modele: Xenova/owlvit-base-patch32 · Xenova/clip-vit-base-patch32 · se descarcă o singură dată, apoi pornesc din memoria browserului</p>
@@ -304,7 +287,7 @@
             <div class="lbl" id="arDemo1"></div>
           </div>
           <h3>AR în cameră</h3>
-          <p>Fructul detectat e încadrat, iar eticheta cu calorii și macronutrienți e prinsă de el și se mută lin când muți telefonul. Poți salva captura cu tot cu etichetă.</p>
+          <p>Fiecare fruct detectat e încadrat, iar eticheta cu numele și vitaminele e prinsă de el, cu vitaminele plutind în jurul lui. Atingi eticheta ca să deschizi fișa, treci pe tot ecranul și salvezi captura.</p>
           <div class="support" id="supCam"><i></i><span>Se verifică…</span></div>
         </div>
         <div class="card reveal">
@@ -331,22 +314,22 @@
       <div class="grid-4">
         <div class="card benefit reveal"><div class="num">0 <em>conturi</em></div><h3>Fără instalare</h3><p>Se deschide în browser. Fără aplicație de descărcat, fără cont, fără abonament.</p></div>
         <div class="card benefit reveal"><div class="num">Pe <em>dispozitiv</em></div><h3>Imaginile rămân la tine</h3><p>Pe site, modelele rulează local. Fotografiile și cadrele camerei nu sunt trimise către vreun server.</p></div>
-        <div class="card benefit reveal"><div class="num">25–500 <em>g</em></div><h3>Porții reale</h3><p>Ajustezi porția și vezi pe loc caloriile, proteinele, carbohidrații, grăsimile și fibrele.</p></div>
-        <div class="card benefit reveal"><div class="num"><span data-count="fruits">—</span> <em>fructe</em></div><h3>Catalog complet</h3><p>Fișe cu valori nutriționale, vitamine, minerale și curiozități, disponibile și fără cameră.</p></div>
+        <div class="card benefit reveal"><div class="num">3 <em>fructe</em></div><h3>Deodată în cadru</h3><p>Arată mai multe fructe camerei: fiecare primește propria etichetă AR, pe loc.</p></div>
+        <div class="card benefit reveal"><div class="num"><span data-count="fruits">—</span> <em>fructe</em></div><h3>Catalog complet</h3><p>Fișe cu numele în română și engleză, vitamine, minerale și curiozități, disponibile și fără cameră.</p></div>
       </div>
       <div class="honest reveal">
         <div>
           <h3>Ce face FruitAI</h3>
           <ul>
             <li>Recunoaște un fruct din cameră sau dintr-o fotografie.</li>
-            <li>Îți arată valorile USDA per 100 g, scalate pe porția aleasă.</li>
+            <li>Îți arată numele în română și engleză, vitaminele și mineralele principale.</li>
             <li>Îți spune când imaginea e prea întunecată, mișcată sau prea departe.</li>
           </ul>
         </div>
         <div class="no">
           <h3>Ce nu face</h3>
           <ul>
-            <li>Nu cântărește fructul. Porția o alegi tu.</li>
+            <li>Nu cântărește fructul și nu estimează porția.</li>
             <li>Nu înlocuiește un nutriționist. Valorile sunt orientative.</li>
             <li>Funcționează cel mai bine cu un singur fruct în cadru.</li>
           </ul>
@@ -372,7 +355,7 @@
 <footer>
   <div class="container">
     <span id="engineNote">FruitAI 9 pentru web</span>
-    <span>Valori orientative per 100 g de fruct crud, după USDA FoodData Central.</span>
+    <span>Informații orientative. Valorile din fișe sunt per 100 g de fruct crud, după USDA FoodData Central.</span>
   </div>
 </footer>
 

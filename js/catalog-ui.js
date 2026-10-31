@@ -25,14 +25,7 @@ const el = (tag, props = {}, ...kids) => {
 
 let ctx = null;   // { catalog, onShow, onPlaceAR, canPlaceAR }
 
-/** Pastilele de vitamine și minerale ale unui fruct (folosite în fișă și în panoul de rezultat). */
-export function nutrientPills(fruit) {
-  const pills = [
-    ...fruit.vitamins.map(v => el("span", { class: "v" }, "Vitamina " + v)),
-    ...fruit.minerals.map(m => el("span", { class: "m" }, m.charAt(0).toUpperCase() + m.slice(1)))
-  ];
-  return pills.length ? pills : [el("span", {}, "Fără date despre vitamine și minerale")];
-}
+const pillsOf = (list, cls, label) => list.length ? list.map(v => el("span", { class: cls }, label(v))) : [el("span", {}, "Fără date")];
 
 export function mountCatalogUI(catalog, opts) {
   ctx = { catalog, ...opts };
@@ -67,13 +60,13 @@ export function mountCatalogUI(catalog, opts) {
   search.addEventListener("input", () => { state.q = search.value; sync(); });
 
   function card(f) {
-    const n = f.nutrition.per100g;
+    const vit = f.vitamins.map(v => v.replace(/\s*\(.*\)$/, ""));
     return el("button", { type: "button", class: "fcard", style: `--c:${f.visual.color}`, "aria-label": `${f.ro}, deschide fișa`, onclick: () => openFruitSheet(f.id) },
       el("span", { html: fruitArt(f, { size: 64 }) }).firstElementChild,
       el("b", {}, f.ro),
       el("span", { class: "en" }, f.en),
       el("span", { class: "row" },
-        el("span", {}, el("em", {}, n.kcal == null ? "—" : String(n.kcal)), " kcal/100 g"),
+        el("span", {}, vit.length ? ["Vit. ", el("em", {}, vit.slice(0, 3).join(", "))] : "Fără date"),
         el("span", { class: "badge" + (f.ai ? "" : " off") }, f.ai ? "AI" : "catalog"))
     );
   }
@@ -98,8 +91,8 @@ export function openFruitSheet(id) {
   const close = el("button", { type: "button", class: "sh-close", "aria-label": "Închide fișa", onclick: () => sheet.close(),
     html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' });
 
-  const actions = [el("button", { type: "button", class: "btn primary sm", onclick: () => { sheet.close(); ctx.onShow(id); } }, "Vezi valorile pe porție")];
-  if (ctx.canPlaceAR() && catalog.hasNutrition(id)) actions.push(el("button", { type: "button", class: "btn ar sm", onclick: () => { sheet.close(); ctx.onPlaceAR(id); } }, "Plasează în spațiu (AR)"));
+  const actions = [el("button", { type: "button", class: "btn primary sm", onclick: () => { sheet.close(); ctx.onShow(id); } }, "Arată în scanner")];
+  if (ctx.canPlaceAR()) actions.push(el("button", { type: "button", class: "btn ar sm", onclick: () => { sheet.close(); ctx.onPlaceAR(id); } }, "Plasează în spațiu (AR)"));
 
   sheet.style.setProperty("--c", f.visual.color);
   sheet.replaceChildren(
@@ -111,14 +104,14 @@ export function openFruitSheet(id) {
         el("h3", { id: "sheetTitle" }, f.ro),
         el("div", { class: "en" }, "English: " + f.en))),
     el("div", { class: "sh-body" },
+      el("div", {}, el("h4", {}, "Vitamine"), el("div", { class: "vm" }, pillsOf(f.vitamins, "v", v => "Vitamina " + v))),
+      el("div", {}, el("h4", {}, "Minerale"), el("div", { class: "vm" }, pillsOf(f.minerals, "m", m => m.charAt(0).toUpperCase() + m.slice(1)))),
       el("p", {}, f.description),
-      el("div", {},
-        el("h4", {}, "Valori la 100 g"),
-        el("div", { class: "sh-grid" },
-          el("div", {}, el("small", {}, "Calorii"), el("b", {}, n.kcal == null ? "—" : String(Math.round(n.kcal))), el("small", {}, "kcal")),
-          catalog.nutrients.map((d, i) => el("div", {}, el("small", {}, d.ro), el("b", {}, fmt(n.values[i])), el("small", {}, n.values[i] == null ? "indisponibil" : d.unit))))),
-      el("div", {}, el("h4", {}, "Vitamine și minerale principale"), el("div", { class: "vm" }, nutrientPills(f))),
       el("p", { class: "sh-fact" }, el("b", {}, "Știai că? "), f.fact),
+      el("div", {},
+        el("h4", {}, "Macronutrienți la 100 g"),
+        el("div", { class: "sh-grid" },
+          catalog.nutrients.map((d, i) => el("div", {}, el("small", {}, d.ro), el("b", {}, fmt(n.values[i])), el("small", {}, n.values[i] == null ? "indisponibil" : d.unit))))),
       el("p", { class: "sh-src" }, "Sursa valorilor: USDA FoodData Central (SR Legacy) — " + f.nutrition.source + ". Valori orientative."),
       el("div", { class: "sh-actions" }, actions))
   );

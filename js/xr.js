@@ -20,26 +20,31 @@ function drawLabel(info) {
   x.lineWidth = 4; x.strokeStyle = "rgba(255,255,255,0.22)"; x.stroke();
   const sans = "Geist, system-ui, -apple-system, Segoe UI, sans-serif";
   x.fillStyle = "#C9F25C"; x.font = `600 34px ${sans}`; x.fillText("FRUCT IDENTIFICAT", 64, 96);
-  x.fillStyle = "#F2F5F3"; x.font = `600 92px ${sans}`; x.fillText(info.name, 60, 196);
-  x.fillStyle = "#A3ADA8"; x.font = `500 38px ${sans}`; x.fillText(info.en, 64, 250);
-  x.fillStyle = "#F2F5F3"; x.font = `600 104px ${sans}`;
-  const k = info.kcal == null ? "—" : String(info.kcal);
-  x.fillText(k, 60, 372);
-  const kw = x.measureText(k).width;
-  x.fillStyle = "#A3ADA8"; x.font = `500 38px ${sans}`; x.fillText(`kcal · ${info.grams} g`, 80 + kw, 372);
-  info.macros.forEach((m, i) => {
-    const y = 432 + i * 46;
-    x.fillStyle = "#A3ADA8"; x.font = `500 32px ${sans}`; x.fillText(m.label, 64, y + 10);
-    x.fillStyle = "rgba(255,255,255,0.12)"; rr(270, y - 6, 520, 14, 7); x.fill();
-    x.fillStyle = m.color; rr(270, y - 6, Math.max(14, 520 * m.ratio), 14, 7); x.fill();
-    x.fillStyle = "#F2F5F3"; x.textAlign = "right"; x.fillText(m.value, W - 64, y + 10); x.textAlign = "left";
-  });
+  x.fillStyle = "#F2F5F3"; x.font = `600 96px ${sans}`; x.fillText(info.name, 60, 200);
+  x.fillStyle = "#A3ADA8"; x.font = `500 44px ${sans}`; x.fillText(info.en, 64, 262);
+  // vitaminele ca pastile, apoi mineralele
+  const pillRow = (items, y, fg, border) => {
+    let px = 64;
+    x.font = `600 38px ${sans}`;
+    for (const t of items) {
+      const w = x.measureText(t).width + 48;
+      if (px + w > W - 56) break;
+      rr(px, y, w, 64, 32); x.fillStyle = "rgba(255,255,255,0.05)"; x.fill();
+      x.lineWidth = 3; x.strokeStyle = border; x.stroke();
+      x.fillStyle = fg; x.fillText(t, px + 24, y + 45);
+      px += w + 14;
+    }
+  };
+  x.fillStyle = "#6E7873"; x.font = `500 30px ${sans}`; x.fillText("VITAMINE", 64, 338);
+  pillRow(info.vitamins.length ? info.vitamins.map(v => "Vit. " + v) : ["Fără date"], 356, "#C9F25C", "rgba(201,242,92,0.45)");
+  x.fillStyle = "#6E7873"; x.font = `500 30px ${sans}`; x.fillText("MINERALE", 64, 480);
+  pillRow(info.minerals.length ? info.minerals : ["Fără date"], 498, "#FFA94D", "rgba(255,169,77,0.45)");
   return c;
 }
 
 /**
  * Pornește o sesiune immersive-ar.
- * info: { name, en, grams, kcal, macros:[{label,value,ratio,color}], tint }
+ * info: { name, en, vitamins:[...], minerals:[...], tint }
  * ui:   { overlay, msg, hint, close, onEnd }
  */
 export async function startSession(info, ui) {
@@ -84,8 +89,27 @@ export async function startSession(info, ui) {
     stem.position.y = 0.125;
     const panel = new THREE.Mesh(new THREE.PlaneGeometry(0.256, 0.16), new THREE.MeshBasicMaterial({ map: labelTexture, transparent: true, side: THREE.DoubleSide }));
     panel.position.y = 0.25;
-    g.add(base, fruit, stem, panel);
-    g.userData = { fruit, panel, t0: performance.now() };
+    // vitaminele orbitează în jurul fructului, ca mici sfere cu eticheta lor
+    const orbit = new THREE.Group();
+    orbit.position.y = 0.045;
+    info.vitamins.slice(0, 6).forEach((v, i, arr) => {
+      const cv = document.createElement("canvas"); cv.width = cv.height = 128;
+      const cx = cv.getContext("2d");
+      cx.fillStyle = "rgba(10,13,15,0.85)"; cx.beginPath(); cx.arc(64, 64, 58, 0, Math.PI * 2); cx.fill();
+      cx.lineWidth = 6; cx.strokeStyle = "#C9F25C"; cx.stroke();
+      cx.fillStyle = "#C9F25C"; cx.font = "700 52px Geist, system-ui, sans-serif"; cx.textAlign = "center"; cx.textBaseline = "middle";
+      cx.fillText(v, 64, 68);
+      const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+      const sp = new THREE.Sprite(mat);
+      const ang = i / arr.length * Math.PI * 2;
+      sp.position.set(Math.cos(ang) * 0.075, Math.sin(ang * 2) * 0.012, Math.sin(ang) * 0.075);
+      sp.scale.setScalar(0.028);
+      orbit.add(sp);
+      disposables.push(tex, mat);
+    });
+    g.add(base, fruit, stem, panel, orbit);
+    g.userData = { fruit, panel, orbit, t0: performance.now() };
     disposables.push(base.geometry, base.material, fruit.geometry, fruit.material, stem.geometry, stem.material, panel.geometry, panel.material);
     return g;
   }
@@ -142,11 +166,12 @@ export async function startSession(info, ui) {
     }
     renderer.xr.getCamera().getWorldPosition(camPos);
     for (const a of anchors) {
-      const { fruit, panel, t0 } = a.userData;
+      const { fruit, panel, orbit, t0 } = a.userData;
       const s = (t - t0) / 1000;
       const grow = Math.min(1, s * 3);
       a.scale.setScalar(0.4 + 0.6 * (1 - Math.pow(1 - grow, 3)));
       fruit.rotation.y = s * 0.8;
+      orbit.rotation.y = s * 0.6;
       panel.position.y = 0.25 + Math.sin(s * 1.6) * 0.006;
       // panoul se rotește doar pe orizontală, spre utilizator
       const target = new THREE.Vector3(camPos.x, a.position.y + panel.position.y, camPos.z);

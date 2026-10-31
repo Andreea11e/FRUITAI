@@ -267,14 +267,14 @@ section.block { padding: clamp(56px, 9vw, 110px) 0; }
 .ar-frame .core { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 6px rgba(201,242,92,.18), 0 0 18px var(--lime); }
 .ar-frame .core::after { content: ""; position: absolute; inset: -16px; border-radius: 50%; border: 1.5px solid rgba(201,242,92,.6); animation: ping 1.8s var(--ease) infinite; }
 @keyframes ping { 0% { transform: scale(.4); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
-.ar.bad .ar-frame i { border-color: var(--berry); filter: drop-shadow(0 0 6px rgba(255,95,126,.6)); }
-.ar.bad .ar-frame .core { background: var(--berry); box-shadow: 0 0 0 6px rgba(255,95,126,.18), 0 0 18px var(--berry); }
-.ar.bad .ar-frame .core::after { border-color: rgba(255,95,126,.6); }
+.anchor.bad .ar-frame i { border-color: var(--berry); filter: drop-shadow(0 0 6px rgba(255,95,126,.6)); }
+.anchor.bad .ar-frame .core { background: var(--berry); box-shadow: 0 0 0 6px rgba(255,95,126,.18), 0 0 18px var(--berry); }
+.anchor.bad .ar-frame .core::after { border-color: rgba(255,95,126,.6); }
 .ar-link { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .ar-link line { stroke: var(--lime); stroke-width: 1.5; stroke-dasharray: 3 4; }
 .ar-link circle { fill: var(--lime); }
-.ar.bad .ar-link line { stroke: var(--berry); }
-.ar.bad .ar-link circle { fill: var(--berry); }
+.anchor.bad .ar-link line { stroke: var(--berry); }
+.anchor.bad .ar-link circle { fill: var(--berry); }
 .ar-card {
   position: absolute; left: 0; top: 0; width: 214px; padding: 14px 15px 13px; border-radius: 18px;
   background: var(--glass); border: 1px solid rgba(255,255,255,.16);
@@ -284,7 +284,7 @@ section.block { padding: clamp(56px, 9vw, 110px) 0; }
 @keyframes pop { from { opacity: 0; scale: .92; } }
 .stage.bright .ar-card { background: var(--glass-strong); }
 .ar-card .k { font: 500 10.5px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--lime); display: flex; align-items: center; gap: 6px; }
-.ar.bad .ar-card .k { color: var(--berry); }
+.anchor.bad .ar-card .k { color: var(--berry); }
 .ar-card .nm { font-size: 21px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; margin: 7px 0 2px; }
 .ar-card .sub { font-size: 12.5px; color: var(--muted); }
 .ar-card .kc { display: flex; align-items: baseline; gap: 6px; margin-top: 10px; }
@@ -554,6 +554,53 @@ footer .container { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-conte
 .sh-close { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--stroke-2); background: rgba(0,0,0,.4); cursor: pointer; display: grid; place-items: center; }
 .sh-close svg { width: 18px; height: 18px; }
 @media (max-width: 520px) { .sh-hero { grid-template-columns: 80px minmax(0,1fr); padding: 20px 18px 14px; } .sh-hero .art { width: 80px; height: 80px; } .sh-body { padding: 4px 18px 20px; } }
+
+/* ================= AR: ancore multiple, orbită de vitamine, ecran complet ================= */
+.anchor { position: absolute; inset: 0; pointer-events: none; }
+.ar-card { pointer-events: auto; cursor: pointer; text-align: left; color: var(--ink); font: inherit; display: grid; gap: 0; }
+.anchor.bad .ar-card { cursor: default; }
+.ar-card:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
+.ar-card:hover { border-color: color-mix(in srgb, var(--c, var(--lime)) 70%, white 0%); }
+.ar-card .k { font: 500 10.5px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--lime); }
+.anchor.bad .ar-card .k { color: var(--berry); }
+.ar-card .nm { font-size: 23px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; margin: 8px 0 2px; }
+.ar-card .sub { font-size: 14px; color: var(--muted); }
+.ar-card .vit { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 11px; }
+.ar-card .vit span { font: 500 11.5px/1 var(--f-sans); padding: 5px 8px; border-radius: 999px; color: var(--lime); border: 1px solid rgba(201,242,92,.35); background: rgba(201,242,92,.07); }
+.ar-card .tap { margin-top: 10px; font: 500 10.5px var(--f-mono); color: var(--dim); }
+.ar-card.compact { width: 172px; padding: 11px 12px; }
+.ar-card.compact .nm { font-size: 18px; margin-top: 6px; }
+.ar-card.compact .sub { font-size: 12.5px; }
+.ar-card.compact .vit { margin-top: 8px; }
+.ar-card.compact .vit span { font-size: 10.5px; padding: 4px 7px; }
+.ar-card.compact .tap { display: none; }
+.ar-orbit { position: absolute; left: 0; top: 0; will-change: transform, width, height; }
+.ar-orbit span {
+  position: absolute; transform: translate(-50%, -50%); min-width: 30px; height: 30px; padding: 0 7px; border-radius: 999px;
+  display: grid; place-items: center; font: 700 12px/1 var(--f-mono); color: var(--lime-ink); background: var(--lime);
+  box-shadow: 0 0 0 4px rgba(201,242,92,.18), 0 6px 16px -4px rgba(0,0,0,.6);
+  animation: orbitIn .5s var(--ease) backwards, bob 3.2s ease-in-out infinite;
+}
+.anchor.secondary .ar-orbit span { min-width: 24px; height: 24px; font-size: 10.5px; }
+@keyframes orbitIn { from { opacity: 0; transform: translate(-50%, -50%) scale(.3); } }
+@keyframes bob { 50% { translate: 0 -5px; } }
+.anchor.secondary .ar-frame i { border-width: 2px; }
+
+/* AR pe tot ecranul */
+html.imm-lock, html.imm-lock body { overflow: hidden; }
+.stage.immersive { position: fixed !important; inset: 0; z-index: 90; width: 100vw; height: 100vh; height: 100dvh; max-width: none; aspect-ratio: auto !important; min-height: 0; border-radius: 0; border: 0; }
+.stage:fullscreen { width: 100vw; height: 100vh; aspect-ratio: auto !important; border-radius: 0; }
+.imm-exit, .imm-shot { position: absolute; z-index: 6; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); background: rgba(6,8,10,.65); }
+.imm-exit { top: max(14px, env(safe-area-inset-top)); right: 14px; }
+.imm-shot { bottom: max(76px, calc(env(safe-area-inset-bottom) + 64px)); left: 50%; transform: translateX(-50%); }
+.stage.immersive .hud { top: max(62px, calc(env(safe-area-inset-top) + 48px)); }
+
+/* Panoul de rezultat fără calorii */
+.r-block h3 { margin: 0 0 8px; font: 500 11.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.desc { margin: 0; color: var(--ink); font-size: 15px; line-height: 1.55; }
+.hcard .hv { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+.hcard .hv span { font: 500 11px/1 var(--f-mono); padding: 5px 8px; border-radius: 999px; color: var(--lime); border: 1px solid rgba(201,242,92,.35); }
+.hcard .t { display: block; }
 
 /* Mobil: scenă cu înălțime minimă (video-ul orizontal e încadrat cu benzi), HUD compact, butoane pe două coloane */
 @media (max-width: 560px) {

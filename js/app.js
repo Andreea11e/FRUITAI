@@ -1,6 +1,6 @@
 import { loadCatalog } from "./catalog.js";
 import { fruitArt, orbGradient } from "./fruit-art.js";
-import { mountCatalogUI, openFruitSheet, nutrientPills } from "./catalog-ui.js";
+import { mountCatalogUI, openFruitSheet } from "./catalog-ui.js";
 
 
 // ---------------- Configurare (ca în main.py) ----------------
@@ -29,13 +29,10 @@ const el = {
   emptyTitle:$("emptyTitle"), emptyText:$("emptyText"), scan:$("scan"),
   live:$("live"), progress:$("progress"), progText:$("progText"), progBar:$("progBar"),
   btnCamera:$("btnCamera"), btnCapture:$("btnCapture"), btnXR:$("btnXR"), fileCam:$("fileCam"), fileUp:$("fileUp"), hint:$("hint"),
-  rTop:$("rTop"), roName:$("roName"), enName:$("enName"), insights:$("insights"), msg:$("msg"), nl:$("nl"),
-  portion:$("portion"), portionOut:$("portionOut"),
-  kcal:$("kcal"), rows:$("rows"), src:$("src"), recent:$("recent"), recentEmpty:$("recentEmpty"),
-  recentCount:$("recentCount"), facts:$("facts"), btnSheet:$("btnSheet"), rArt:$("rArt"), vm:$("vm"), fact:$("fact"),
-  engineNote:$("engineNote"),
-  ar:$("ar"), arFrame:$("arFrame"), arCard:$("arCard"), arLine:$("arLine"), arDot:$("arDot"),
-  arKicker:$("arKicker"), arName:$("arName"), arSub:$("arSub"), arKc:$("arKc"), arKcal:$("arKcal"), arPortion:$("arPortion"), arMac:$("arMac"),
+  rTop:$("rTop"), roName:$("roName"), enName:$("enName"), msg:$("msg"),
+  recent:$("recent"), recentEmpty:$("recentEmpty"),
+  recentCount:$("recentCount"), facts:$("facts"), btnSheet:$("btnSheet"), rArt:$("rArt"), vitList:$("vitList"), minList:$("minList"), desc:$("desc"), fact:$("fact"),
+  engineNote:$("engineNote"), ar:$("ar"), btnImm:$("btnImm"), btnExitImm:$("btnExitImm"), btnImmShot:$("btnImmShot"),
   hud:$("hud"), hudLight:$("hudLight"), hudLightDot:$("hudLightDot"), hudSharp:$("hudSharp"), hudSharpDot:$("hudSharpDot"),
   hudDistChip:$("hudDistChip"), hudDist:$("hudDist"), hudDistDot:$("hudDistDot"), guide:$("guide")
 };
@@ -70,28 +67,11 @@ const title = s => s.replace(/\b\w/g, c => c.toUpperCase());
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-// ---------------- Calcule nutriționale ----------------
-const nutritionFor = (id, grams) => catalog.nutritionFor(id, grams);
-
-// ---------------- Eticheta nutrițională ----------------
-function renderNutrition(fruit) {
-  const g = +el.portion.value;
-  const n = nutritionFor(fruit, g);
-  el.portionOut.textContent = g + " g";
-  el.kcal.textContent = n.kcal == null ? "—" : Math.round(n.kcal).toLocaleString("ro-RO");
-  el.rows.innerHTML = "";
-  catalog.nutrients.forEach(({ ro: label, unit, dailyValue: dv }, i) => {
-    const v = n.values[i];
-    const row = document.createElement("div");
-    row.className = "nrow" + (v == null ? " na" : "");
-    row.innerHTML = `<span><b></b></span><span class="v"></span><span class="dv"></span>`;
-    row.querySelector("b").textContent = label;
-    row.querySelector(".v").textContent = v == null ? "indisponibil" : fmt(v) + " " + unit;
-    row.querySelector(".dv").textContent = v == null ? "" : Math.round(v / dv * 100) + "%";
-    el.rows.appendChild(row);
-  });
-  const kcalPct = n.kcal == null ? "" : ` · ${Math.round(n.kcal / catalog.kcalDailyValue * 100)}% din necesarul caloric zilnic`;
-  el.src.textContent = `USDA FoodData Central (SR Legacy): ${n.source}${kcalPct}. *Doză de referință pentru o dietă de 2000 kcal.`;
+// ---------------- Panoul de rezultat: română → engleză → vitamine ----------------
+const vitShort = v => v.replace(/\s*\(.*\)$/, "");          // „B9 (folat)” → „B9”
+function pills(list, cls, fmtLabel) {
+  if (!list.length) { const s = document.createElement("span"); s.textContent = "Fără date"; return [s]; }
+  return list.map(v => { const s = document.createElement("span"); s.className = cls; s.textContent = fmtLabel(v); return s; });
 }
 
 function setTop(tagText, tagClass, note) {
@@ -104,21 +84,18 @@ function setTop(tagText, tagClass, note) {
 
 function showFruitCard(fruit, opts = {}) {
   state.shownFruit = fruit;
-  el.roName.textContent = fruitName(fruit);
-  el.enName.innerHTML = "English: <b></b>";
-  el.enName.querySelector("b").textContent = fruitEn(fruit);
-  el.msg.hidden = true;
-  el.nl.hidden = false;
-  setTop(opts.chipText || "Identificat", opts.tagClass || (opts.chipText === "Catalog" ? "cat" : opts.chipText === "Exemplu" ? "" : "ok"), opts.note);
-  el.insights.innerHTML = "";
-  catalog.insightsFor(fruit).forEach(t => { const s = document.createElement("span"); s.textContent = t; el.insights.appendChild(s); });
-  el.insights.hidden = !el.insights.children.length;
-  renderNutrition(fruit);
-  // imaginea, vitaminele, mineralele și curiozitatea vin din aceeași înregistrare de catalog
   const f = catalog.get(fruit);
+  el.roName.textContent = f.ro;
+  el.enName.innerHTML = "English: <b></b>";
+  el.enName.querySelector("b").textContent = f.en;
+  el.msg.hidden = true;
+  setTop(opts.chipText || "Identificat", opts.tagClass || (opts.chipText === "Catalog" ? "cat" : opts.chipText === "Exemplu" ? "" : "ok"), opts.note);
+  // totul vine din aceeași înregistrare de catalog
   el.rArt.innerHTML = fruitArt(f, { size: 68 });
   el.rArt.hidden = false;
-  el.vm.replaceChildren(...nutrientPills(f));
+  el.vitList.replaceChildren(...pills(f.vitamins, "v", v => "Vitamina " + v));
+  el.minList.replaceChildren(...pills(f.minerals, "m", cap));
+  el.desc.textContent = f.description;
   el.fact.textContent = f.fact;
   el.facts.hidden = false;
   updateXRButton();
@@ -126,8 +103,6 @@ function showFruitCard(fruit, opts = {}) {
 
 function showMessageCard(kind, label) {
   setTop(kind === "notfruit" ? "Nu e fruct" : "Nesigur", "bad");
-  el.nl.hidden = true;
-  el.insights.hidden = true;
   el.facts.hidden = true;
   el.rArt.hidden = true;
   el.msg.hidden = false;
@@ -138,13 +113,15 @@ function showMessageCard(kind, label) {
   } else {
     el.roName.textContent = "Nu văd niciun fruct";
     el.enName.textContent = "Nu sunt sigur ce este în imagine.";
-    el.msg.innerHTML = "<b>Sfat:</b> folosește lumină bună și un fundal simplu, cu un singur fruct.";
+    el.msg.innerHTML = "<b>Sfat:</b> folosește lumină bună și un fundal simplu.";
   }
   updateXRButton();
 }
 
-// ---------------- Stratul AR: ancoră + etichetă atașată obiectului ----------------
-const arState = { target: null, cur: null, raf: 0 };
+// ---------------- Stratul AR: câte o ancoră pentru fiecare obiect detectat ----------------
+// Fiecare ancoră = încadrare + etichetă (română, engleză, vitamine) + vitaminele „pe orbită” în jurul fructului.
+const anchors = new Map();   // cheie → ancoră
+let arRaf = 0;
 
 function mediaRect() {
   const media = state.live ? { w: el.video.videoWidth, h: el.video.videoHeight } : { w: el.frame.width, h: el.frame.height };
@@ -155,101 +132,163 @@ function mediaRect() {
   return { sw, sh, dw, dh, ox: (sw - dw) / 2, oy: (sh - dh) / 2 };
 }
 
-function fillArCard(result) {
-  const isFruit = result.kind === "fruit";
-  el.ar.classList.toggle("bad", !isFruit);
-  if (isFruit) {
-    const g = +el.portion.value;
-    const n = nutritionFor(result.label, g);
-    el.arKicker.textContent = "Fruct identificat";
-    el.arName.textContent = fruitName(result.label);
-    el.arSub.textContent = fruitEn(result.label);
-    el.arKc.hidden = false;
-    el.arKcal.textContent = n.kcal == null ? "—" : Math.round(n.kcal).toLocaleString("ro-RO");
-    el.arPortion.textContent = `kcal · ${g} g`;
-    el.arMac.innerHTML = "";
-    catalog.nutrients.forEach(({ short, unit, dailyValue: dv, color }, i) => {
-      const v = n.values[i];
-      const row = document.createElement("div");
-      row.innerHTML = `<span></span><i></i><em></em>`;
-      row.querySelector("span").textContent = short;
-      row.querySelector("em").textContent = v == null ? "—" : fmt(v) + " " + unit;
-      const bar = row.querySelector("i");
-      bar.style.setProperty("--w", v == null ? "0%" : clamp(v / dv * 100 * 2.5, 3, 100) + "%");
-      bar.style.setProperty("--c", color);
-      el.arMac.appendChild(row);
-    });
+function createAnchor() {
+  const root = document.createElement("div");
+  root.className = "anchor";
+  root.innerHTML = `<svg class="ar-link"><line/><circle r="3"/></svg>
+    <div class="ar-frame"><i></i><i></i><i></i><i></i><span class="core"></span></div>
+    <div class="ar-orbit"></div>
+    <button type="button" class="ar-card"><span class="k"></span><span class="nm"></span><span class="sub"></span><span class="vit"></span><span class="tap">Atinge pentru fișa completă</span></button>`;
+  el.ar.appendChild(root);
+  const a = { root, frame: root.querySelector(".ar-frame"), orbit: root.querySelector(".ar-orbit"), card: root.querySelector(".ar-card"),
+    line: root.querySelector("line"), dot: root.querySelector("circle"), cur: null, target: null, id: null, kind: null };
+  a.card.addEventListener("click", () => { if (a.kind === "fruit") openFruitSheet(a.id); });
+  return a;
+}
+
+function fillAnchor(a, item, primary) {
+  a.id = item.label; a.kind = item.kind;
+  a.root.classList.toggle("bad", item.kind !== "fruit");
+  a.root.classList.toggle("secondary", !primary);
+  const q = sel => a.card.querySelector(sel);
+  if (item.kind === "fruit") {
+    const f = catalog.get(item.label);
+    q(".k").textContent = primary ? "Fruct identificat" : "Încă un fruct";
+    q(".nm").textContent = f.ro;
+    q(".sub").textContent = f.en;
+    q(".vit").replaceChildren(...pills(f.vitamins, "", v => "Vitamina " + v));
+    q(".vit").hidden = false; q(".tap").hidden = false;
+    a.card.setAttribute("aria-label", `${f.ro}, ${f.en}. Deschide fișa completă`);
+    a.card.style.setProperty("--c", f.visual.color);
+    // vitaminele plutesc în jurul fructului, pe o elipsă
+    const vit = f.vitamins.map(vitShort).slice(0, 6);
+    a.orbit.replaceChildren(...vit.map((v, i) => {
+      const ang = -Math.PI / 2 + (i / Math.max(1, vit.length)) * Math.PI * 2 + (primary ? 0 : .4);
+      const b = document.createElement("span");
+      b.textContent = v;
+      b.style.left = (50 + Math.cos(ang) * 58) + "%";
+      b.style.top = (50 + Math.sin(ang) * 58) + "%";
+      b.style.animationDelay = (i * .35) + "s";
+      return b;
+    }));
   } else {
-    el.arKicker.textContent = "Detectat";
-    el.arName.textContent = "Nu este un fruct";
-    el.arSub.textContent = cap(catalog.nonFruitText(result.label));
-    el.arKc.hidden = true;
-    el.arMac.innerHTML = "";
+    q(".k").textContent = "Detectat";
+    q(".nm").textContent = "Nu este un fruct";
+    q(".sub").textContent = cap(catalog.nonFruitText(item.label));
+    q(".vit").hidden = true; q(".tap").hidden = true;
+    a.card.removeAttribute("aria-label");
+    a.orbit.replaceChildren();
   }
 }
 
-function setArTarget(result) {
-  if (!result || !result.box || (result.kind !== "fruit" && result.kind !== "notfruit")) {
-    arState.target = null; arState.cur = null; el.ar.hidden = true; return;
+/** Primește rezultatul (fructul principal + celelalte) și sincronizează ancorele. */
+function setAnchors(result) {
+  const items = [];
+  if (result && result.box && (result.kind === "fruit" || result.kind === "notfruit")) items.push({ key: "p", kind: result.kind, label: result.label, box: result.box });
+  if (result && result.kind === "fruit") (result.others || []).forEach((o, i) => o.box && items.push({ key: "o" + i, kind: "fruit", label: o.label, box: o.box }));
+  const keep = new Set(items.map(i => i.key));
+  for (const [k, a] of anchors) if (!keep.has(k)) { a.root.remove(); anchors.delete(k); }
+  for (const it of items) {
+    let a = anchors.get(it.key);
+    if (!a) { a = createAnchor(); anchors.set(it.key, a); }
+    if (a.id !== it.label || a.kind !== it.kind) fillAnchor(a, it, it.key === "p");
+    a.target = it.box;
   }
-  const changed = !arState.target || arState.target.label !== result.label;
-  arState.target = { box: result.box, kind: result.kind, label: result.label };
-  if (changed) fillArCard(result);
-  if (el.ar.hidden) { arState.cur = null; el.ar.hidden = false; }
+  el.ar.hidden = items.length === 0;
+  el.btnImm.disabled = !(state.live || state.frameShown);
   scheduleAr();
 }
-function scheduleAr() { if (!arState.raf) arState.raf = requestAnimationFrame(arTick); }
+const setArTarget = setAnchors;
+function scheduleAr() { if (!arRaf) arRaf = requestAnimationFrame(arTick); }
+
+/**
+ * Așază etichetele fără să se suprapună între ele și cu fructele.
+ * frames: [{x,y,w,h}], sizes: [{w,h}], bounds: {w,h,top,bottom,pad,gap}. Întoarce pozițiile + capetele liniei de ancorare.
+ */
+function layoutCards(frames, sizes, B) {
+  const overlap = (a, b) => Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) * Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+  const placed = [];
+  return frames.map((f, i) => {
+    const { w: cw, h: ch } = sizes[i];
+    const fx = f.x + f.w / 2, fy = f.y + f.h / 2, g = B.gap;
+    const cands = [
+      [f.x + f.w + g, fy - ch / 2], [f.x - g - cw, fy - ch / 2],
+      [fx - cw / 2, f.y + f.h + g], [fx - cw / 2, f.y - g - ch],
+      [fx - cw / 2, B.top], [fx - cw / 2, B.h - ch - B.bottom]
+    ];
+    let best = null;
+    cands.forEach(([x, y], k) => {
+      const r = { x: clamp(x, B.pad, Math.max(B.pad, B.w - cw - B.pad)), y: clamp(y, B.top, Math.max(B.top, B.h - ch - B.bottom)), w: cw, h: ch };
+      let cost = k * 40;                                        // preferință: dreapta, stânga, dedesubt, deasupra
+      frames.forEach((o, j) => { cost += overlap(r, o) * (j === i ? 3 : 2); });
+      placed.forEach(o => { cost += overlap(r, o) * 6; });     // etichetele nu au voie să se acopere
+      (B.avoid || []).forEach(o => { cost += overlap(r, o) * 6; }); // nici senzorii, ghidajul sau butoanele
+      if (!best || cost < best.cost) best = { ...r, cost };
+    });
+    placed.push(best);
+    const ax = clamp(best.x + cw / 2, f.x, f.x + f.w), ay = clamp(best.y + ch / 2, f.y, f.y + f.h);
+    return { x: best.x, y: best.y, ax, ay, bx: clamp(ax, best.x, best.x + cw), by: clamp(ay, best.y, best.y + ch) };
+  });
+}
+
+function obstacles() {
+  const sr = el.stage.getBoundingClientRect();
+  return [el.hud, el.guide, el.live, el.btnExitImm, el.btnImmShot].filter(n => n && !n.hidden).map(n => {
+    const r = n.getBoundingClientRect();
+    return { x: r.left - sr.left - 6, y: r.top - sr.top - 6, w: r.width + 12, h: r.height + 12 };
+  });
+}
 
 function arTick() {
-  arState.raf = 0;
-  if (!arState.target || el.ar.hidden) return;
+  arRaf = 0;
+  if (el.ar.hidden || !anchors.size) return;
   const m = mediaRect();
   if (!m) return;
-  const [x1, y1, x2, y2] = arState.target.box;
-  const t = { x: m.ox + x1 * m.dw, y: m.oy + y1 * m.dh, w: Math.max(28, (x2 - x1) * m.dw), h: Math.max(28, (y2 - y1) * m.dh) };
   let moving = false;
-  if (!arState.cur || reduceMotion) arState.cur = { ...t };
-  else for (const k of ["x", "y", "w", "h"]) {
-    const d = t[k] - arState.cur[k];
-    if (Math.abs(d) > 0.4) { arState.cur[k] += d * 0.2; moving = true; } else arState.cur[k] = t[k];
-  }
-  const c = arState.cur;
-  el.arFrame.style.transform = `translate(${c.x}px, ${c.y}px)`;
-  el.arFrame.style.width = c.w + "px";
-  el.arFrame.style.height = c.h + "px";
-
-  // Plasarea etichetei: dreapta, stânga, dedesubt / deasupra, altfel în interiorul cadrului
-  el.arCard.classList.toggle("compact", m.sw < 520);
-  const cw = el.arCard.offsetWidth, ch = el.arCard.offsetHeight, gap = 22, pad = 10;
-  // zone rezervate: senzorii (sus) și ghidajul (jos), ca eticheta să nu le acopere
-  const pt = !el.hud.hidden ? (m.sw < 560 ? 92 : 14) : pad;
-  const pb = !el.guide.hidden ? 62 : pad;
-  const fitY = y => clamp(y, pt, Math.max(pt, m.sh - ch - pb));
-  let cx, cy, ax, ay, bx, by;
-  if (c.x + c.w + gap + cw + pad <= m.sw) {
-    cx = c.x + c.w + gap; cy = fitY(c.y + c.h / 2 - ch / 2);
-    ax = c.x + c.w; ay = c.y + c.h / 2; bx = cx; by = cy + ch / 2;
-  } else if (c.x - gap - cw >= pad) {
-    cx = c.x - gap - cw; cy = fitY(c.y + c.h / 2 - ch / 2);
-    ax = c.x; ay = c.y + c.h / 2; bx = cx + cw; by = cy + ch / 2;
-  } else {
-    cx = clamp(c.x + c.w / 2 - cw / 2, pad, m.sw - cw - pad);
-    if (c.y + c.h + gap + ch + pb <= m.sh) { cy = c.y + c.h + gap; ax = c.x + c.w / 2; ay = c.y + c.h; bx = cx + cw / 2; by = cy; }
-    else if (c.y - gap - ch >= pt) { cy = c.y - gap - ch; ax = c.x + c.w / 2; ay = c.y; bx = cx + cw / 2; by = cy + ch; }
-    else {
-      // nu încape nicăieri complet: alegem marginea (sus/jos) cea mai depărtată de fruct, ca să-l acopere cât mai puțin
-      const topY = pt, botY = Math.max(pt, m.sh - ch - pb), mid = c.y + c.h / 2;
-      if (Math.abs(mid - (topY + ch / 2)) > Math.abs(mid - (botY + ch / 2))) { cy = topY; ax = c.x + c.w / 2; ay = c.y; bx = cx + cw / 2; by = cy + ch; }
-      else { cy = botY; ax = c.x + c.w / 2; ay = c.y + c.h; bx = cx + cw / 2; by = cy; }
+  for (const a of anchors.values()) {
+    const [x1, y1, x2, y2] = a.target;
+    const t = { x: m.ox + x1 * m.dw, y: m.oy + y1 * m.dh, w: Math.max(28, (x2 - x1) * m.dw), h: Math.max(28, (y2 - y1) * m.dh) };
+    if (!a.cur || reduceMotion) a.cur = { ...t };
+    else for (const k of ["x", "y", "w", "h"]) {
+      const d = t[k] - a.cur[k];
+      if (Math.abs(d) > 0.4) { a.cur[k] += d * 0.2; moving = true; } else a.cur[k] = t[k];
+    }
+    const c = a.cur;
+    for (const node of [a.frame, a.orbit]) {
+      node.style.transform = `translate(${c.x}px, ${c.y}px)`;
+      node.style.width = c.w + "px";
+      node.style.height = c.h + "px";
     }
   }
-  el.arCard.style.transform = `translate(${cx}px, ${cy}px)`;
-  el.arLine.setAttribute("x1", ax); el.arLine.setAttribute("y1", ay);
-  el.arLine.setAttribute("x2", bx); el.arLine.setAttribute("y2", by);
-  el.arDot.setAttribute("cx", ax); el.arDot.setAttribute("cy", ay);
+  const list = [...anchors.values()];
+  list.forEach(a => a.card.classList.toggle("compact", m.sw < 520 || a.root.classList.contains("secondary")));
+  const pos = layoutCards(list.map(a => a.cur), list.map(a => ({ w: a.card.offsetWidth, h: a.card.offsetHeight })), {
+    w: m.sw, h: m.sh, pad: 10, gap: 22, top: 10, bottom: 10,
+    avoid: obstacles()                                          // senzorii, ghidajul, insigna LIVE, butoanele din ecran complet
+  });
+  list.forEach((a, i) => {
+    const p = pos[i], c = a.cur;
+    // ușoară înclinare 3D a etichetei după poziția fructului în cadru (efect de profunzime)
+    const tilt = reduceMotion ? 0 : clamp(((c.x + c.w / 2) / m.sw - .5) * -14, -8, 8);
+    a.card.style.transform = `translate(${p.x}px, ${p.y}px) perspective(700px) rotateY(${tilt}deg)`;
+    a.line.setAttribute("x1", p.ax); a.line.setAttribute("y1", p.ay);
+    a.line.setAttribute("x2", p.bx); a.line.setAttribute("y2", p.by);
+    a.dot.setAttribute("cx", p.ax); a.dot.setAttribute("cy", p.ay);
+  });
   if (moving) scheduleAr();
 }
-new ResizeObserver(() => { el.stage.style.setProperty("--h", el.stage.clientHeight + "px"); if (arState.target) { arState.cur = null; scheduleAr(); } }).observe(el.stage);
+new ResizeObserver(() => { el.stage.style.setProperty("--h", el.stage.clientHeight + "px"); for (const a of anchors.values()) a.cur = null; scheduleAr(); }).observe(el.stage);
+
+// ---------------- AR pe tot ecranul ----------------
+function setImmersive(on) {
+  el.stage.classList.toggle("immersive", on);
+  document.documentElement.classList.toggle("imm-lock", on);
+  el.btnExitImm.hidden = el.btnImmShot.hidden = !on;
+  if (on && el.stage.requestFullscreen && !document.fullscreenElement) el.stage.requestFullscreen().catch(() => {});
+  if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  for (const a of anchors.values()) a.cur = null;
+  scheduleAr();
+}
 
 // ---------------- Senzori ambientali (calculați din pixelii reali ai cadrului) ----------------
 const SENSE_W = 160, SENSE_H = 120;
@@ -321,7 +360,10 @@ function renderGuide() {
     // Fructul e identificat: sfaturile despre încadrare contează, cele despre calitatea imaginii nu
     if (a.area != null && a.area < AMB.far) text = "Apropie fructul, ocupă prea puțin din cadru.";
     else if (a.area != null && a.area > AMB.near) text = "Depărtează puțin fructul ca să-l văd întreg.";
-    else { text = state.live ? "Fruct ancorat. Ajustează porția din panou." : "Fruct identificat. Ajustează porția din panou."; ok = true; }
+    else {
+      const n = 1 + (r.others || []).length;
+      text = (n > 1 ? `${n} fructe ancorate.` : state.live ? "Fruct ancorat." : "Fruct identificat.") + " Atinge o etichetă pentru fișa completă."; ok = true;
+    }
   } else if (a.light != null && a.light < AMB.dark) text = state.live ? "Lumina e slabă. Apropie-te de o fereastră sau aprinde o lumină." : "Fotografia e prea întunecată. Încearcă una făcută la lumină.";
   else if (state.live && a.motion != null && a.motion > AMB.moving) text = "Ține camera nemișcată o clipă.";
   else if (a.sharp != null && a.sharp < AMB.blurry) text = state.live ? "Imaginea e neclară. Atinge ecranul ca să focalizezi." : "Fotografia pare neclară. Încearcă una mai focalizată.";
@@ -341,7 +383,7 @@ function applyResult(result, thumb) {
   state.ambient.area = result.kind === "fruit" && result.box ? boxArea(result.box) : null;
   if (result.kind === "fruit") {
     showFruitCard(result.label, { chip: "ok", chipText: "Identificat", note: state.live ? "în cadrul live" : "în fotografie" });
-    setStatus(`Identificat: ${fruitName(result.label)}`, "ok");
+    setStatus(`Identificat: ${[result.label, ...(result.others || []).map(o => o.label)].map(fruitName).join(", ")}`, "ok");
   } else if (result.kind === "notfruit") {
     showMessageCard("notfruit", result.label);
     setStatus(result.box ? `Nu este un fruct: ${catalog.nonFruitText(result.label)}` : `Nu văd niciun fruct, văd ${catalog.nonFruitText(result.label)}`, "err");
@@ -383,10 +425,6 @@ function renderRecent() {
   });
 }
 
-el.portion.addEventListener("input", () => {
-  if (!el.nl.hidden) renderNutrition(state.shownFruit);
-  if (arState.target && arState.target.kind === "fruit") fillArCard(arState.target);
-});
 
 // ---------------- Imagini ----------------
 function canvasFrom(source, sw, sh, maxSide) {
@@ -417,7 +455,8 @@ async function claudeAnalyze(canvas) {
     "Decide if it shows a fruit. If several fruits are visible, pick the most prominent one.",
     "Allowed fruit labels: " + JSON.stringify(catalog.aiFruitLabels()),
     "Allowed non-fruit labels (use these when the main subject is not a fruit; tomato, cucumber and other vegetables are non-fruits here): " + JSON.stringify(catalog.aiNonFruitLabels()),
-    'Reply with only one JSON object: {"kind":"fruit"|"notfruit"|"none","label":string|null,"score":number,"box":[x1,y1,x2,y2]|null}',
+    'Reply with only one JSON object: {"kind":"fruit"|"notfruit"|"none","label":string|null,"score":number,"box":[x1,y1,x2,y2]|null,"others":[{"label":string,"box":[x1,y1,x2,y2]}]}',
+    "others lists up to 2 additional distinct fruits visible in the photo (fruit labels only, same box format); use [] if there are none.",
     "label must be copied exactly from the allowed lists. score is your confidence from 0 to 1.",
     "box is the tight bounding box of that object, as fractions of image width and height (0 to 1, top-left origin). Use kind \"none\" with label null if you cannot tell.",
     `Example: {"kind":"fruit","label":${JSON.stringify(catalog.aiFruitLabels()[0])},"score":0.93,"box":[0.21,0.30,0.78,0.71]}`
@@ -433,7 +472,12 @@ async function claudeAnalyze(canvas) {
     if (box[2] <= box[0] || box[3] <= box[1]) box = null;
   } else box = null;
   const hit = catalog.resolveAiLabel(label);   // eticheta modelului → id din catalog
-  if (kind === "fruit" && hit?.kind === "fruit") return { kind, label: hit.id, score, box };
+  const others = (Array.isArray(r && r.others) ? r.others : []).slice(0, MAX_FRUITS - 1).map(o => {
+    const h = catalog.resolveAiLabel(o && o.label);
+    const b = Array.isArray(o && o.box) && o.box.length === 4 ? o.box.map(v => clamp(Number(v), 0, 1)) : null;
+    return h?.kind === "fruit" && b && b.every(Number.isFinite) && b[2] > b[0] && b[3] > b[1] ? { label: h.id, box: b } : null;
+  }).filter(Boolean);
+  if (kind === "fruit" && hit?.kind === "fruit") return { kind, label: hit.id, score, box, others };
   if (kind === "notfruit" && hit?.kind === "notfruit") return { kind, label: hit.label, score, box };
   return { kind: "none", score: 0 };
 }
@@ -534,31 +578,48 @@ const iou = (a, b) => {
   return u > 0 ? inter / u : 0;
 };
 
-async function findFruitBox(canvas) {
+const MAX_FRUITS = 3;            // câte fructe pot primi etichetă AR în același cadru
+
+/** Casetele fructelor din cadru, cel mult MAX_FRUITS, fără suprapuneri (NMS). */
+async function findFruitBoxes(canvas) {
   const small = canvasFrom(canvas, canvas.width, canvas.height, 640);
   const dets = await local.det(await rawFrom(small), DET_QUERIES, { threshold: DETECT_THRESHOLD, percentage: true });
   const fruits = dets.filter(d => d.label === DET_QUERIES[0]);
   const others = dets.filter(d => d.label !== DET_QUERIES[0]);
   // exclude casetele unde o persoană / mână / față are scor mai mare în același loc
   const valid = fruits.filter(f => !others.some(o => o.score >= f.score && iou(o.box, f.box) > 0.6)).sort((a, b) => b.score - a.score);
-  if (!valid.length) return null;
-  let { xmin, ymin, xmax, ymax } = valid[0].box;
-  [xmin, ymin, xmax, ymax] = [xmin, ymin, xmax, ymax].map(v => Math.max(0, Math.min(1, v)));
-  const mx = (xmax - xmin) * 0.12, my = (ymax - ymin) * 0.12;
-  const box = [Math.max(0, xmin - mx), Math.max(0, ymin - my), Math.min(1, xmax + mx), Math.min(1, ymax + my)];
-  if ((box[2] - box[0]) * canvas.width < 40 || (box[3] - box[1]) * canvas.height < 40) return null;
-  return box;
+  const picked = [];
+  for (const d of valid) {
+    if (picked.length >= MAX_FRUITS) break;
+    if (picked.some(p => iou(p.box, d.box) > 0.3)) continue;
+    picked.push(d);
+  }
+  return picked.map(d => {
+    let { xmin, ymin, xmax, ymax } = d.box;
+    [xmin, ymin, xmax, ymax] = [xmin, ymin, xmax, ymax].map(v => Math.max(0, Math.min(1, v)));
+    const mx = (xmax - xmin) * 0.12, my = (ymax - ymin) * 0.12;
+    return [Math.max(0, xmin - mx), Math.max(0, ymin - my), Math.min(1, xmax + mx), Math.min(1, ymax + my)];
+  }).filter(box => (box[2] - box[0]) * canvas.width >= 40 && (box[3] - box[1]) * canvas.height >= 40);
 }
+const findFruitBox = async canvas => (await findFruitBoxes(canvas))[0] || null;
 
 async function localAnalyze(canvas) {
   await loadLocal();
-  const box = await findFruitBox(canvas);
-  if (box) {
-    const { label, score } = await classify(cropCanvas(canvas, box));
-    const hit = catalog.resolveAiLabel(label);   // eticheta CLIP → id din catalog
-    if (hit?.kind === "fruit" && score >= FRUIT_MIN_SCORE) return { kind: "fruit", label: hit.id, score, box };
-    if (hit?.kind === "notfruit") return { kind: "notfruit", label: hit.label, score, box };
-    return { kind: "none", score };
+  const boxes = await findFruitBoxes(canvas);
+  if (boxes.length) {
+    const found = [];
+    for (const box of boxes) {
+      const { label, score } = await classify(cropCanvas(canvas, box));
+      found.push({ hit: catalog.resolveAiLabel(label), score, box });   // eticheta CLIP → id din catalog
+    }
+    const fruits = found.filter(f => f.hit?.kind === "fruit" && f.score >= FRUIT_MIN_SCORE);
+    if (fruits.length) {
+      const [p, ...rest] = fruits;
+      return { kind: "fruit", label: p.hit.id, score: p.score, box: p.box, others: rest.map(f => ({ label: f.hit.id, box: f.box })) };
+    }
+    const top = found[0];
+    if (top.hit?.kind === "notfruit") return { kind: "notfruit", label: top.hit.label, score: top.score, box: top.box };
+    return { kind: "none", score: top.score };
   }
   // Niciun fruct găsit: verificăm tot cadrul
   const { label, score } = await classify(canvas);
@@ -603,7 +664,7 @@ async function handleFile(file) {
   state.ambient = { light: s.light, sharp: s.sharp, motion: null, area: null };
   state.busy = true; el.scan.hidden = false;
   renderAmbient();
-  el.btnCapture.disabled = false;
+  el.btnCapture.disabled = el.btnImm.disabled = false;
   setStatus(state.engine === "claude" ? "Analizez fotografia…" : (local.ready ? "Caut un fruct…" : "Imaginea se analizează imediat ce modelele sunt gata…"), "busy");
   try {
     const r = await analyze(c);
@@ -644,7 +705,7 @@ async function startCamera() {
   state.frameShown = false;
   el.stage.style.aspectRatio = `${el.video.videoWidth || 16} / ${el.video.videoHeight || 9}`;
   el.btnCamera.querySelector("span").textContent = "Oprește camera";
-  el.btnCapture.disabled = false;
+  el.btnCapture.disabled = el.btnImm.disabled = false;
   prevLuma = null;
   ambientLoop();
   try { await loadLocal(); } catch (e) { setStatus(explainError(e), "err"); stopCamera(); return; }
@@ -661,7 +722,7 @@ function stopCamera() {
   setArTarget(null);
   state.ambient = { light: null, sharp: null, motion: null, area: null };
   el.btnCamera.querySelector("span").textContent = "Pornește camera AR";
-  if (el.frame.hidden) { el.empty.hidden = false; el.stage.style.aspectRatio = "4 / 3"; el.btnCapture.disabled = true; }
+  if (el.frame.hidden) { el.empty.hidden = false; el.stage.style.aspectRatio = "4 / 3"; el.btnCapture.disabled = el.btnImm.disabled = true; if (el.stage.classList.contains("immersive")) setImmersive(false); }
   renderAmbient();
 }
 
@@ -729,10 +790,19 @@ function captureAR() {
   const r = state.result;
   const u = Math.max(w, h) / 900;            // unitate de scalare
   const font = (wt, px) => `${wt} ${Math.round(px * u)}px Geist, system-ui, sans-serif`;
-  if (r && r.box && (r.kind === "fruit" || r.kind === "notfruit")) {
-    const col = r.kind === "fruit" ? "#C9F25C" : "#FF5F7E";
-    const [x1, y1, x2, y2] = r.box;
-    const bx = x1 * w, by = y1 * h, bw = (x2 - x1) * w, bh = (y2 - y1) * h, L = Math.min(bw, bh) * 0.22;
+  const items = !r || !r.box || (r.kind !== "fruit" && r.kind !== "notfruit") ? [] :
+    [{ kind: r.kind, label: r.label, box: r.box }, ...(r.kind === "fruit" ? (r.others || []) .map(o => ({ kind: "fruit", ...o })) : [])];
+  const frames = items.map(it => ({ x: it.box[0] * w, y: it.box[1] * h, w: (it.box[2] - it.box[0]) * w, h: (it.box[3] - it.box[1]) * h }));
+  const labels = items.map(it => {
+    const f = it.kind === "fruit" ? catalog.get(it.label) : null;
+    return f ? { k: "FRUCT IDENTIFICAT", t: f.ro, s: f.en, v: f.vitamins.length ? "Vitamine: " + f.vitamins.map(vitShort).join(", ") : "" }
+             : { k: "DETECTAT", t: "Nu este un fruct", s: cap(catalog.nonFruitText(it.label)), v: "" };
+  });
+  const sizes = labels.map(l => ({ w: 250 * u, h: (l.v ? 108 : 88) * u }));
+  const pos = layoutCards(frames, sizes, { w, h, pad: 10 * u, gap: 20 * u, top: 10 * u, bottom: 30 * u });
+  items.forEach((it, i) => {
+    const col = it.kind === "fruit" ? "#C9F25C" : "#FF5F7E";
+    const { x: bx, y: by, w: bw, h: bh } = frames[i], L = Math.min(bw, bh) * 0.22;
     x.strokeStyle = col; x.lineWidth = 3.5 * u; x.lineCap = "round"; x.shadowColor = col; x.shadowBlur = 10 * u;
     x.beginPath();
     x.moveTo(bx, by + L); x.lineTo(bx, by); x.lineTo(bx + L, by);
@@ -740,22 +810,17 @@ function captureAR() {
     x.moveTo(bx, by + bh - L); x.lineTo(bx, by + bh); x.lineTo(bx + L, by + bh);
     x.moveTo(bx + bw - L, by + bh); x.lineTo(bx + bw, by + bh); x.lineTo(bx + bw, by + bh - L);
     x.stroke(); x.shadowBlur = 0;
-    // eticheta
-    const g = +el.portion.value;
-    const lines = r.kind === "fruit"
-      ? (() => { const n = nutritionFor(r.label, g); return { k: "FRUCT IDENTIFICAT", t: fruitName(r.label), s: `${n.kcal == null ? "—" : Math.round(n.kcal)} kcal · ${g} g`,
-          m: catalog.nutrients.map(({ short: sh, unit: un }, i) => `${sh} ${fmt(n.values[i])} ${n.values[i] == null ? "" : un}`) }; })()
-      : { k: "DETECTAT", t: "Nu este un fruct", s: cap(catalog.nonFruitText(r.label)), m: [] };
-    const cw = 250 * u, ch = (96 + lines.m.length * 19) * u;
-    let cx = bx + bw + 20 * u; if (cx + cw > w - 10 * u) cx = Math.max(10 * u, bx - 20 * u - cw);
-    const cy = clamp(by + bh / 2 - ch / 2, 10 * u, h - ch - 10 * u);
-    x.fillStyle = "rgba(10,13,15,.82)"; roundRect(x, cx, cy, cw, ch, 16 * u); x.fill();
+    // linia de ancorare + eticheta: română → engleză → vitamine
+    const p = pos[i], l = labels[i], cw = sizes[i].w, ch = sizes[i].h;
+    x.strokeStyle = col; x.lineWidth = 1.5 * u; x.setLineDash([3 * u, 4 * u]);
+    x.beginPath(); x.moveTo(p.ax, p.ay); x.lineTo(p.bx, p.by); x.stroke(); x.setLineDash([]);
+    x.fillStyle = "rgba(10,13,15,.85)"; roundRect(x, p.x, p.y, cw, ch, 16 * u); x.fill();
     x.strokeStyle = "rgba(255,255,255,.18)"; x.lineWidth = 1 * u; x.stroke();
-    x.fillStyle = col; x.font = font(600, 11); x.fillText(lines.k, cx + 16 * u, cy + 26 * u);
-    x.fillStyle = "#F2F5F3"; x.font = font(600, 24); x.fillText(lines.t, cx + 16 * u, cy + 56 * u);
-    x.fillStyle = "#A3ADA8"; x.font = font(500, 14); x.fillText(lines.s, cx + 16 * u, cy + 80 * u);
-    lines.m.forEach((t, i) => x.fillText(t, cx + 16 * u, cy + (102 + i * 19) * u));
-  }
+    x.fillStyle = col; x.font = font(600, 11); x.fillText(l.k, p.x + 16 * u, p.y + 26 * u);
+    x.fillStyle = "#F2F5F3"; x.font = font(600, 24); x.fillText(l.t, p.x + 16 * u, p.y + 56 * u);
+    x.fillStyle = "#A3ADA8"; x.font = font(500, 14); x.fillText(l.s, p.x + 16 * u, p.y + 78 * u);
+    if (l.v) { x.fillStyle = "#C9F25C"; x.font = font(500, 13); x.fillText(l.v, p.x + 16 * u, p.y + 98 * u); }
+  });
   x.fillStyle = "rgba(255,255,255,.75)"; x.font = font(600, 13); x.fillText("FruitAI", 14 * u, h - 14 * u);
   c.toBlob(b => {
     if (!b) return;
@@ -768,11 +833,16 @@ function captureAR() {
   }, "image/png");
 }
 el.btnCapture.addEventListener("click", captureAR);
+el.btnImmShot.addEventListener("click", captureAR);
+el.btnImm.addEventListener("click", () => setImmersive(true));
+el.btnExitImm.addEventListener("click", () => setImmersive(false));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && el.stage.classList.contains("immersive") && !$("sheet").open) setImmersive(false); });
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && el.stage.classList.contains("immersive")) setImmersive(false); });
 
 // ---------------- AR spațial (WebXR), încărcat doar la cerere ----------------
 function updateXRButton() {
   if (!state.xrSupported) return;
-  const ready = !state.example && el.nl.hidden === false && catalog.hasNutrition(state.shownFruit);
+  const ready = !state.example && el.facts.hidden === false && catalog.has(state.shownFruit);
   el.btnXR.disabled = !ready || state.xrActive;
   el.btnXR.title = ready ? `Plasează eticheta pentru ${fruitName(state.shownFruit)} pe o suprafață reală` : "Identifică sau alege mai întâi un fruct";
 }
@@ -780,17 +850,12 @@ async function startXR() {
   if (el.btnXR.disabled || state.xrActive) return;
   stopCamera();
   state.xrActive = true; updateXRButton();
-  const fruit = state.shownFruit, g = +el.portion.value, n = nutritionFor(fruit, g);
+  const f = catalog.get(state.shownFruit);
   const overlay = $("xrOverlay");
   try {
     setStatus("Se pornește AR spațial…", "busy");
-    const xr = await import("./js/xr.js");
-    await xr.startSession({
-      name: fruitName(fruit), en: fruitEn(fruit), grams: g,
-      kcal: n.kcal == null ? null : Math.round(n.kcal),
-      macros: catalog.nutrients.map(({ short, unit, dailyValue: dv, color }, i) => ({ label: short, value: n.values[i] == null ? "—" : fmt(n.values[i]) + " " + unit, ratio: n.values[i] == null ? 0 : Math.min(1, n.values[i] / dv * 2.5), color })),
-      tint: catalog.get(fruit).visual.color
-    }, {
+    const xr = await import("./xr.js");   // relativ la js/app.js
+    await xr.startSession({ name: f.ro, en: f.en, vitamins: f.vitamins.map(vitShort), minerals: f.minerals.map(cap), tint: f.visual.color }, {
       overlay, msg: $("xrMsg"), hint: $("xrHint"), close: $("xrClose"),
       onEnd: () => { state.xrActive = false; overlay.hidden = true; updateXRButton(); setStatus("Sesiunea AR spațial s-a încheiat", "ok"); }
     });
@@ -871,28 +936,17 @@ function bindCounts() {
 function renderShowcase() {
   const pool = [...catalog.showcase()].sort(() => Math.random() - 0.5);
   const [a, b, c] = [pool[0], pool[1 % pool.length], pool[2 % pool.length]];
-  const kcal = (f, g = 100) => Math.round(catalog.nutritionFor(f.id, g).kcal);
   $("heroOrb").style.background = orbGradient(a);
-  // cei doi nutrienți cei mai importanți pentru fructul ales (raportat la doza zilnică)
-  const n = catalog.nutritionFor(a.id, 100);
-  const top = catalog.nutrients.map((d, i) => ({ d, v: n.values[i] })).filter(x => x.v != null)
-    .sort((x, y) => y.v / y.d.dailyValue - x.v / x.d.dailyValue).slice(0, 2);
   const hc = $("heroCard");
-  hc.innerHTML = `<span class="k">Identificat</span><b></b><span class="t"></span><div class="mini"></div>`;
+  hc.innerHTML = `<span class="k">Identificat</span><b></b><span class="t"></span><div class="hv"></div>`;
   hc.querySelector("b").textContent = a.ro;
-  hc.querySelector(".t").textContent = `${kcal(a)} kcal · 100 g`;
-  top.forEach(({ d, v }) => {
-    const row = document.createElement("div");
-    row.innerHTML = "<span></span><i></i><span></span>";
-    row.firstChild.textContent = d.short;
-    row.lastChild.textContent = `${fmt(v)} ${d.unit}`;
-    row.querySelector("i").style.setProperty("--w", clamp(v / d.dailyValue * 250, 8, 100) + "%");
-    hc.querySelector(".mini").appendChild(row);
-  });
+  hc.querySelector(".t").textContent = a.en;
+  hc.querySelector(".hv").replaceChildren(...pills(a.vitamins.map(vitShort).slice(0, 4), "", v => "Vit. " + v));
   const hp = $("heroPortion");
-  hp.innerHTML = `<span class="k">Porție</span><b>150 g</b><span class="t"></span>`;
-  hp.querySelector(".t").textContent = `${kcal(a, 150)} kcal`;
-  const demo = (node, f) => { node.innerHTML = "<b></b><span></span>"; node.firstChild.textContent = f.ro; node.lastChild.textContent = ` · ${kcal(f)} kcal · 100 g`; };
+  hp.innerHTML = `<span class="k">Mineral principal</span><b></b><span class="t"></span>`;
+  hp.querySelector("b").textContent = cap(a.minerals[0] || "—");
+  hp.querySelector(".t").textContent = a.minerals.length > 1 ? `și ${a.minerals.length - 1} altele` : "";
+  const demo = (node, f) => { node.innerHTML = "<b></b><span></span>"; node.firstChild.textContent = f.ro; node.lastChild.textContent = ` · ${f.en} · Vit. ${f.vitamins.map(vitShort).slice(0, 3).join(", ") || "—"}`; };
   demo($("arDemo1"), b);
   $("arDemo1Art").style.setProperty("--demo-bg", orbGradient(b));
   demo($("arDemo2"), c);
