@@ -1,0 +1,39 @@
+{
+  "description": "Explicații pentru copii despre vitaminele, mineralele și fibrele din catalog. Cheile corespund valorilor din fruits.json (vitamins / minerals). Un fruct afișează doar nutrienții din propria înregistrare; fibrele apar doar dacă fructul are cel puțin „fiber.minPer100g” grame la 100 g.",
+  "benefits": {
+    "immunity": { "ro": "Imunitate", "icon": "🛡️" },
+    "vision":   { "ro": "Vedere", "icon": "👀" },
+    "energy":   { "ro": "Energie", "icon": "⚡" },
+    "muscles":  { "ro": "Mușchi și inimă", "icon": "💪" },
+    "bones":    { "ro": "Oase și dinți", "icon": "🦴" },
+    "blood":    { "ro": "Sânge sănătos", "icon": "🩸" },
+    "brain":    { "ro": "Creier și nervi", "icon": "🧠" },
+    "digestion":{ "ro": "Digestie", "icon": "🌿" },
+    "skin":     { "ro": "Piele", "icon": "✨" },
+    "cells":    { "ro": "Celule protejate", "icon": "🔰" }
+  },
+  "vitamins": {
+    "C":  { "title": "Vitamina C", "symbol": "C", "color": "#FF9F1C", "kid": "Îți ajută corpul să lupte cu microbii și ajută zgârieturile să se vindece mai repede.", "benefits": ["immunity", "skin"] },
+    "A":  { "title": "Vitamina A", "symbol": "A", "color": "#FF6B6B", "kid": "Îți ajută ochii să vadă bine, mai ales seara, când e puțină lumină.", "benefits": ["vision", "skin"] },
+    "K":  { "title": "Vitamina K", "symbol": "K", "color": "#3DDC97", "kid": "Ajută sângele să se oprească repede când te zgârii și contribuie la oase puternice.", "benefits": ["blood", "bones"] },
+    "E":  { "title": "Vitamina E", "symbol": "E", "color": "#FFD23F", "kid": "E ca un scut mic: protejează celulele corpului tău.", "benefits": ["cells", "skin"] },
+    "B1": { "title": "Vitamina B1", "symbol": "B1", "color": "#7B8CFF", "kid": "Îți transformă mâncarea în energie, ca să ai putere să te joci.", "benefits": ["energy", "brain"] },
+    "B3": { "title": "Vitamina B3", "symbol": "B3", "color": "#6E9BFF", "kid": "Ajută corpul să scoată energie din mâncare și să aibă grijă de piele.", "benefits": ["energy", "skin"] },
+    "B6": { "title": "Vitamina B6", "symbol": "B6", "color": "#9D7BFF", "kid": "Îți ajută creierul și nervii să lucreze bine împreună.", "benefits": ["brain", "energy"] },
+    "B9 (folat)": { "title": "Vitamina B9 (folat)", "symbol": "B9", "color": "#B77BFF", "kid": "Ajută corpul să construiască celule noi, de exemplu globulele roșii din sânge.", "benefits": ["blood", "cells"] }
+  },
+  "minerals": {
+    "potasiu":  { "title": "Potasiu", "symbol": "K", "color": "#22C3E6", "kid": "Ajută mușchii să lucreze bine, inclusiv inima, cel mai harnic mușchi.", "benefits": ["muscles"] },
+    "magneziu": { "title": "Magneziu", "symbol": "Mg", "color": "#4FD1C5", "kid": "Ajută mușchii și nervii și contribuie la oase sănătoase.", "benefits": ["muscles", "bones"] },
+    "fier":     { "title": "Fier", "symbol": "Fe", "color": "#E05A5A", "kid": "Ajută sângele să ducă oxigen în tot corpul, ca să nu obosești repede.", "benefits": ["blood", "energy"] },
+    "cupru":    { "title": "Cupru", "symbol": "Cu", "color": "#E39B5B", "kid": "Ajută corpul să folosească fierul și sprijină apărarea împotriva microbilor.", "benefits": ["blood", "immunity"] },
+    "mangan":   { "title": "Mangan", "symbol": "Mn", "color": "#C48BFF", "kid": "Ajută la construirea oaselor și la obținerea energiei din mâncare.", "benefits": ["bones", "energy"] },
+    "calciu":   { "title": "Calciu", "symbol": "Ca", "color": "#E8E8F0", "kid": "Construiește oase și dinți puternici.", "benefits": ["bones"] },
+    "seleniu":  { "title": "Seleniu", "symbol": "Se", "color": "#9AE66E", "kid": "Protejează celulele și ajută corpul să se apere de microbi.", "benefits": ["cells", "immunity"] }
+  },
+  "fiber": {
+    "title": "Fibre alimentare", "symbol": "Fi", "color": "#8BC34A", "minPer100g": 3,
+    "kid": "Fibrele ajută burtica să digere ușor și te fac să te simți sătul mai mult timp.",
+    "benefits": ["digestion"]
+  }
+}

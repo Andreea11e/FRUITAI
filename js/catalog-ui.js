@@ -23,9 +23,7 @@ const el = (tag, props = {}, ...kids) => {
   return n;
 };
 
-let ctx = null;   // { catalog, onShow, onPlaceAR, canPlaceAR }
-
-const pillsOf = (list, cls, label) => list.length ? list.map(v => el("span", { class: cls }, label(v))) : [el("span", {}, "Fără date")];
+let ctx = null;   // { catalog, onOpen(id), isDiscovered(id) }
 
 export function mountCatalogUI(catalog, opts) {
   ctx = { catalog, ...opts };
@@ -61,13 +59,15 @@ export function mountCatalogUI(catalog, opts) {
 
   function card(f) {
     const vit = f.vitamins.map(v => v.replace(/\s*\(.*\)$/, ""));
-    return el("button", { type: "button", class: "fcard", style: `--c:${f.visual.color}`, "aria-label": `${f.ro}, deschide fișa`, onclick: () => openFruitSheet(f.id) },
+    const found = ctx.isDiscovered(f.id);
+    return el("button", { type: "button", class: "fcard" + (found ? " found" : ""), style: `--c:${f.visual.color}`, "aria-label": `${f.ro}, ${f.en}. Descoperă fructul`, onclick: () => ctx.onOpen(f.id) },
+      found ? el("span", { class: "found-badge", title: "Descoperit cu scannerul" }, "✓") : null,
       el("span", { html: fruitArt(f, { size: 64 }) }).firstElementChild,
       el("b", {}, f.ro),
       el("span", { class: "en" }, f.en),
       el("span", { class: "row" },
         el("span", {}, vit.length ? ["Vit. ", el("em", {}, vit.slice(0, 3).join(", "))] : "Fără date"),
-        el("span", { class: "badge" + (f.ai ? "" : " off") }, f.ai ? "AI" : "catalog"))
+        el("span", { class: "badge" + (f.ai ? "" : " off") }, f.emoji || (f.ai ? "AI" : "catalog")))
     );
   }
 
@@ -76,48 +76,11 @@ export function mountCatalogUI(catalog, opts) {
     const list = catalog.filter(state);
     grid.replaceChildren(...list.map(card));
     empty.hidden = list.length > 0;
-    meta.textContent = list.length === catalog.count ? `${catalog.count} fructe · ${catalog.recognizable.length} recunoscute de scanner` : `${list.length} din ${catalog.count} fructe`;
+    const found = catalog.fruits.filter(f => ctx.isDiscovered(f.id)).length;
+    meta.textContent = (list.length === catalog.count ? `${catalog.count} fructe · ${catalog.recognizable.length} recunoscute de scanner` : `${list.length} din ${catalog.count} fructe`) + ` · ai descoperit ${found} cu camera`;
   }
   sync();
+  // colecția se actualizează când descoperi un fruct nou cu camera
+  window.addEventListener("fruitai:discovered", sync);
 }
 
-/** Fișa educativă a unui fruct, într-un <dialog>. */
-export function openFruitSheet(id) {
-  const { catalog } = ctx;
-  const f = catalog.get(id);
-  if (!f) return;
-  const sheet = $("sheet");
-  const n = catalog.nutritionFor(id, 100);
-  const close = el("button", { type: "button", class: "sh-close", "aria-label": "Închide fișa", onclick: () => sheet.close(),
-    html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' });
-
-  const actions = [el("button", { type: "button", class: "btn primary sm", onclick: () => { sheet.close(); ctx.onShow(id); } }, "Arată în scanner")];
-  if (ctx.canPlaceAR()) actions.push(el("button", { type: "button", class: "btn ar sm", onclick: () => { sheet.close(); ctx.onPlaceAR(id); } }, "Plasează în spațiu (AR)"));
-
-  sheet.style.setProperty("--c", f.visual.color);
-  sheet.replaceChildren(
-    close,
-    el("div", { class: "sh-hero" },
-      el("span", { html: fruitArt(f, { size: 112 }) }).firstElementChild,
-      el("div", {},
-        el("div", { class: "k" }, catalog.categoryName(f.category) + (f.ai ? " · recunoscut de scanner" : " · doar în catalog")),
-        el("h3", { id: "sheetTitle" }, f.ro),
-        el("div", { class: "en" }, "English: " + f.en))),
-    el("div", { class: "sh-body" },
-      el("div", {}, el("h4", {}, "Vitamine"), el("div", { class: "vm" }, pillsOf(f.vitamins, "v", v => "Vitamina " + v))),
-      el("div", {}, el("h4", {}, "Minerale"), el("div", { class: "vm" }, pillsOf(f.minerals, "m", m => m.charAt(0).toUpperCase() + m.slice(1)))),
-      el("p", {}, f.description),
-      el("p", { class: "sh-fact" }, el("b", {}, "Știai că? "), f.fact),
-      el("div", {},
-        el("h4", {}, "Macronutrienți la 100 g"),
-        el("div", { class: "sh-grid" },
-          catalog.nutrients.map((d, i) => el("div", {}, el("small", {}, d.ro), el("b", {}, fmt(n.values[i])), el("small", {}, n.values[i] == null ? "indisponibil" : d.unit))))),
-      el("p", { class: "sh-src" }, "Sursa valorilor: USDA FoodData Central (SR Legacy) — " + f.nutrition.source + ". Valori orientative."),
-      el("div", { class: "sh-actions" }, actions))
-  );
-  if (!sheet.open) sheet.showModal();
-  sheet.scrollTop = 0;
-}
-
-// închidere la click pe fundal
-document.addEventListener("click", e => { const s = $("sheet"); if (s && e.target === s) s.close(); });

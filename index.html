@@ -8,7 +8,8 @@
 <meta name="theme-color" content="#06080A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&family=Nunito:wght@700;800;900&display=swap">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -158,7 +159,7 @@
             <div class="r-block"><h3>Minerale</h3><div class="vm" id="minList"></div></div>
             <p class="desc" id="desc"></p>
             <p class="fact"><b>Știai că?</b> <span id="fact"></span></p>
-            <button class="btn sm" id="btnSheet" type="button">Fișa completă</button>
+            <button class="btn primary disc-cta" id="btnSheet" type="button"><span aria-hidden="true">✨</span> Descoperă fructul</button>
           </div>
         </aside>
       </div>
@@ -192,8 +193,6 @@
       <p class="muted" id="catEmpty" hidden>Niciun fruct nu se potrivește filtrelor alese.</p>
     </div>
   </section>
-
-  <dialog class="sheet" id="sheet" aria-labelledby="sheetTitle"></dialog>
 
   <!-- ================= CUM FUNCȚIONEAZĂ ================= -->
   <section class="block" id="cum">

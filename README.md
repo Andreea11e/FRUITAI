@@ -11,9 +11,13 @@ Scanner de fructe cu realitate augmentată, care rulează direct în browser. Î
 | `data/fruits.json` | **Catalogul de fructe — sursa unică de date** |
 | `data/fruits.schema.json` | Schema catalogului (documentează și validează fiecare câmp) |
 | `data/non-fruits.json` | Etichetele AI pentru obiecte care nu sunt fructe |
-| `data/nutrients.json` | Nutrienții afișați și dozele zilnice de referință |
+| `data/nutrients.json` | Macronutrienții din fișă și dozele zilnice de referință |
+| `data/nutrient-info.json` | Explicațiile pentru copii: ce face fiecare vitamină, mineral și fibrele |
 | `js/catalog.js` | Citește și validează datele; oferă căutare, filtre și maparea AI → fruct |
-| `js/catalog-ui.js` | Generează catalogul, filtrele și fișele educative din date |
+| `js/catalog-ui.js` | Generează catalogul și filtrele din date |
+| `js/discovery.js` | Ecranul „Descoperă fructul”, cu personajul Vita, vitaminele interactive și beneficiile |
+| `js/fruit3d.js` | Modelul 3D procedural al fructului (three.js), încărcat doar în ecranul „Descoperă” |
+| `js/sound.js` | Efecte sonore sintetizate (fără fișiere audio) |
 | `js/fruit-art.js` | Imaginea fiecărui fruct (fotografie sau ilustrație generată) |
 | `js/app.js` | Scannerul, AI, AR în cameră, senzorii ambientali |
 | `js/xr.js` | AR spațial (WebXR), încărcat doar la cerere |
@@ -62,6 +66,18 @@ Calculată din pixelii reali ai cadrului (redus la 160×120), de ~4 ori pe secun
 - **Distanță:** cât din cadru ocupă fructul detectat.
 
 Semnalele apar în HUD-ul scannerului, în secțiunea „Inteligență ambientală” și ca ghidaj contextual în partea de jos a camerei.
+
+### „Descoperă fructul”: experiența pentru copii
+Se deschide automat după ce o fotografie e recunoscută. Se mai deschide la atingerea unei etichete AR, din catalog, din istoric sau cu butonul „Descoperă fructul”.
+- **Sus:** numele mare în română (cu emoji, unde există) și numele în engleză, cu litere care apar animat.
+- **În centru:** fructul 3D, generat din forma și culoarea din catalog. Se rotește cu degetul sau cu mouse-ul. Are strălucire, particule, inel luminos și o animație elastică la apariție. Dacă three.js nu se poate încărca, se afișează ilustrația 2D.
+- **În jur:** carduri de sticlă pentru vitamine (sfere), minerale (cristale) și fibre (frunză), legate de fruct prin săgeți luminoase animate. Atingerea unui card deschide un panou cu o explicație scurtă pentru copii, beneficiile și numărul de fructe din catalog care conțin nutrientul. Fructul „sare”, apar particule în culoarea nutrientului și se aude un sunet.
+- **În lateral:** butoane mari pentru rotire automată, mărire, micșorare și resetare. Merge și zoom-ul cu degetele sau cu rotița.
+- **Jos:** personajul Vita (desen original) prezintă fructul și comentează fiecare vitamină. Urmează beneficiile pentru corp (atingerea unuia evidențiază nutrienții care îl aduc), curiozitatea și descrierea.
+- **Sunet:** arpegiu la descoperire și „pop” la atingere, sintetizate în browser. Se pot opri din butonul de sus.
+- **Colecție:** fructele găsite cu camera sunt marcate „descoperit” în catalog și numărate („3 din 61”). Prima descoperire primește insigna „Fruct nou descoperit!”. Colecția e păstrată doar în browserul respectiv.
+
+**Corectitudinea informațiilor:** un fruct afișează doar vitaminele și mineralele din propria înregistrare din `data/fruits.json`. Nimic nu e atribuit automat. Fibrele apar doar la fructele cu cel puțin 3 g la 100 g (pragul UE pentru „sursă de fibre”). Explicațiile din `data/nutrient-info.json` descriu rolurile recunoscute ale fiecărui nutrient, pe înțelesul copiilor. Validarea verifică că fiecare vitamină și mineral din catalog are o explicație.
 
 ### Informații despre fructe
 - La identificare: numele în română, numele în engleză, vitaminele și mineralele principale, o descriere și o curiozitate. Aplicația nu afișează calorii.

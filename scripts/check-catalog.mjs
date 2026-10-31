@@ -15,7 +15,9 @@ const ok = m => console.log("✓ " + m);
 
 // 1) Catalogul se construiește fără probleme
 const fd = json("data/fruits.json"), nf = json("data/non-fruits.json"), nu = json("data/nutrients.json");
-const cat = new Catalog({ fruits: fd.fruits, categories: fd.categories, nonFruits: nf.labels, nutrients: nu.nutrients, kcalDailyValue: nu.kcalDailyValue });
+const ni = json("data/nutrient-info.json");
+const cat = new Catalog({ fruits: fd.fruits, categories: fd.categories, nonFruits: nf.labels, nutrients: nu.nutrients, kcalDailyValue: nu.kcalDailyValue, nutrientInfo: ni });
+for (const group of ["vitamins", "minerals"]) for (const [k, v] of Object.entries(ni[group])) for (const b of v.benefits) if (!ni.benefits[b]) fail(`nutrient-info: ${k} folosește beneficiul necunoscut „${b}”`);
 if (cat.issues.length) cat.issues.forEach(i => fail("catalog: " + i));
 else ok(`catalog valid: ${cat.count} fructe, ${cat.recognizable.length} recunoscute de AI, ${cat.nonFruitCount} etichete non-fruct, ${cat.categories.length} categorii`);
 if (cat.count !== fd.fruits.length) fail(`${fd.fruits.length - cat.count} înregistrări au fost respinse`);

@@ -7,7 +7,7 @@ const SHAPES = new Set(["round", "oval", "teardrop", "elongated", "cluster", "dr
 const norm = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
 
 export class Catalog {
-  constructor({ fruits, categories, nonFruits, nutrients, kcalDailyValue }) {
+  constructor({ fruits, categories, nonFruits, nutrients, kcalDailyValue, nutrientInfo = null }) {
     this.issues = [];
     this.categories = categories;
     this.nutrients = nutrients;              // [{key, ro, short, unit, dailyValue, color}]
@@ -36,6 +36,12 @@ export class Catalog {
       const k = norm(n.label);
       if (this.aiToFruit.has(k)) { this.issues.push(`non-fruct „${n.label}” se suprapune cu un fruct`); continue; }
       this.aiToNonFruit.set(k, n);
+    }
+    // explicațiile pentru copii: fiecare vitamină / mineral din catalog trebuie să aibă una
+    this.info = nutrientInfo;
+    if (nutrientInfo) for (const f of this.fruits) {
+      for (const v of f.vitamins) if (!nutrientInfo.vitamins[v]) this.issues.push(`${f.id}: vitamina „${v}” nu are explicație în nutrient-info.json`);
+      for (const m of f.minerals) if (!nutrientInfo.minerals[m]) this.issues.push(`${f.id}: mineralul „${m}” nu are explicație în nutrient-info.json`);
     }
     if (this.issues.length) console.warn("Catalog FruitAI — înregistrări ignorate sau conflicte:\n" + this.issues.join("\n"));
   }
@@ -109,6 +115,28 @@ export class Catalog {
     return out.slice(0, 3);
   }
 
+  // ---------- nutrienți explicați pentru copii ----------
+  /** Doar nutrienții din înregistrarea fructului (+ fibrele, dacă depășesc pragul). Nimic atribuit automat. */
+  nutrientsFor(id) {
+    const f = this.get(id), I = this.info;
+    if (!f || !I) return [];
+    const out = [];
+    for (const v of f.vitamins) if (I.vitamins[v]) out.push({ kind: "vitamin", key: v, ...I.vitamins[v] });
+    for (const m of f.minerals) if (I.minerals[m]) out.push({ kind: "mineral", key: m, ...I.minerals[m] });
+    const fiber = f.nutrition.per100g.fiber;
+    if (fiber != null && fiber >= I.fiber.minPer100g) out.push({ kind: "fiber", key: "fiber", ...I.fiber, amount: fiber });
+    return out;
+  }
+  /** Beneficiile pentru organism, adunate din nutrienții fructului (fără duplicate). */
+  benefitsFor(id) {
+    const seen = new Map();
+    for (const n of this.nutrientsFor(id)) for (const b of n.benefits || []) {
+      if (!seen.has(b) && this.info.benefits[b]) seen.set(b, { key: b, ...this.info.benefits[b], from: [] });
+      seen.get(b)?.from.push(n.title);
+    }
+    return [...seen.values()];
+  }
+
   // ---------- filtre derivate din date ----------
   /** Valorile distincte ale unui câmp listă (ex. „vitamins”), cu numărul de fructe. */
   facet(field) {
@@ -140,12 +168,13 @@ export async function loadCatalog(base = new URL("../data/", import.meta.url)) {
     if (!r.ok) throw new Error(`Nu pot citi ${name} (${r.status})`);
     return r.json();
   };
-  const [fruitsDoc, nonDoc, nutDoc] = await Promise.all([get("fruits.json"), get("non-fruits.json"), get("nutrients.json")]);
+  const [fruitsDoc, nonDoc, nutDoc, infoDoc] = await Promise.all([get("fruits.json"), get("non-fruits.json"), get("nutrients.json"), get("nutrient-info.json")]);
   return new Catalog({
     fruits: fruitsDoc.fruits,
     categories: fruitsDoc.categories,
     nonFruits: nonDoc.labels,
     nutrients: nutDoc.nutrients,
-    kcalDailyValue: nutDoc.kcalDailyValue
+    kcalDailyValue: nutDoc.kcalDailyValue,
+    nutrientInfo: infoDoc
   });
 }

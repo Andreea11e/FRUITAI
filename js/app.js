@@ -1,6 +1,7 @@
 import { loadCatalog } from "./catalog.js";
 import { fruitArt, orbGradient } from "./fruit-art.js";
-import { mountCatalogUI, openFruitSheet } from "./catalog-ui.js";
+import { mountCatalogUI } from "./catalog-ui.js";
+import { initDiscovery, openDiscovery, collection } from "./discovery.js";
 
 
 // ---------------- Configurare (ca în main.py) ----------------
@@ -142,7 +143,7 @@ function createAnchor() {
   el.ar.appendChild(root);
   const a = { root, frame: root.querySelector(".ar-frame"), orbit: root.querySelector(".ar-orbit"), card: root.querySelector(".ar-card"),
     line: root.querySelector("line"), dot: root.querySelector("circle"), cur: null, target: null, id: null, kind: null };
-  a.card.addEventListener("click", () => { if (a.kind === "fruit") openFruitSheet(a.id); });
+  a.card.addEventListener("click", () => { if (a.kind === "fruit") openDiscovery(a.id, { source: "scan" }); });
   return a;
 }
 
@@ -384,6 +385,16 @@ function applyResult(result, thumb) {
   if (result.kind === "fruit") {
     showFruitCard(result.label, { chip: "ok", chipText: "Identificat", note: state.live ? "în cadrul live" : "în fotografie" });
     setStatus(`Identificat: ${[result.label, ...(result.others || []).map(o => o.label)].map(fruitName).join(", ")}`, "ok");
+    // colecția de fructe descoperite cu camera
+    const isNew = collection.add(result.label);
+    (result.others || []).forEach(o => collection.add(o.label));
+    window.dispatchEvent(new Event("fruitai:discovered"));
+    // la o fotografie, după ce copilul vede eticheta AR, se deschide experiența „Descoperă”
+    if (!state.live) {
+      const id = result.label;
+      clearTimeout(state.discTimer);
+      state.discTimer = setTimeout(() => { if (!state.live && state.result?.label === id) openDiscovery(id, { source: "scan", isNew }); }, 1100);
+    }
   } else if (result.kind === "notfruit") {
     showMessageCard("notfruit", result.label);
     setStatus(result.box ? `Nu este un fruct: ${catalog.nonFruitText(result.label)}` : `Nu văd niciun fruct, văd ${catalog.nonFruitText(result.label)}`, "err");
@@ -418,7 +429,7 @@ function renderRecent() {
     b.append(img, s);
     b.title = r.kind === "fruit" ? fruitName(r.label) : "Nu este un fruct";
     b.addEventListener("click", () => {
-      if (r.kind === "fruit") showFruitCard(r.label, { chipText: "Identificat", note: "din istoric" });
+      if (r.kind === "fruit") { showFruitCard(r.label, { chipText: "Identificat", note: "din istoric" }); openDiscovery(r.label, { source: "history" }); }
       else showMessageCard("notfruit", r.label);
     });
     el.recent.appendChild(b);
@@ -836,7 +847,7 @@ el.btnCapture.addEventListener("click", captureAR);
 el.btnImmShot.addEventListener("click", captureAR);
 el.btnImm.addEventListener("click", () => setImmersive(true));
 el.btnExitImm.addEventListener("click", () => setImmersive(false));
-document.addEventListener("keydown", e => { if (e.key === "Escape" && el.stage.classList.contains("immersive") && !$("sheet").open) setImmersive(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && el.stage.classList.contains("immersive") && !document.querySelector("dialog.disc[open]")) setImmersive(false); });
 document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && el.stage.classList.contains("immersive")) setImmersive(false); });
 
 // ---------------- AR spațial (WebXR), încărcat doar la cerere ----------------
@@ -969,12 +980,16 @@ async function boot() {
   }
   bindCounts();
   renderShowcase();
-  mountCatalogUI(catalog, {
-    onShow: id => { showFromCatalog(id); $("result").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" }); },
-    onPlaceAR: id => { showFromCatalog(id); startXR(); },
-    canPlaceAR: () => state.xrSupported && !state.xrActive
+  initDiscovery({
+    catalog, reduceMotion,
+    canPlaceAR: () => state.xrSupported && !state.xrActive,
+    onPlaceAR: id => { showFromCatalog(id); startXR(); }
   });
-  el.btnSheet.addEventListener("click", () => state.shownFruit && openFruitSheet(state.shownFruit));
+  mountCatalogUI(catalog, {
+    onOpen: id => openDiscovery(id, { source: "catalog" }),
+    isDiscovered: id => collection.has(id)
+  });
+  el.btnSheet.addEventListener("click", () => state.shownFruit && openDiscovery(state.shownFruit, { source: state.example ? "catalog" : "scan" }));
   showFruitCard(catalog.pick().id, { chipText: "Exemplu", note: "așa arată un rezultat" });
   renderAmbient();
   if (window.claude && typeof window.claude.use === "function") {
