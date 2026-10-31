@@ -727,7 +727,7 @@ footer .container { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-conte
           <p>Datele vin din USDA FoodData Central și sunt incluse în aplicație. Glisorul de porție recalculează totul, inclusiv eticheta din AR.</p>
         </div>
       </div>
-      <p class="tech-note">Modele: Xenova/owlvit-base-patch32 · Xenova/clip-vit-base-patch32 · ~240 MB la prima utilizare</p>
+      <p class="tech-note">Modele: Xenova/owlvit-base-patch32 · Xenova/clip-vit-base-patch32 · se descarcă o singură dată, apoi pornesc din memoria browserului</p>
     </div>
   </section>
 
@@ -1450,35 +1450,76 @@ const local = { T: null, clip: null, det: null, loading: null };
 const DET_QUERIES = ["a photo of a fruit", "a photo of a person", "a photo of a human face", "a photo of a hand"];
 const ALL_LABELS = [...Object.keys(FRUITS), ...Object.keys(NON_FRUITS)];
 
+// Alegem varianta de model: fp16 pe WebGPU (dacă placa suportă shader-f16), altfel q8 pe WASM.
+// (fp32 însemna ~1,2 GB și putea depăși spațiul de cache al browserului, deci se descărca din nou la fiecare vizită.)
+async function pickBackend() {
+  if (navigator.gpu) {
+    try {
+      const adapter = await navigator.gpu.requestAdapter();
+      if (adapter && adapter.features.has("shader-f16")) return { device: "webgpu", dtype: "fp16", suffix: "_fp16", mb: 611 };
+    } catch {}
+  }
+  return { device: "wasm", dtype: "q8", suffix: "_quantized", mb: 309 };
+}
+
+// Sunt modelele deja salvate pe dispozitiv? (transformers.js le ține în Cache Storage, „transformers-cache”)
+async function modelsCached(suffix) {
+  try {
+    if (!("caches" in window) || !(await caches.has("transformers-cache"))) return false;
+    const keys = (await (await caches.open("transformers-cache")).keys()).map(r => r.url);
+    return [CLIP_NAME, DETECTOR_NAME].every(m => keys.some(u => u.includes(m) && u.endsWith(`/onnx/model${suffix}.onnx`)));
+  } catch { return false; }
+}
+
 function loadLocal() {
   if (local.loading) return local.loading;
   local.loading = (async () => {
+    const backend = await pickBackend();
+    const cached = await modelsCached(backend.suffix);
+    local.cached = cached;
     el.progress.hidden = false;
-    setStatus("Se încarcă modelele AI…", "busy");
+    el.progBar.style.width = "0%";
+    el.progText.textContent = cached ? "Se pornesc modelele AI salvate pe dispozitiv…" : `Prima pornire: se descarcă modelele AI (~${backend.mb} MB, o singură dată)…`;
+    setStatus(cached ? "Se pornesc modelele AI…" : "Prima pornire: se descarcă modelele…", "busy");
     const T = await import(TRANSFORMERS_URL);
     local.T = T;
     T.env.allowLocalModels = false;
+    T.env.useBrowserCache = true;
     const files = {};
     const progress_callback = p => {
       if (p.status === "progress" && p.total) {
         files[p.file + p.name] = [p.loaded, p.total];
         let a = 0, b = 0;
         Object.values(files).forEach(([l, t]) => { a += l; b += t; });
-        el.progBar.style.width = (a / b * 100).toFixed(1) + "%";
-        el.progText.textContent = `Se descarcă modelele AI (doar prima dată)… ${(a / 1048576).toFixed(0)} / ${(b / 1048576).toFixed(0)} MB`;
+        const pct = Math.min(100, a / b * 100);
+        el.progBar.style.width = pct.toFixed(1) + "%";
+        el.progText.textContent = cached
+          ? `Se pornesc modelele AI salvate pe dispozitiv… ${Math.round(pct)}%`
+          : `Prima pornire: se descarcă modelele AI (o singură dată)… ${(a / 1048576).toFixed(0)} / ${(b / 1048576).toFixed(0)} MB`;
       }
     };
     const make = async (task, name) => {
-      if (navigator.gpu) {
-        try { return await T.pipeline(task, name, { device: "webgpu", dtype: "fp32", progress_callback }); }
+      if (backend.device === "webgpu") {
+        try { return await T.pipeline(task, name, { device: "webgpu", dtype: backend.dtype, progress_callback }); }
         catch (e) { console.warn("WebGPU indisponibil, trec pe WASM:", e); }
       }
       return T.pipeline(task, name, { device: "wasm", dtype: "q8", progress_callback });
     };
     local.clip = await make("zero-shot-image-classification", CLIP_NAME);
     local.det = await make("zero-shot-object-detection", DETECTOR_NAME);
+    // Cerem browserului să nu șteargă modelele din cache când are nevoie de spațiu
+    try { await navigator.storage?.persist?.(); } catch {}
+    // Încălzire: o analiză pe o imagine mică, ca prima imagine reală să fie procesată imediat
+    el.progText.textContent = "Se pregătește analiza…";
+    try {
+      const w = document.createElement("canvas"); w.width = w.height = 224;
+      const g = w.getContext("2d"); g.fillStyle = "#888"; g.fillRect(0, 0, 224, 224);
+      await findFruitBox(w); await classify(w);
+    } catch (e) { console.warn("Încălzirea modelelor a eșuat:", e); }
     el.progress.hidden = true;
-    setStatus("Modele pregătite", "ok");
+    local.ready = true;
+    setStatus("Gata: pune o imagine sau pornește camera", "ok");
+    if (!state.frameShown && !state.live) el.emptyTitle.textContent = "Gata. Arată-mi un fruct";
   })().catch(e => {
     local.loading = null;
     el.progress.hidden = true;
@@ -1569,7 +1610,7 @@ async function handleFile(file) {
   state.busy = true; el.scan.hidden = false;
   renderAmbient();
   el.btnCapture.disabled = false;
-  setStatus(state.engine === "claude" ? "Analizez fotografia…" : "Caut un fruct…", "busy");
+  setStatus(state.engine === "claude" ? "Analizez fotografia…" : (local.ready ? "Caut un fruct…" : "Imaginea se analizează imediat ce modelele sunt gata…"), "busy");
   try {
     const r = await analyze(c);
     state.busy = false;
@@ -1860,9 +1901,10 @@ async function boot() {
     // fără cameră live, fotografia devine acțiunea principală
     $("btnPhoto").classList.add("primary");
   }
-  el.hint.textContent = "Modelele (~240 MB) se descarcă o singură dată, la prima analiză, apoi rulează în browserul tău. Imaginile nu pleacă nicăieri.";
-  setStatus("Pregătit", "ok");
+  el.hint.textContent = "Modelele AI pornesc singure la deschiderea paginii. Prima dată se descarcă, apoi rămân salvate în browser. Imaginile nu pleacă nicăieri.";
   checkSupport();
+  // Pornim modelele imediat, în fundal: când pui o imagine, analiza începe pe loc
+  loadLocal().catch(e => { console.error(e); setStatus(explainError(e), "err"); });
 }
 boot();
 })();

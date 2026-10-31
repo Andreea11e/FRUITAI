@@ -26,7 +26,12 @@ Ai nevoie doar de Python 3, fără alte pachete.
 ### Recunoaștere (ca în versiunea 8)
 - **Detecție:** OWL-ViT (`Xenova/owlvit-base-patch32`) găsește fructul în cadru și separă mâini, fețe, persoane.
 - **Clasificare:** CLIP (`Xenova/clip-vit-base-patch32`) alege dintre 61 de fructe și 58 de etichete care nu sunt fructe.
-- Modelele rulează **în browser** prin transformers.js (WebGPU dacă există, altfel WASM). Prima dată se descarcă aproximativ 240 MB, după care rămân în cache. Imaginile nu sunt trimise nicăieri.
+- Modelele rulează **în browser** prin transformers.js. Imaginile nu sunt trimise nicăieri.
+- **Pornire automată:** modelele încep să se încarce imediat ce deschizi pagina, în fundal. Când pui o imagine, analiza începe pe loc. Dacă o pui înainte să fie gata, imaginea așteaptă și e analizată automat.
+- **Descărcare o singură dată:** prima vizită descarcă modelele (~310 MB în varianta q8 pentru WASM, ~610 MB în varianta fp16 pentru WebGPU). După aceea pornesc din memoria browserului (Cache Storage), fără descărcare. Aplicația cere browserului stocare persistentă, ca să nu le șteargă.
+- Varianta e aleasă automat: fp16 pe WebGPU, dacă placa video suportă `shader-f16`, altfel q8 pe WASM. Versiunea 8 folosea fp32 pe WebGPU (~1,2 GB), care putea depăși spațiul de cache și se descărca din nou la fiecare vizită.
+- După încărcare, aplicația rulează o analiză de încălzire pe o imagine mică, ca prima analiză reală să fie rapidă.
+- Modelele trebuie descărcate din nou doar dacă ștergi datele site-ului, folosești o fereastră privată sau alt browser.
 - Pragurile sunt cele din `main.py`: detector 0,10, fruct 0,30, cadru întreg 0,60, o analiză la 0,8 s, iar un rezultat rămâne afișat 4 s.
 - Când pagina rulează ca artifact Claude, recunoașterea se face cu Claude (fotografii), ca înainte.
 
@@ -54,7 +59,7 @@ Semnalele apar în HUD-ul scannerului, în secțiunea „Inteligență ambiental
 - Identitate vizuală nouă (temă întunecată, sticlă discretă, accente lime/mentă) și pagină de prezentare: hero cu scenă 3D în CSS, „Cum funcționează”, „Inteligență ambientală”, „Realitate augmentată”, „Beneficii” și „Ce face / ce nu face”.
 - Eticheta AR atașată fructului înlocuiește caseta simplă.
 - Au fost eliminate toate procentele de încredere (din panou, de pe imagine, din bara de stare și din istoric). Procentele din eticheta nutrițională sunt din doza zilnică de referință, nu niveluri de încredere.
-- Fără ecran de încărcare la deschidere: pagina apare imediat, iar modelele AI (~240 MB) și modulul WebXR se încarcă doar când e nevoie de ele.
+- Fără ecran de încărcare la deschidere: pagina apare imediat, modelele AI pornesc singure în fundal, iar modulul WebXR se încarcă doar când e nevoie de el.
 - Animațiile din hero se opresc când nu sunt vizibile și respectă setarea „reduce motion” a sistemului.
 
 ## Publicare online
