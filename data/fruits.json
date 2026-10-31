@@ -1,0 +1,1688 @@
+{
+  "$schema": "./fruits.schema.json",
+  "categories": [
+    {
+      "id": "citrus",
+      "ro": "Citrice"
+    },
+    {
+      "id": "berries",
+      "ro": "Bace și fructe de pădure"
+    },
+    {
+      "id": "stone",
+      "ro": "Fructe cu sâmbure"
+    },
+    {
+      "id": "pome",
+      "ro": "Fructe cu semințe"
+    },
+    {
+      "id": "tropical",
+      "ro": "Tropicale"
+    },
+    {
+      "id": "melons",
+      "ro": "Pepeni"
+    },
+    {
+      "id": "other",
+      "ro": "Altele"
+    }
+  ],
+  "fruits": [
+    {
+      "id": "apple",
+      "ro": "Măr",
+      "en": "Apple",
+      "category": "pome",
+      "description": "Fruct crocant și suculent, cu multe soiuri dulci sau acrișoare. Coaja concentrează o mare parte din fibre.",
+      "fact": "Mărul face parte din familia trandafirului (Rosaceae), la fel ca para, gutuia și cireașa.",
+      "vitamins": ["C"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Apples, raw, with skin",
+        "per100g": {
+          "kcal": 52,
+          "protein": 0.26,
+          "carbs": 13.81,
+          "fat": 0.17,
+          "fiber": 2.4
+        }
+      },
+      "visual": {
+        "color": "#E2433B",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["apple"]
+      },
+      "showcase": true
+    },
+    {
+      "id": "banana",
+      "ro": "Banană",
+      "en": "Banana",
+      "category": "tropical",
+      "description": "Fruct moale și dulce, ușor de transportat, care se coace în continuare după cules.",
+      "fact": "Botanic, banana este o bacă, iar bananierul este o plantă ierboasă uriașă, nu un copac.",
+      "vitamins": ["B6", "C"],
+      "minerals": ["potasiu", "magneziu"],
+      "nutrition": {
+        "source": "Bananas, raw",
+        "per100g": {
+          "kcal": 89,
+          "protein": 1.09,
+          "carbs": 22.84,
+          "fat": 0.33,
+          "fiber": 2.6
+        }
+      },
+      "visual": {
+        "color": "#F5D547",
+        "shape": "elongated"
+      },
+      "ai": {
+        "labels": ["banana"]
+      },
+      "showcase": true
+    },
+    {
+      "id": "orange",
+      "ro": "Portocală",
+      "en": "Orange",
+      "category": "citrus",
+      "description": "Citric suculent, consumat ca atare sau ca suc, cu o aromă dulce-acrișoară.",
+      "fact": "Portocala dulce este un hibrid străvechi între pomelo și mandarină.",
+      "vitamins": ["C", "B9 (folat)"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Oranges, raw, all varieties",
+        "per100g": {
+          "kcal": 47,
+          "protein": 0.94,
+          "carbs": 11.75,
+          "fat": 0.12,
+          "fiber": 2.4
+        }
+      },
+      "visual": {
+        "color": "#FF9B2F",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["orange"]
+      },
+      "showcase": true
+    },
+    {
+      "id": "pear",
+      "ro": "Pară",
+      "en": "Pear",
+      "category": "pome",
+      "description": "Fruct cu pulpă fină și suculentă, mai dulce când este bine copt.",
+      "fact": "Perele se coc mai bine după ce sunt culese: pe pom se înmoaie neuniform.",
+      "vitamins": ["C", "K"],
+      "minerals": ["potasiu", "cupru"],
+      "nutrition": {
+        "source": "Pears, raw",
+        "per100g": {
+          "kcal": 57,
+          "protein": 0.36,
+          "carbs": 15.23,
+          "fat": 0.14,
+          "fiber": 3.1
+        }
+      },
+      "visual": {
+        "color": "#C9D65A",
+        "shape": "teardrop"
+      },
+      "ai": {
+        "labels": ["pear"]
+      }
+    },
+    {
+      "id": "peach",
+      "ro": "Piersică",
+      "en": "Peach",
+      "category": "stone",
+      "description": "Fruct de vară cu coajă catifelată și pulpă parfumată, în jurul unui sâmbure tare.",
+      "fact": "Piersicul provine din China, unde este cultivat de mii de ani.",
+      "vitamins": ["C", "A"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Peaches, yellow, raw",
+        "per100g": {
+          "kcal": 39,
+          "protein": 0.91,
+          "carbs": 9.54,
+          "fat": 0.25,
+          "fiber": 1.5
+        }
+      },
+      "visual": {
+        "color": "#FFB07A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["peach"]
+      }
+    },
+    {
+      "id": "mango",
+      "ro": "Mango",
+      "en": "Mango",
+      "category": "tropical",
+      "description": "Fruct tropical cu pulpă cremoasă și foarte aromată, în jurul unui sâmbure plat.",
+      "fact": "Mango face parte din aceeași familie de plante ca fisticul și caju.",
+      "vitamins": ["C", "A", "B9 (folat)"],
+      "minerals": ["cupru"],
+      "nutrition": {
+        "source": "Mangos, raw",
+        "per100g": {
+          "kcal": 60,
+          "protein": 0.82,
+          "carbs": 14.98,
+          "fat": 0.38,
+          "fiber": 1.6
+        }
+      },
+      "visual": {
+        "color": "#FFB53B",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["mango"]
+      }
+    },
+    {
+      "id": "pineapple",
+      "ro": "Ananas",
+      "en": "Pineapple",
+      "category": "tropical",
+      "description": "Fruct tropical acrișor-dulce, format din zeci de flori unite într-un singur fruct.",
+      "fact": "Ananasul conține bromelaină, o enzimă care descompune proteinele și poate înțepa ușor limba.",
+      "vitamins": ["C", "B1"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Pineapple, raw, all varieties",
+        "per100g": {
+          "kcal": 50,
+          "protein": 0.54,
+          "carbs": 13.12,
+          "fat": 0.12,
+          "fiber": 1.4
+        }
+      },
+      "visual": {
+        "color": "#F2C14E",
+        "shape": "spiky"
+      },
+      "ai": {
+        "labels": ["pineapple"]
+      }
+    },
+    {
+      "id": "strawberry",
+      "ro": "Căpșună",
+      "en": "Strawberry",
+      "category": "berries",
+      "description": "Fruct de primăvară-vară, dulce și aromat, consumat proaspăt sau în deserturi.",
+      "fact": "„Semințele” de pe exteriorul căpșunii sunt de fapt fructele adevărate ale plantei.",
+      "vitamins": ["C", "B9 (folat)"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Strawberries, raw",
+        "per100g": {
+          "kcal": 32,
+          "protein": 0.67,
+          "carbs": 7.68,
+          "fat": 0.3,
+          "fiber": 2
+        }
+      },
+      "visual": {
+        "color": "#E8343F",
+        "shape": "teardrop"
+      },
+      "ai": {
+        "labels": ["strawberry"]
+      },
+      "showcase": true
+    },
+    {
+      "id": "grape",
+      "ro": "Struguri",
+      "en": "Grape",
+      "category": "berries",
+      "description": "Bace dulci care cresc în ciorchini, consumate proaspete, uscate (stafide) sau transformate în vin.",
+      "fact": "Vița de vie este cultivată de aproximativ 8000 de ani.",
+      "vitamins": ["K", "C"],
+      "minerals": ["cupru", "potasiu"],
+      "nutrition": {
+        "source": "Grapes, red or green, raw",
+        "per100g": {
+          "kcal": 69,
+          "protein": 0.72,
+          "carbs": 18.1,
+          "fat": 0.16,
+          "fiber": 0.9
+        }
+      },
+      "visual": {
+        "color": "#7A3E8F",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["grape"]
+      }
+    },
+    {
+      "id": "watermelon",
+      "ro": "Pepene verde",
+      "en": "Watermelon",
+      "category": "melons",
+      "description": "Fruct mare și răcoritor, cu pulpă roșie foarte bogată în apă.",
+      "fact": "Pepenele verde are aproximativ 91% apă.",
+      "vitamins": ["C", "A"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Watermelon, raw",
+        "per100g": {
+          "kcal": 30,
+          "protein": 0.61,
+          "carbs": 7.55,
+          "fat": 0.15,
+          "fiber": 0.4
+        }
+      },
+      "visual": {
+        "color": "#3E8E41",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["watermelon"]
+      }
+    },
+    {
+      "id": "lemon",
+      "ro": "Lămâie",
+      "en": "Lemon",
+      "category": "citrus",
+      "description": "Citric acru, folosit mai ales pentru suc, coajă rasă și aromatizare.",
+      "fact": "Sucul de lămâie conține în jur de 5% acid citric, de aici gustul foarte acru.",
+      "vitamins": ["C", "B6"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Lemons, raw, without peel",
+        "per100g": {
+          "kcal": 29,
+          "protein": 1.1,
+          "carbs": 9.32,
+          "fat": 0.3,
+          "fiber": 2.8
+        }
+      },
+      "visual": {
+        "color": "#F7E04B",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["lemon"]
+      },
+      "showcase": true
+    },
+    {
+      "id": "lime",
+      "ro": "Lime",
+      "en": "Lime",
+      "category": "citrus",
+      "description": "Citric mic și verde, mai aromat și mai acru decât lămâia.",
+      "fact": "Marinarii britanici primeau lime ca să prevină scorbutul, de unde porecla „limeys”.",
+      "vitamins": ["C"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Limes, raw",
+        "per100g": {
+          "kcal": 30,
+          "protein": 0.7,
+          "carbs": 10.54,
+          "fat": 0.2,
+          "fiber": 2.8
+        }
+      },
+      "visual": {
+        "color": "#8BC34A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["lime"]
+      }
+    },
+    {
+      "id": "kiwi",
+      "ro": "Kiwi",
+      "en": "Kiwi",
+      "category": "tropical",
+      "description": "Fruct cu coajă păroasă și pulpă verde, cu semințe negre mici, foarte bogat în vitamina C.",
+      "fact": "A fost numit inițial „agrișă chinezească” și a fost redenumit kiwi de exportatorii din Noua Zeelandă.",
+      "vitamins": ["C", "K", "E"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Kiwifruit, green, raw",
+        "per100g": {
+          "kcal": 61,
+          "protein": 1.14,
+          "carbs": 14.66,
+          "fat": 0.52,
+          "fiber": 3
+        }
+      },
+      "visual": {
+        "color": "#7CA03A",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["kiwi"]
+      },
+      "showcase": true
+    },
+    {
+      "id": "plum",
+      "ro": "Prună",
+      "en": "Plum",
+      "category": "stone",
+      "description": "Fruct cu sâmbure, consumat proaspăt, uscat sau sub formă de gem și magiun.",
+      "fact": "România este unul dintre cei mai mari producători de prune din Europa.",
+      "vitamins": ["C", "K"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Plums, raw",
+        "per100g": {
+          "kcal": 46,
+          "protein": 0.7,
+          "carbs": 11.42,
+          "fat": 0.28,
+          "fiber": 1.4
+        }
+      },
+      "visual": {
+        "color": "#6B2C5E",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["plum"]
+      }
+    },
+    {
+      "id": "cherry",
+      "ro": "Cireașă",
+      "en": "Cherry",
+      "category": "stone",
+      "description": "Fruct mic și dulce de început de vară, cu un sâmbure tare.",
+      "fact": "Cireșul este rudă apropiată cu prunul, piersicul și caisul (genul Prunus).",
+      "vitamins": ["C"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Cherries, sweet, raw",
+        "per100g": {
+          "kcal": 63,
+          "protein": 1.06,
+          "carbs": 16.01,
+          "fat": 0.2,
+          "fiber": 2.1
+        }
+      },
+      "visual": {
+        "color": "#B3122E",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["cherry"]
+      }
+    },
+    {
+      "id": "coconut",
+      "ro": "Nucă de cocos",
+      "en": "Coconut",
+      "category": "tropical",
+      "description": "Miezul alb al nucii de cocos este bogat în grăsimi și fibre, iar interiorul conține apă de cocos.",
+      "fact": "Botanic, nuca de cocos nu este o nucă, ci o drupă, la fel ca piersica.",
+      "vitamins": [],
+      "minerals": ["mangan", "cupru", "seleniu", "fier"],
+      "nutrition": {
+        "source": "Nuts, coconut meat, raw",
+        "per100g": {
+          "kcal": 354,
+          "protein": 3.33,
+          "carbs": 15.23,
+          "fat": 33.49,
+          "fiber": 9
+        }
+      },
+      "visual": {
+        "color": "#8A5A3B",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["coconut"]
+      }
+    },
+    {
+      "id": "papaya",
+      "ro": "Papaya",
+      "en": "Papaya",
+      "category": "tropical",
+      "description": "Fruct tropical cu pulpă portocalie moale și semințe negre în centru.",
+      "fact": "Papaya conține papaină, o enzimă folosită pentru frăgezirea cărnii.",
+      "vitamins": ["C", "A", "B9 (folat)"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Papayas, raw",
+        "per100g": {
+          "kcal": 43,
+          "protein": 0.47,
+          "carbs": 10.82,
+          "fat": 0.26,
+          "fiber": 1.7
+        }
+      },
+      "visual": {
+        "color": "#FF8A3D",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["papaya"]
+      }
+    },
+    {
+      "id": "pomegranate",
+      "ro": "Rodie",
+      "en": "Pomegranate",
+      "category": "other",
+      "description": "Fruct cu coajă groasă și sute de semințe suculente, roșii, în interior.",
+      "fact": "O singură rodie poate conține câteva sute de semințe.",
+      "vitamins": ["C", "K", "B9 (folat)"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Pomegranates, raw",
+        "per100g": {
+          "kcal": 83,
+          "protein": 1.67,
+          "carbs": 18.7,
+          "fat": 1.17,
+          "fiber": 4
+        }
+      },
+      "visual": {
+        "color": "#C0283E",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["pomegranate"]
+      }
+    },
+    {
+      "id": "avocado",
+      "ro": "Avocado",
+      "en": "Avocado",
+      "category": "tropical",
+      "description": "Fruct cremos și puțin dulce, bogat în grăsimi nesaturate.",
+      "fact": "Avocado nu se coace pe pom: începe să se înmoaie abia după ce este cules.",
+      "vitamins": ["K", "E", "B9 (folat)", "B6", "C"],
+      "minerals": ["potasiu", "cupru"],
+      "nutrition": {
+        "source": "Avocados, raw, all varieties",
+        "per100g": {
+          "kcal": 160,
+          "protein": 2,
+          "carbs": 8.53,
+          "fat": 14.66,
+          "fiber": 6.7
+        }
+      },
+      "visual": {
+        "color": "#4E7A2E",
+        "shape": "teardrop"
+      },
+      "ai": {
+        "labels": ["avocado"]
+      }
+    },
+    {
+      "id": "apricot",
+      "ro": "Caisă",
+      "en": "Apricot",
+      "category": "stone",
+      "description": "Fruct mic, catifelat și parfumat, consumat proaspăt sau uscat.",
+      "fact": "Denumirea științifică, Prunus armeniaca, vine de la Armenia, unde caisele sunt cultivate de mii de ani.",
+      "vitamins": ["A", "C"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Apricots, raw",
+        "per100g": {
+          "kcal": 48,
+          "protein": 1.4,
+          "carbs": 11.12,
+          "fat": 0.39,
+          "fiber": 2
+        }
+      },
+      "visual": {
+        "color": "#FFAE5A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["apricot"]
+      }
+    },
+    {
+      "id": "blueberry",
+      "ro": "Afină",
+      "en": "Blueberry",
+      "category": "berries",
+      "description": "Bace mici, albastre, dulci-acrișoare, consumate proaspete sau congelate.",
+      "fact": "Culoarea albastră vine de la antociani, pigmenți naturali din coajă.",
+      "vitamins": ["K", "C"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Blueberries, raw",
+        "per100g": {
+          "kcal": 57,
+          "protein": 0.74,
+          "carbs": 14.49,
+          "fat": 0.33,
+          "fiber": 2.4
+        }
+      },
+      "visual": {
+        "color": "#4B5BB5",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["blueberry"]
+      }
+    },
+    {
+      "id": "raspberry",
+      "ro": "Zmeură",
+      "en": "Raspberry",
+      "category": "berries",
+      "description": "Fruct delicat format din multe bobițe mici, foarte bogat în fibre.",
+      "fact": "Zmeura e goală pe interior pentru că miezul pe care crește rămâne pe plantă la cules.",
+      "vitamins": ["C", "K"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Raspberries, raw",
+        "per100g": {
+          "kcal": 52,
+          "protein": 1.2,
+          "carbs": 11.94,
+          "fat": 0.65,
+          "fiber": 6.5
+        }
+      },
+      "visual": {
+        "color": "#D63A5C",
+        "shape": "drupelets"
+      },
+      "ai": {
+        "labels": ["raspberry"]
+      }
+    },
+    {
+      "id": "blackberry",
+      "ro": "Mură",
+      "en": "Blackberry",
+      "category": "berries",
+      "description": "Fruct de pădure închis la culoare, format din multe bobițe unite.",
+      "fact": "Fiecare bobiță a murei este un mic fruct cu sâmbure separat.",
+      "vitamins": ["C", "K"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Blackberries, raw",
+        "per100g": {
+          "kcal": 43,
+          "protein": 1.39,
+          "carbs": 9.61,
+          "fat": 0.49,
+          "fiber": 5.3
+        }
+      },
+      "visual": {
+        "color": "#3B1F3F",
+        "shape": "drupelets"
+      },
+      "ai": {
+        "labels": ["blackberry"]
+      }
+    },
+    {
+      "id": "grapefruit",
+      "ro": "Grepfrut",
+      "en": "Grapefruit",
+      "category": "citrus",
+      "description": "Citric mare, acrișor și ușor amărui, cu pulpă roz sau roșie.",
+      "fact": "Grepfrutul poate interacționa cu unele medicamente, de aceea prospectele avertizează uneori despre el.",
+      "vitamins": ["C", "A"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Grapefruit, raw, pink and red",
+        "per100g": {
+          "kcal": 42,
+          "protein": 0.77,
+          "carbs": 10.66,
+          "fat": 0.14,
+          "fiber": 1.6
+        }
+      },
+      "visual": {
+        "color": "#F4845F",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["grapefruit"]
+      }
+    },
+    {
+      "id": "fig",
+      "ro": "Smochină",
+      "en": "Fig",
+      "category": "other",
+      "description": "Fruct moale și foarte dulce, consumat proaspăt sau uscat.",
+      "fact": "Smochina este de fapt o inflorescență închisă, cu florile pe interior.",
+      "vitamins": ["K", "B6"],
+      "minerals": ["potasiu", "cupru"],
+      "nutrition": {
+        "source": "Figs, raw",
+        "per100g": {
+          "kcal": 74,
+          "protein": 0.75,
+          "carbs": 19.18,
+          "fat": 0.3,
+          "fiber": 2.9
+        }
+      },
+      "visual": {
+        "color": "#6E3B5C",
+        "shape": "teardrop"
+      },
+      "ai": {
+        "labels": ["fig"]
+      }
+    },
+    {
+      "id": "guava",
+      "ro": "Guava",
+      "en": "Guava",
+      "category": "tropical",
+      "description": "Fruct tropical parfumat, cu pulpă albă sau roz și multe semințe mici.",
+      "fact": "Guava are de peste patru ori mai multă vitamina C decât portocala, la aceeași cantitate.",
+      "vitamins": ["C", "B9 (folat)", "A"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Guavas, common, raw",
+        "per100g": {
+          "kcal": 68,
+          "protein": 2.55,
+          "carbs": 14.32,
+          "fat": 0.95,
+          "fiber": 5.4
+        }
+      },
+      "visual": {
+        "color": "#9BC45A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["guava"]
+      }
+    },
+    {
+      "id": "dragon-fruit",
+      "ro": "Fructul dragonului",
+      "en": "Dragon fruit",
+      "category": "tropical",
+      "description": "Fruct de cactus cu coajă roz și pulpă albă sau roșie, cu semințe negre mici.",
+      "fact": "Florile plantei se deschid doar noaptea.",
+      "vitamins": ["C"],
+      "minerals": ["magneziu", "fier"],
+      "nutrition": {
+        "source": "Pitaya (dragon fruit), raw",
+        "per100g": {
+          "kcal": 60,
+          "protein": 1.2,
+          "carbs": 13,
+          "fat": 0.4,
+          "fiber": 3
+        }
+      },
+      "visual": {
+        "color": "#E8407A",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["dragon fruit"]
+      }
+    },
+    {
+      "id": "passion-fruit",
+      "ro": "Fructul pasiunii",
+      "en": "Passion fruit",
+      "category": "tropical",
+      "description": "Fruct cu coajă tare și interior gelatinos, foarte aromat, plin de semințe.",
+      "fact": "Numele vine de la floarea plantei, în care misionarii vedeau simboluri ale Patimilor.",
+      "vitamins": ["C", "A"],
+      "minerals": ["potasiu", "fier"],
+      "nutrition": {
+        "source": "Passion-fruit, (granadilla), purple, raw",
+        "per100g": {
+          "kcal": 97,
+          "protein": 2.2,
+          "carbs": 23.38,
+          "fat": 0.7,
+          "fiber": 10.4
+        }
+      },
+      "visual": {
+        "color": "#5B2A4A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["passion fruit"]
+      }
+    },
+    {
+      "id": "lychee",
+      "ro": "Litchi",
+      "en": "Lychee",
+      "category": "tropical",
+      "description": "Fruct cu coajă roșiatică și aspră, pulpă albă translucidă și aromă florală.",
+      "fact": "Litchi este cultivat în sudul Chinei de peste 2000 de ani.",
+      "vitamins": ["C"],
+      "minerals": ["cupru"],
+      "nutrition": {
+        "source": "Litchis, raw",
+        "per100g": {
+          "kcal": 66,
+          "protein": 0.83,
+          "carbs": 16.53,
+          "fat": 0.44,
+          "fiber": 1.3
+        }
+      },
+      "visual": {
+        "color": "#E36B6B",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["lychee"]
+      }
+    },
+    {
+      "id": "nectarine",
+      "ro": "Nectarină",
+      "en": "Nectarine",
+      "category": "stone",
+      "description": "Fruct asemănător piersicii, dar cu coajă netedă.",
+      "fact": "Nectarina este o varietate de piersică: diferența de coajă vine dintr-o singură genă.",
+      "vitamins": ["C", "A"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Nectarines, raw",
+        "per100g": {
+          "kcal": 44,
+          "protein": 1.06,
+          "carbs": 10.55,
+          "fat": 0.32,
+          "fiber": 1.7
+        }
+      },
+      "visual": {
+        "color": "#F2694B",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["nectarine"]
+      }
+    },
+    {
+      "id": "cranberry",
+      "ro": "Merișor",
+      "en": "Cranberry",
+      "category": "berries",
+      "description": "Bace roșii foarte acre, consumate mai ales ca suc, sos sau uscate.",
+      "fact": "Merișoarele coapte sar dacă le lași să cadă, iar la recoltare câmpurile sunt inundate ca să plutească.",
+      "vitamins": ["C", "E"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Cranberries, raw",
+        "per100g": {
+          "kcal": 46,
+          "protein": 0.46,
+          "carbs": 11.97,
+          "fat": 0.13,
+          "fiber": 4.6
+        }
+      },
+      "visual": {
+        "color": "#B5162F",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["cranberry"]
+      }
+    },
+    {
+      "id": "tangerine",
+      "ro": "Mandarină",
+      "en": "Tangerine",
+      "category": "citrus",
+      "description": "Citric mic și dulce, care se curăță ușor de coajă.",
+      "fact": "Numele englezesc vine de la orașul Tanger, din Maroc.",
+      "vitamins": ["C", "A"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Tangerines, (mandarin oranges), raw",
+        "per100g": {
+          "kcal": 53,
+          "protein": 0.81,
+          "carbs": 13.34,
+          "fat": 0.31,
+          "fiber": 1.8
+        }
+      },
+      "visual": {
+        "color": "#FF8C1A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["tangerine"]
+      }
+    },
+    {
+      "id": "clementine",
+      "ro": "Clementină",
+      "en": "Clementine",
+      "category": "citrus",
+      "description": "Citric mic, dulce și de obicei fără semințe.",
+      "fact": "Clementina este un hibrid între mandarină și portocala dulce.",
+      "vitamins": ["C"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Clementines, raw",
+        "per100g": {
+          "kcal": 47,
+          "protein": 0.85,
+          "carbs": 12.02,
+          "fat": 0.15,
+          "fiber": 1.7
+        }
+      },
+      "visual": {
+        "color": "#FF9426",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["clementine"]
+      }
+    },
+    {
+      "id": "persimmon",
+      "ro": "Curmal japonez",
+      "en": "Persimmon",
+      "category": "other",
+      "description": "Fruct portocaliu, foarte dulce și moale când este complet copt.",
+      "fact": "Unele soiuri sunt astringente din cauza taninurilor până se înmoaie complet.",
+      "vitamins": ["A", "C"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Persimmons, japanese, raw",
+        "per100g": {
+          "kcal": 70,
+          "protein": 0.58,
+          "carbs": 18.59,
+          "fat": 0.19,
+          "fiber": 3.6
+        }
+      },
+      "visual": {
+        "color": "#F27F1B",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["persimmon"]
+      }
+    },
+    {
+      "id": "date",
+      "ro": "Curmală",
+      "en": "Date",
+      "category": "other",
+      "description": "Fruct de palmier foarte dulce, consumat de obicei uscat.",
+      "fact": "Curmalul este cultivat în Orientul Mijlociu de mii de ani.",
+      "vitamins": ["B6"],
+      "minerals": ["potasiu", "magneziu", "cupru"],
+      "nutrition": {
+        "source": "Dates, medjool",
+        "per100g": {
+          "kcal": 277,
+          "protein": 1.81,
+          "carbs": 74.97,
+          "fat": 0.15,
+          "fiber": 6.7
+        }
+      },
+      "visual": {
+        "color": "#8B4A1F",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["date"]
+      }
+    },
+    {
+      "id": "durian",
+      "ro": "Durian",
+      "en": "Durian",
+      "category": "tropical",
+      "description": "Fruct tropical mare, cu coajă țepoasă și pulpă cremoasă, foarte aromată.",
+      "fact": "Mirosul lui este atât de puternic încât e interzis în unele mijloace de transport din Singapore.",
+      "vitamins": ["C", "B1", "B6"],
+      "minerals": ["potasiu", "mangan"],
+      "nutrition": {
+        "source": "Durian, raw or frozen",
+        "per100g": {
+          "kcal": 147,
+          "protein": 1.47,
+          "carbs": 27.09,
+          "fat": 5.33,
+          "fiber": 3.8
+        }
+      },
+      "visual": {
+        "color": "#B5B04A",
+        "shape": "spiky"
+      },
+      "ai": {
+        "labels": ["durian"]
+      }
+    },
+    {
+      "id": "jackfruit",
+      "ro": "Jackfruit",
+      "en": "Jackfruit",
+      "category": "tropical",
+      "description": "Cel mai mare fruct care crește pe un copac, cu pulpă galbenă și dulce.",
+      "fact": "Un singur jackfruit poate depăși 30 de kilograme.",
+      "vitamins": ["C", "B6"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Jackfruit, raw",
+        "per100g": {
+          "kcal": 95,
+          "protein": 1.72,
+          "carbs": 23.25,
+          "fat": 0.64,
+          "fiber": 1.5
+        }
+      },
+      "visual": {
+        "color": "#9DB34A",
+        "shape": "spiky"
+      },
+      "ai": {
+        "labels": ["jackfruit"]
+      }
+    },
+    {
+      "id": "starfruit",
+      "ro": "Carambolă",
+      "en": "Starfruit",
+      "category": "tropical",
+      "description": "Fruct crocant și suculent, cu secțiune în formă de stea.",
+      "fact": "Carambola nu este recomandată persoanelor cu boli de rinichi, din cauza unor substanțe pe care le conține.",
+      "vitamins": ["C"],
+      "minerals": ["potasiu", "cupru"],
+      "nutrition": {
+        "source": "Carambola, (starfruit), raw",
+        "per100g": {
+          "kcal": 31,
+          "protein": 1.04,
+          "carbs": 6.73,
+          "fat": 0.33,
+          "fiber": 2.8
+        }
+      },
+      "visual": {
+        "color": "#E3D23A",
+        "shape": "star"
+      },
+      "ai": {
+        "labels": ["starfruit"]
+      }
+    },
+    {
+      "id": "longan",
+      "ro": "Longan",
+      "en": "Longan",
+      "category": "tropical",
+      "description": "Fruct mic cu coajă maronie și pulpă translucidă, asemănător cu litchi.",
+      "fact": "Numele înseamnă „ochi de dragon”, după aspectul sâmburelui văzut prin pulpă.",
+      "vitamins": ["C"],
+      "minerals": ["cupru"],
+      "nutrition": {
+        "source": "Longans, raw",
+        "per100g": {
+          "kcal": 60,
+          "protein": 1.31,
+          "carbs": 15.14,
+          "fat": 0.1,
+          "fiber": 1.1
+        }
+      },
+      "visual": {
+        "color": "#C9A15A",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["longan"]
+      }
+    },
+    {
+      "id": "rambutan",
+      "ro": "Rambutan",
+      "en": "Rambutan",
+      "category": "tropical",
+      "description": "Fruct tropical cu coajă roșie acoperită de „fire” moi și pulpă albă, dulce.",
+      "fact": "Numele vine din malaeziană: „rambut” înseamnă păr.",
+      "vitamins": ["C"],
+      "minerals": ["mangan", "cupru"],
+      "nutrition": {
+        "source": "Rambutan, canned, syrup pack",
+        "per100g": {
+          "kcal": 82,
+          "protein": 0.65,
+          "carbs": 20.87,
+          "fat": 0.21,
+          "fiber": 0.9
+        }
+      },
+      "visual": {
+        "color": "#D92D3A",
+        "shape": "spiky"
+      },
+      "ai": {
+        "labels": ["rambutan"]
+      }
+    },
+    {
+      "id": "quince",
+      "ro": "Gutui",
+      "en": "Quince",
+      "category": "pome",
+      "description": "Fruct tare și parfumat, folosit mai ales gătit, în dulcețuri și compoturi.",
+      "fact": "Gutuile sunt foarte bogate în pectină, de aceea dulceața de gutui se leagă ușor.",
+      "vitamins": ["C"],
+      "minerals": ["cupru"],
+      "nutrition": {
+        "source": "Quinces, raw",
+        "per100g": {
+          "kcal": 57,
+          "protein": 0.4,
+          "carbs": 15.3,
+          "fat": 0.1,
+          "fiber": 1.9
+        }
+      },
+      "visual": {
+        "color": "#E8CF4A",
+        "shape": "teardrop"
+      },
+      "ai": {
+        "labels": ["quince"]
+      }
+    },
+    {
+      "id": "mulberry",
+      "ro": "Dudă",
+      "en": "Mulberry",
+      "category": "berries",
+      "description": "Fruct dulce, asemănător murei, care crește pe dud.",
+      "fact": "Frunzele dudului alb sunt hrana viermilor de mătase.",
+      "vitamins": ["C", "K"],
+      "minerals": ["fier"],
+      "nutrition": {
+        "source": "Mulberries, raw",
+        "per100g": {
+          "kcal": 43,
+          "protein": 1.44,
+          "carbs": 9.8,
+          "fat": 0.39,
+          "fiber": 1.7
+        }
+      },
+      "visual": {
+        "color": "#4A1F3A",
+        "shape": "drupelets"
+      },
+      "ai": {
+        "labels": ["mulberry"]
+      }
+    },
+    {
+      "id": "gooseberry",
+      "ro": "Agrișă",
+      "en": "Gooseberry",
+      "category": "berries",
+      "description": "Bace acrișoare, verzi sau roșiatice, folosite proaspete sau în gemuri.",
+      "fact": "În Anglia secolului al XIX-lea existau cluburi de cultivatori care concurau pentru cea mai grea agrișă.",
+      "vitamins": ["C", "A"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Gooseberries, raw",
+        "per100g": {
+          "kcal": 44,
+          "protein": 0.88,
+          "carbs": 10.18,
+          "fat": 0.58,
+          "fiber": 4.3
+        }
+      },
+      "visual": {
+        "color": "#A7C957",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["gooseberry"]
+      }
+    },
+    {
+      "id": "pomelo",
+      "ro": "Pomelo",
+      "en": "Pomelo",
+      "category": "citrus",
+      "description": "Cel mai mare citric, cu coajă groasă și pulpă dulce, ușor amăruie.",
+      "fact": "Pomelo este unul dintre strămoșii grepfrutului și ai portocalei.",
+      "vitamins": ["C"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Pummelo, raw",
+        "per100g": {
+          "kcal": 38,
+          "protein": 0.76,
+          "carbs": 9.62,
+          "fat": 0.04,
+          "fiber": 1
+        }
+      },
+      "visual": {
+        "color": "#C8E07A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["pomelo"]
+      }
+    },
+    {
+      "id": "kumquat",
+      "ro": "Kumquat",
+      "en": "Kumquat",
+      "category": "citrus",
+      "description": "Citric foarte mic, care se mănâncă întreg, cu tot cu coajă.",
+      "fact": "La kumquat coaja este dulce, iar pulpa este acră.",
+      "vitamins": ["C"],
+      "minerals": ["calciu"],
+      "nutrition": {
+        "source": "Kumquats, raw",
+        "per100g": {
+          "kcal": 71,
+          "protein": 1.88,
+          "carbs": 15.9,
+          "fat": 0.86,
+          "fiber": 6.5
+        }
+      },
+      "visual": {
+        "color": "#FF9F1C",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["kumquat"]
+      }
+    },
+    {
+      "id": "tamarind",
+      "ro": "Tamarind",
+      "en": "Tamarind",
+      "category": "tropical",
+      "description": "Păstaie cu pulpă lipicioasă, dulce-acrișoară, folosită mult în bucătăriile asiatice.",
+      "fact": "Tamarindul este unul dintre ingredientele sosului Worcestershire.",
+      "vitamins": ["B1", "B3"],
+      "minerals": ["magneziu", "potasiu", "fier"],
+      "nutrition": {
+        "source": "Tamarinds, raw",
+        "per100g": {
+          "kcal": 239,
+          "protein": 2.8,
+          "carbs": 62.5,
+          "fat": 0.6,
+          "fiber": 5.1
+        }
+      },
+      "visual": {
+        "color": "#7B4A2A",
+        "shape": "elongated"
+      },
+      "ai": {
+        "labels": ["tamarind"]
+      }
+    },
+    {
+      "id": "cantaloupe",
+      "ro": "Pepene galben",
+      "en": "Cantaloupe",
+      "category": "melons",
+      "description": "Pepene cu coajă reticulată și pulpă portocalie, dulce și parfumată.",
+      "fact": "O porție de pepene galben acoperă o bună parte din necesarul zilnic de vitamina A.",
+      "vitamins": ["A", "C"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Melons, cantaloupe, raw",
+        "per100g": {
+          "kcal": 34,
+          "protein": 0.84,
+          "carbs": 8.16,
+          "fat": 0.19,
+          "fiber": 0.9
+        }
+      },
+      "visual": {
+        "color": "#E9A23B",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["cantaloupe"]
+      }
+    },
+    {
+      "id": "honeydew",
+      "ro": "Pepene honeydew",
+      "en": "Honeydew",
+      "category": "melons",
+      "description": "Pepene cu coajă netedă și pulpă verde-pal, dulce și răcoritoare.",
+      "fact": "Ca și pepenele verde, conține în jur de 90% apă.",
+      "vitamins": ["C", "B6"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Melons, honeydew, raw",
+        "per100g": {
+          "kcal": 36,
+          "protein": 0.54,
+          "carbs": 9.09,
+          "fat": 0.14,
+          "fiber": 0.8
+        }
+      },
+      "visual": {
+        "color": "#C7E3A0",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["honeydew"]
+      }
+    },
+    {
+      "id": "plantain",
+      "ro": "Banană plantain",
+      "en": "Plantain",
+      "category": "tropical",
+      "description": "Rudă a bananei, mai amidonoasă, care se consumă de obicei gătită.",
+      "fact": "În multe țări tropicale, bananele plantain sunt un aliment de bază, ca și cartofii.",
+      "vitamins": ["A", "C", "B6"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Plantains, yellow, raw",
+        "per100g": {
+          "kcal": 122,
+          "protein": 1.3,
+          "carbs": 31.89,
+          "fat": 0.37,
+          "fiber": 2.3
+        }
+      },
+      "visual": {
+        "color": "#B8A436",
+        "shape": "elongated"
+      },
+      "ai": {
+        "labels": ["plantain"]
+      }
+    },
+    {
+      "id": "soursop",
+      "ro": "Guanabana",
+      "en": "Soursop",
+      "category": "tropical",
+      "description": "Fruct tropical mare, cu coajă verde țepoasă și pulpă albă, cremoasă.",
+      "fact": "Este cunoscut și sub numele de graviola.",
+      "vitamins": ["C", "B1"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Soursop, raw",
+        "per100g": {
+          "kcal": 66,
+          "protein": 1,
+          "carbs": 16.84,
+          "fat": 0.3,
+          "fiber": 3.3
+        }
+      },
+      "visual": {
+        "color": "#5E8C3A",
+        "shape": "spiky"
+      },
+      "ai": {
+        "labels": ["soursop"]
+      }
+    },
+    {
+      "id": "custard-apple",
+      "ro": "Anona",
+      "en": "Custard apple",
+      "category": "tropical",
+      "description": "Fruct tropical cu pulpă albă, cremoasă și dulce, ca o cremă de vanilie.",
+      "fact": "Denumirea științifică, Annona reticulata, vine de la modelul de plasă al cojii.",
+      "vitamins": ["C", "B6"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Custard-apple, (bullock's-heart), raw",
+        "per100g": {
+          "kcal": 101,
+          "protein": 1.7,
+          "carbs": 25.2,
+          "fat": 0.6,
+          "fiber": 2.4
+        }
+      },
+      "visual": {
+        "color": "#A08A4A",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["custard apple"]
+      }
+    },
+    {
+      "id": "elderberry",
+      "ro": "Soc",
+      "en": "Elderberry",
+      "category": "berries",
+      "description": "Bace mici și închise la culoare, folosite gătite, în siropuri și dulcețuri.",
+      "fact": "Bacele crude și necoapte ale socului pot fi toxice, de aceea se consumă doar gătite.",
+      "vitamins": ["C", "A", "B6"],
+      "minerals": ["fier", "potasiu"],
+      "nutrition": {
+        "source": "Elderberries, raw",
+        "per100g": {
+          "kcal": 73,
+          "protein": 0.66,
+          "carbs": 18.4,
+          "fat": 0.5,
+          "fiber": 7
+        }
+      },
+      "visual": {
+        "color": "#2E1A3A",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["elderberry"]
+      }
+    },
+    {
+      "id": "mangosteen",
+      "ro": "Mangostan",
+      "en": "Mangosteen",
+      "category": "tropical",
+      "description": "Fruct tropical cu coajă mov groasă și segmente albe, dulci-acrișoare.",
+      "fact": "În Asia de Sud-Est este numit „regina fructelor”.",
+      "vitamins": ["B9 (folat)"],
+      "minerals": ["mangan"],
+      "nutrition": {
+        "source": "Mangosteen, canned, syrup pack",
+        "per100g": {
+          "kcal": 73,
+          "protein": 0.41,
+          "carbs": 17.91,
+          "fat": 0.58,
+          "fiber": 1.8
+        }
+      },
+      "visual": {
+        "color": "#5A1E3D",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["mangosteen"]
+      }
+    },
+    {
+      "id": "blackcurrant",
+      "ro": "Coacăză neagră",
+      "en": "Blackcurrant",
+      "category": "berries",
+      "description": "Bace mici, negre și acrișoare, cu un conținut foarte mare de vitamina C.",
+      "fact": "Coacăzele negre au de peste trei ori mai multă vitamina C decât portocalele, la aceeași cantitate.",
+      "vitamins": ["C"],
+      "minerals": ["potasiu", "fier"],
+      "nutrition": {
+        "source": "Currants, european black, raw",
+        "per100g": {
+          "kcal": 63,
+          "protein": 1.4,
+          "carbs": 15.38,
+          "fat": 0.41,
+          "fiber": null
+        }
+      },
+      "visual": {
+        "color": "#2B1B2E",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["blackcurrant"]
+      }
+    },
+    {
+      "id": "redcurrant",
+      "ro": "Coacăză roșie",
+      "en": "Redcurrant",
+      "category": "berries",
+      "description": "Bace roșii translucide și acre, folosite des în jeleuri și sosuri.",
+      "fact": "Coacăzele roșii au multă pectină, de aceea se leagă ușor în jeleu.",
+      "vitamins": ["C", "K"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Currants, red and white, raw",
+        "per100g": {
+          "kcal": 56,
+          "protein": 1.4,
+          "carbs": 13.8,
+          "fat": 0.2,
+          "fiber": 4.3
+        }
+      },
+      "visual": {
+        "color": "#D7263D",
+        "shape": "cluster"
+      },
+      "ai": {
+        "labels": ["redcurrant"]
+      }
+    },
+    {
+      "id": "greengage",
+      "ro": "Reine Claude",
+      "en": "Greengage",
+      "category": "stone",
+      "description": "Prună verde-gălbuie, foarte dulce și parfumată.",
+      "fact": "Numele englezesc vine de la Sir William Gage, care a adus soiul în Anglia în secolul al XVIII-lea.",
+      "vitamins": ["C", "K"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Plums, raw (aproximare pentru Reine Claude)",
+        "per100g": {
+          "kcal": 46,
+          "protein": 0.7,
+          "carbs": 11.42,
+          "fat": 0.28,
+          "fiber": 1.4
+        }
+      },
+      "visual": {
+        "color": "#A8C256",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["greengage"]
+      }
+    },
+    {
+      "id": "blood-orange",
+      "ro": "Portocală roșie",
+      "en": "Blood orange",
+      "category": "citrus",
+      "description": "Portocală cu pulpă roșie și aromă ușor de fructe de pădure.",
+      "fact": "Culoarea roșie apare datorită antocianilor, care se formează când nopțile sunt reci.",
+      "vitamins": ["C", "B9 (folat)"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Oranges, raw, all varieties (aproximare)",
+        "per100g": {
+          "kcal": 47,
+          "protein": 0.94,
+          "carbs": 11.75,
+          "fat": 0.12,
+          "fiber": 2.4
+        }
+      },
+      "visual": {
+        "color": "#C7372F",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["blood orange"]
+      }
+    },
+    {
+      "id": "prickly-pear",
+      "ro": "Smochin de India",
+      "en": "Prickly pear",
+      "category": "other",
+      "description": "Fruct de cactus, cu pulpă dulce și multe semințe, acoperit de țepi foarte fini.",
+      "fact": "Țepii minusculi se desprind ușor, de aceea fructul se curăță cu mănuși.",
+      "vitamins": ["C"],
+      "minerals": ["magneziu", "calciu"],
+      "nutrition": {
+        "source": "Prickly pears, raw",
+        "per100g": {
+          "kcal": 41,
+          "protein": 0.73,
+          "carbs": 9.57,
+          "fat": 0.51,
+          "fiber": 3.6
+        }
+      },
+      "visual": {
+        "color": "#C2386B",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["prickly pear"]
+      }
+    },
+    {
+      "id": "cherimoya",
+      "ro": "Cherimoya",
+      "en": "Cherimoya",
+      "category": "tropical",
+      "description": "Fruct sud-american cu pulpă albă și cremoasă, cu gust de ananas, banană și vanilie.",
+      "fact": "Mark Twain o considera cel mai delicios fruct cunoscut.",
+      "vitamins": ["C", "B6"],
+      "minerals": ["potasiu"],
+      "nutrition": {
+        "source": "Cherimoya, raw",
+        "per100g": {
+          "kcal": 75,
+          "protein": 1.57,
+          "carbs": 17.71,
+          "fat": 0.68,
+          "fiber": 3
+        }
+      },
+      "visual": {
+        "color": "#8FB35A",
+        "shape": "teardrop"
+      },
+      "ai": {
+        "labels": ["cherimoya"]
+      }
+    },
+    {
+      "id": "medlar",
+      "ro": "Moșmon",
+      "en": "Medlar",
+      "category": "pome",
+      "description": "Fruct mic și maroniu, care se mănâncă doar după ce se înmoaie complet.",
+      "fact": "Moșmoanele se lasă să se „bletească”: devin comestibile abia când sunt foarte coapte.",
+      "vitamins": [],
+      "minerals": [],
+      "nutrition": {
+        "source": "Fără intrare USDA pentru moșmon",
+        "per100g": {
+          "kcal": null,
+          "protein": null,
+          "carbs": null,
+          "fat": null,
+          "fiber": null
+        }
+      },
+      "visual": {
+        "color": "#8C6239",
+        "shape": "round"
+      },
+      "ai": {
+        "labels": ["medlar"]
+      }
+    },
+    {
+      "id": "olive",
+      "ro": "Măslină",
+      "en": "Olive",
+      "category": "stone",
+      "description": "Fruct mic și amărui, consumat doar după ce este tratat sau folosit pentru ulei.",
+      "fact": "Măslinele proaspete sunt foarte amare și devin comestibile abia după murare sau saramură.",
+      "vitamins": ["E"],
+      "minerals": ["fier", "cupru"],
+      "nutrition": {
+        "source": "Olives, ripe, canned",
+        "per100g": {
+          "kcal": 115,
+          "protein": 0.84,
+          "carbs": 6.26,
+          "fat": 10.68,
+          "fiber": 3.2
+        }
+      },
+      "visual": {
+        "color": "#556B2F",
+        "shape": "oval"
+      },
+      "ai": {
+        "labels": ["olive"]
+      }
+    }
+  ]
+}

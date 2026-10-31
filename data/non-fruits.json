@@ -1,0 +1,229 @@
+{
+  "description": "Etichete pentru obiecte care NU sunt fructe. Modelul AI le folosește ca să nu confunde o cană sau o mână cu un fruct.",
+  "labels": [
+    {
+      "label": "person",
+      "ro": "o persoană"
+    },
+    {
+      "label": "human face",
+      "ro": "o față"
+    },
+    {
+      "label": "human hand",
+      "ro": "o mână"
+    },
+    {
+      "label": "man",
+      "ro": "un bărbat"
+    },
+    {
+      "label": "woman",
+      "ro": "o femeie"
+    },
+    {
+      "label": "child",
+      "ro": "un copil"
+    },
+    {
+      "label": "head and shoulders of a person",
+      "ro": "o persoană"
+    },
+    {
+      "label": "cat",
+      "ro": "o pisică"
+    },
+    {
+      "label": "dog",
+      "ro": "un câine"
+    },
+    {
+      "label": "mobile phone",
+      "ro": "un telefon"
+    },
+    {
+      "label": "laptop computer",
+      "ro": "un laptop"
+    },
+    {
+      "label": "computer keyboard",
+      "ro": "o tastatură"
+    },
+    {
+      "label": "computer monitor",
+      "ro": "un monitor"
+    },
+    {
+      "label": "bottle",
+      "ro": "o sticlă"
+    },
+    {
+      "label": "cup",
+      "ro": "o cană"
+    },
+    {
+      "label": "mug",
+      "ro": "o cană"
+    },
+    {
+      "label": "glass",
+      "ro": "un pahar"
+    },
+    {
+      "label": "plate",
+      "ro": "o farfurie"
+    },
+    {
+      "label": "bowl",
+      "ro": "un bol"
+    },
+    {
+      "label": "book",
+      "ro": "o carte"
+    },
+    {
+      "label": "pen",
+      "ro": "un pix"
+    },
+    {
+      "label": "remote control",
+      "ro": "o telecomandă"
+    },
+    {
+      "label": "chair",
+      "ro": "un scaun"
+    },
+    {
+      "label": "table",
+      "ro": "o masă"
+    },
+    {
+      "label": "sofa",
+      "ro": "o canapea"
+    },
+    {
+      "label": "bed",
+      "ro": "un pat"
+    },
+    {
+      "label": "door",
+      "ro": "o ușă"
+    },
+    {
+      "label": "window",
+      "ro": "o fereastră"
+    },
+    {
+      "label": "wall",
+      "ro": "un perete"
+    },
+    {
+      "label": "ceiling",
+      "ro": "un tavan"
+    },
+    {
+      "label": "room",
+      "ro": "o cameră"
+    },
+    {
+      "label": "curtain",
+      "ro": "o perdea"
+    },
+    {
+      "label": "lamp",
+      "ro": "o lampă"
+    },
+    {
+      "label": "poster",
+      "ro": "un poster"
+    },
+    {
+      "label": "backpack",
+      "ro": "un rucsac"
+    },
+    {
+      "label": "clothes",
+      "ro": "haine"
+    },
+    {
+      "label": "shirt",
+      "ro": "o cămașă"
+    },
+    {
+      "label": "toy",
+      "ro": "o jucărie"
+    },
+    {
+      "label": "ball",
+      "ro": "o minge"
+    },
+    {
+      "label": "plant",
+      "ro": "o plantă"
+    },
+    {
+      "label": "flower",
+      "ro": "o floare"
+    },
+    {
+      "label": "tree",
+      "ro": "un copac"
+    },
+    {
+      "label": "tomato",
+      "ro": "o roșie (legumă)"
+    },
+    {
+      "label": "cucumber",
+      "ro": "un castravete (legumă)"
+    },
+    {
+      "label": "potato",
+      "ro": "un cartof (legumă)"
+    },
+    {
+      "label": "carrot",
+      "ro": "un morcov (legumă)"
+    },
+    {
+      "label": "onion",
+      "ro": "o ceapă (legumă)"
+    },
+    {
+      "label": "bell pepper",
+      "ro": "un ardei (legumă)"
+    },
+    {
+      "label": "cabbage",
+      "ro": "o varză (legumă)"
+    },
+    {
+      "label": "bread",
+      "ro": "pâine"
+    },
+    {
+      "label": "cheese",
+      "ro": "brânză"
+    },
+    {
+      "label": "egg",
+      "ro": "un ou"
+    },
+    {
+      "label": "pizza",
+      "ro": "o pizza"
+    },
+    {
+      "label": "blurry image",
+      "ro": "o imagine neclară"
+    },
+    {
+      "label": "dark image",
+      "ro": "o imagine întunecată"
+    },
+    {
+      "label": "empty background",
+      "ro": "fundal gol"
+    }
+  ]
+}

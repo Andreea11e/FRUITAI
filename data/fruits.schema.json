@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Catalogul de fructe FruitAI",
+  "description": "Sursa unică de date pentru catalog, fișele educative, scannerul AI și AR. Un fruct nou = o înregistrare nouă în „fruits”.",
+  "type": "object",
+  "required": ["categories", "fruits"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "ro"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "ro": { "type": "string", "description": "Numele categoriei, afișat ca filtru" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "fruits": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fruit" }
+    }
+  },
+  "$defs": {
+    "fruit": {
+      "type": "object",
+      "required": ["id", "ro", "en", "category", "description", "fact", "vitamins", "minerals", "nutrition", "visual"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Identificator unic și stabil. Folosit în istoric, AR și maparea AI. Nu-l schimba după publicare." },
+        "ro": { "type": "string", "description": "Denumirea în română" },
+        "en": { "type": "string", "description": "Denumirea în engleză" },
+        "category": { "type": "string", "description": "Trebuie să existe în „categories”" },
+        "description": { "type": "string", "description": "Descriere educativă scurtă (1–2 propoziții)" },
+        "fact": { "type": "string", "description": "O curiozitate verificabilă" },
+        "vitamins": { "type": "array", "items": { "type": "string" }, "description": "Vitaminele principale (poate fi gol dacă nu există date)" },
+        "minerals": { "type": "array", "items": { "type": "string" }, "description": "Mineralele principale (poate fi gol)" },
+        "image": { "type": "string", "description": "Opțional: calea către o fotografie (ex. img/fruits/apple.webp). Fără ea, aplicația desenează o ilustrație din „visual”." },
+        "showcase": { "type": "boolean", "description": "Opțional: poate apărea ca exemplu în hero și în secțiunea AR" },
+        "nutrition": {
+          "type": "object",
+          "required": ["source", "per100g"],
+          "properties": {
+            "source": { "type": "string", "description": "Intrarea USDA FoodData Central folosită" },
+            "per100g": {
+              "type": "object",
+              "required": ["kcal", "protein", "carbs", "fat", "fiber"],
+              "description": "Valori per 100 g; null = indisponibil. Cheile corespund celor din nutrients.json.",
+              "additionalProperties": { "type": ["number", "null"] }
+            }
+          }
+        },
+        "visual": {
+          "type": "object",
+          "required": ["color", "shape"],
+          "description": "Folosit pentru ilustrația generată, eticheta 3D din AR spațial și accentele din interfață",
+          "properties": {
+            "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "shape": { "enum": ["round", "oval", "teardrop", "elongated", "cluster", "drupelets", "spiky", "star"] }
+          }
+        },
+        "ai": {
+          "type": "object",
+          "description": "Opțional. Fără „ai”, fructul apare doar în catalog și nu poate fi recunoscut de scanner.",
+          "required": ["labels"],
+          "properties": {
+            "labels": {
+              "type": "array", "minItems": 1, "items": { "type": "string" },
+              "description": "Etichetele text (în engleză) date modelului CLIP. Rezultatul recunoașterii este mapat înapoi la „id” prin aceste etichete."
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

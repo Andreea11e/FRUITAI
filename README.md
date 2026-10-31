@@ -6,8 +6,18 @@ Scanner nutrițional cu realitate augmentată, care rulează direct în browser.
 
 | Fișier | Rol |
 |---|---|
-| `index.html` | Site-ul complet: pagina de prezentare, scannerul AR, stilurile și codul principal |
-| `js/xr.js` | Modul AR spațial (WebXR). Se încarcă doar când apeși „Plasează în spațiu” |
+| `index.html` | Structura paginii (fără date despre fructe) |
+| `css/app.css` | Stilurile |
+| `data/fruits.json` | **Catalogul de fructe — sursa unică de date** |
+| `data/fruits.schema.json` | Schema catalogului (documentează și validează fiecare câmp) |
+| `data/non-fruits.json` | Etichetele AI pentru obiecte care nu sunt fructe |
+| `data/nutrients.json` | Nutrienții afișați și dozele zilnice de referință |
+| `js/catalog.js` | Citește și validează datele; oferă căutare, filtre și maparea AI → fruct |
+| `js/catalog-ui.js` | Generează catalogul, filtrele și fișele educative din date |
+| `js/fruit-art.js` | Imaginea fiecărui fruct (fotografie sau ilustrație generată) |
+| `js/app.js` | Scannerul, AI, AR în cameră, senzorii ambientali |
+| `js/xr.js` | AR spațial (WebXR), încărcat doar la cerere |
+| `scripts/check-catalog.mjs` | Verifică datele și că niciun fruct nu e scris direct în cod |
 | `start-mac-linux.sh` | Pornește un server local și deschide site-ul (macOS / Linux) |
 | `start-windows.bat` | Același lucru pe Windows |
 
@@ -25,7 +35,7 @@ Ai nevoie doar de Python 3, fără alte pachete.
 
 ### Recunoaștere (ca în versiunea 8)
 - **Detecție:** OWL-ViT (`Xenova/owlvit-base-patch32`) găsește fructul în cadru și separă mâini, fețe, persoane.
-- **Clasificare:** CLIP (`Xenova/clip-vit-base-patch32`) alege dintre 61 de fructe și 58 de etichete care nu sunt fructe.
+- **Clasificare:** CLIP (`Xenova/clip-vit-base-patch32`) alege dintre etichetele din catalog: 61 de fructe și 56 de obiecte care nu sunt fructe.
 - Modelele rulează **în browser** prin transformers.js. Imaginile nu sunt trimise nicăieri.
 - **Pornire automată:** modelele încep să se încarce imediat ce deschizi pagina, în fundal. Când pui o imagine, analiza începe pe loc. Dacă o pui înainte să fie gata, imaginea așteaptă și e analizată automat.
 - **Descărcare o singură dată:** prima vizită descarcă modelele (~310 MB în varianta q8 pentru WASM, ~610 MB în varianta fp16 pentru WebGPU). După aceea pornesc din memoria browserului (Cache Storage), fără descărcare. Aplicația cere browserului stocare persistentă, ca să nu le șteargă.
@@ -50,9 +60,58 @@ Calculată din pixelii reali ai cadrului (redus la 160×120), de ~4 ori pe secun
 Semnalele apar în HUD-ul scannerului, în secțiunea „Inteligență ambientală” și ca ghidaj contextual în partea de jos a camerei.
 
 ### Nutriție
-- Valorile USDA FoodData Central (SR Legacy) sunt incluse în cod, deci nu e nevoie de cheie API. Sunt orientative. Pentru moșmon nu există date USDA.
+- Valorile USDA FoodData Central (SR Legacy) sunt incluse în `data/fruits.json`, deci nu e nevoie de cheie API. Sunt orientative. Pentru moșmon nu există date USDA.
 - Glisorul de porție (25–500 g) recalculează eticheta, inclusiv pe cea din AR.
 - Observațiile („bogat în fibre”, „densitate energetică scăzută” etc.) sunt derivate direct din valorile USDA.
+
+## Catalogul dinamic
+
+Toate secțiunile (catalogul, fișele educative, panoul de rezultat, scannerul AI, eticheta AR, AR spațial, hero și contoarele) citesc din **aceeași sursă**: `data/fruits.json`. Niciun nume de fruct nu e scris în HTML, CSS sau JavaScript.
+
+### O înregistrare
+
+```json
+{
+  "id": "apple",
+  "ro": "Măr",
+  "en": "Apple",
+  "category": "pome",
+  "description": "Fruct crocant și suculent…",
+  "fact": "Mărul face parte din familia trandafirului…",
+  "vitamins": ["C"],
+  "minerals": ["potasiu"],
+  "nutrition": { "source": "Apples, raw, with skin", "per100g": { "kcal": 52, "protein": 0.26, "carbs": 13.81, "fat": 0.17, "fiber": 2.4 } },
+  "visual": { "color": "#E2433B", "shape": "round" },
+  "ai": { "labels": ["apple"] }
+}
+```
+
+Câmpuri opționale: `image` (calea către o fotografie, ex. `img/fruits/apple.webp`; fără ea se desenează o ilustrație din `visual`) și `showcase` (fructul poate apărea ca exemplu în hero și în secțiunea AR). Toate câmpurile sunt descrise în `data/fruits.schema.json`.
+
+### Cum adaugi un fruct
+
+1. Adaugi **o singură înregistrare** în lista `fruits` din `data/fruits.json`.
+2. Rulezi `node scripts/check-catalog.mjs` (opțional, dar recomandat).
+
+Atât. Fructul apare automat în catalog, în filtre, în contoare, în fișe și în AR. Nu modifici nimic altceva.
+
+### Fructe noi și modelul AI
+
+Modelul de recunoaștere nu a fost reantrenat. CLIP primește o listă de etichete text, iar catalogul le asociază cu fructele:
+
+- **Cu `ai.labels`:** eticheta (sau etichetele, în engleză) este adăugată la lista dată lui CLIP. Când modelul alege una dintre ele, aplicația o mapează la `id`-ul fructului. CLIP este un model „zero-shot”, deci poate încerca să recunoască și un fruct nou, dar **precizia pentru fructele adăugate ulterior nu a fost testată**. Verifică-le cu fotografii reale.
+- **Fără `ai`:** fructul apare doar în catalog, cu eticheta „catalog”, și nu e trimis modelului. În acest caz apare automat și filtrul „Doar cele recunoscute de scanner”.
+
+Maparea e unică: o etichetă AI poate aparține unui singur fruct, iar validarea refuză duplicatele.
+
+### Verificare
+
+`node scripts/check-catalog.mjs` (Node 18+, fără dependențe) verifică:
+- că fiecare înregistrare e completă (id unic, categorie existentă, valori numerice, culoare, formă);
+- că fiecare etichetă AI duce la exact un fruct;
+- că niciun nume de fruct (român, englez sau etichetă AI) nu e scris direct în `index.html`, `css/` sau `js/`.
+
+O înregistrare invalidă e ignorată în browser (cu un avertisment în consolă), fără să blocheze restul catalogului.
 
 ## Ce s-a schimbat față de versiunea 8
 

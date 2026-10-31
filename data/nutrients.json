@@ -1,0 +1,37 @@
+{
+  "kcalDailyValue": 2000,
+  "nutrients": [
+    {
+      "key": "protein",
+      "ro": "Proteine",
+      "short": "Proteine",
+      "unit": "g",
+      "dailyValue": 50,
+      "color": "#5BE3C4"
+    },
+    {
+      "key": "carbs",
+      "ro": "Carbohidrați",
+      "short": "Carbo.",
+      "unit": "g",
+      "dailyValue": 275,
+      "color": "#C9F25C"
+    },
+    {
+      "key": "fat",
+      "ro": "Grăsimi",
+      "short": "Grăsimi",
+      "unit": "g",
+      "dailyValue": 78,
+      "color": "#FFA94D"
+    },
+    {
+      "key": "fiber",
+      "ro": "Fibre",
+      "short": "Fibre",
+      "unit": "g",
+      "dailyValue": 28,
+      "color": "#B8A6FF"
+    }
+  ]
+}
