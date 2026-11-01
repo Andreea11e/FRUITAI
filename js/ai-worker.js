@@ -106,26 +106,43 @@ async function init(msg) {
     }
     return Cls.from_pretrained(name, opts(backend));
   };
-  tokenizer = await T.AutoTokenizer.from_pretrained(cfg.clip);
+  // 1) Vectorii de text calculați dinainte (data/clip-text.bin): fără model de text, fără timp de „învățare”
+  const pre = await loadPrecomputed();
   processor = await T.AutoProcessor.from_pretrained(cfg.clip);
   visionModel = await load(T.CLIPVisionModelWithProjection, cfg.clip);
-  textModel = await load(T.CLIPTextModelWithProjection, cfg.clip);
-  D = textModel.config?.projection_dim || 512;
-  // Pornim cât mai repede: doar primul șablon („a photo of a …”). Restul (desene, variante) se calculează
-  // în fundal, după ce scannerul e deja gata, și îmbunătățesc treptat recunoașterea (media mai multor descrieri).
-  const [photo, drawing] = cfg.sets;
-  await textEmbeddings(photo.templates[0], backend);
-  rebuild();
+  if (!pre) {
+    // 2) Rezervă: catalogul s-a schimbat și vectorii nu au fost încă recalculați → îi calculăm aici, o singură dată
+    //    (doar prima formulare din fiecare set, ca să nu încetinească recunoașterea), apoi rămân în cache
+    tokenizer = await T.AutoTokenizer.from_pretrained(cfg.clip);
+    textModel = await load(T.CLIPTextModelWithProjection, cfg.clip);
+    D = textModel.config?.projection_dim || 512;
+    await textEmbeddings(cfg.sets[0].templates[0], backend);
+    rebuild();
+  }
   const gray = new Uint8ClampedArray(224 * 224 * 4).fill(128);
   await classify({ images: [{ data: gray.buffer, width: 224, height: 224 }] });   // încălzire
   self.__backend = backend; self.__ready = true;
-  post({ type: "ready", ...backend });
-  (async () => {
-    const rest = [drawing.templates[0], ...photo.templates.slice(1), ...drawing.templates.slice(1)];
-    for (const tpl of rest) { await textEmbeddings(tpl, backend); rebuild(); post({ type: "ensemble", tpl }); }
+  post({ type: "ready", ...backend, precomputed: !!pre });
+  if (!pre) (async () => {
+    for (const set of cfg.sets.slice(1)) { await textEmbeddings(set.templates[0], backend); rebuild(); post({ type: "ensemble", tpl: set.templates[0] }); }
     try { await textModel.dispose?.(); } catch {}
     textModel = null;                                  // eliberăm memoria (important pe telefon)
   })().catch(e => console.warn("Descrieri suplimentare:", e));
+}
+
+/** Vectorii de text din data/clip-text.bin, dacă au fost calculați pentru exact acest catalog și aceste formulări. */
+async function loadPrecomputed() {
+  if (!cfg.pre) return false;
+  try {
+    const meta = await (await fetch(cfg.pre.meta, { cache: "no-cache" })).json();
+    const same = meta.model === cfg.clip && JSON.stringify(meta.labels) === JSON.stringify(cfg.labels) && JSON.stringify(meta.sets) === JSON.stringify(cfg.sets);
+    if (!same) { console.warn("data/clip-text.json nu corespunde catalogului actual: vectorii se calculează în browser."); return false; }
+    const buf = new Float32Array(await (await fetch(cfg.pre.bin, { cache: "no-cache" })).arrayBuffer());
+    const N = cfg.labels.length; D = meta.dim;
+    if (buf.length !== cfg.sets.length * N * D) return false;
+    cfg.sets.forEach((set, i) => { setEmb[set.name] = buf.subarray(i * N * D, (i + 1) * N * D); });
+    return true;
+  } catch (e) { console.warn("Vectorii precalculați nu s-au încărcat:", e); return false; }
 }
 
 /** Media (normalizată) a vectorilor de text pentru fiecare set de șabloane deja calculate. */

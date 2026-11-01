@@ -1,0 +1,8 @@
+{
+  "description": "Formulările date modelului CLIP pentru fiecare etichetă (media lor e mai precisă decât o singură formulare). Vectorii de text sunt calculați o singură dată de scripts/build-embeddings.mjs (automat, în GitHub Actions) și salvați în data/clip-text.bin, ca browserul să nu mai descarce modelul de text.",
+  "model": "Xenova/clip-vit-base-patch32",
+  "sets": [
+    { "name": "photo", "templates": ["a photo of a {}", "a close-up photo of a {}", "a bright photo of a {}"] },
+    { "name": "drawing", "templates": ["a drawing of a {}", "an illustration of a {}", "a cartoon {}"] }
+  ]
+}

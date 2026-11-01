@@ -513,12 +513,9 @@ async function claudeAnalyze(canvas) {
 // CLIP: descrierile text se calculează o singură dată (apoi stau în cache); la fiecare cadru rulează doar
 // modelul de imagine, pe câteva decupaje pătrate ale cadrului. OWL-ViT (foarte greu) e folosit doar pentru
 // fotografii, pe calculatoare cu WebGPU; pe telefon, decupajele CLIP țin locul detectorului.
-// Seturi de descrieri: media mai multor formulări e mai precisă decât una singură (tehnica „prompt ensemble” de la CLIP).
-// Primul șablon din fiecare set e calculat la pornire; celelalte, în fundal.
-const SETS = [
-  { name: "photo", templates: ["a photo of a {}", "a close-up photo of a {}", "a bright photo of a {}"] },
-  { name: "drawing", templates: ["a drawing of a {}", "an illustration of a {}", "a cartoon {}"] }
-];
+// Formulările pentru CLIP stau în data/clip-prompts.json; vectorii lor de text sunt calculați dinainte
+// (data/clip-text.bin, generat automat în GitHub Actions), deci browserul descarcă doar modelul de imagine.
+const DATA = new URL("../data/", import.meta.url);
 const FRUIT_QUERIES = ["a photo of a fruit", "a drawing of a fruit"];
 const DET_QUERIES = [...FRUIT_QUERIES, "a photo of a person", "a photo of a human face", "a photo of a hand"];
 const IS_MOBILE = matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
@@ -541,10 +538,10 @@ async function pickBackend() {
   if (navigator.gpu) {
     try {
       const adapter = await navigator.gpu.requestAdapter();
-      if (adapter && adapter.features.has("shader-f16")) return { device: "webgpu", dtype: "fp16", suffix: "_fp16", mb: 303 };
+      if (adapter && adapter.features.has("shader-f16")) return { device: "webgpu", dtype: "fp16", suffix: "_fp16", mb: 176 };
     } catch {}
   }
-  return { device: "wasm", dtype: "q8", suffix: "_quantized", mb: 154 };
+  return { device: "wasm", dtype: "q8", suffix: "_quantized", mb: 89 };
 }
 
 // Sunt modelele deja salvate pe dispozitiv? (transformers.js le ține în Cache Storage, „transformers-cache”)
@@ -552,7 +549,7 @@ async function modelsCached(suffix) {
   try {
     if (!("caches" in window) || !(await caches.has("transformers-cache"))) return false;
     const keys = (await (await caches.open("transformers-cache")).keys()).map(r => r.url);
-    return ["text_model", "vision_model"].every(m => keys.some(u => u.includes(CLIP_NAME) && u.endsWith(`/onnx/${m}${suffix}.onnx`)));
+    return keys.some(u => u.includes(CLIP_NAME) && u.endsWith(`/onnx/vision_model${suffix}.onnx`));
   } catch { return false; }
 }
 
@@ -596,7 +593,11 @@ function loadLocal() {
       for (const p of local.pending.values()) p.rej(new Error(e.message || "worker"));
       local.pending.clear();
     };
-    await call("init", { url: TRANSFORMERS_URL, clip: CLIP_NAME, detector: DETECTOR_NAME, labels: local.labels, sets: SETS });
+    const prompts = await (await fetch(new URL("clip-prompts.json", DATA))).json();
+    await call("init", {
+      url: TRANSFORMERS_URL, clip: CLIP_NAME, detector: DETECTOR_NAME, labels: local.labels, sets: prompts.sets,
+      pre: { meta: new URL("clip-text.json", DATA).href, bin: new URL("clip-text.bin", DATA).href }
+    });
     try { await navigator.storage?.persist?.(); } catch {}
     el.progress.hidden = true;
     local.ready = true;
