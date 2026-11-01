@@ -52,6 +52,8 @@ Ai nevoie doar de Python 3, fără alte pachete.
 - După încărcare, aplicația rulează o analiză de încălzire pe o imagine mică, ca prima analiză reală să fie rapidă.
 - Modelele trebuie descărcate din nou doar dacă ștergi datele site-ului, folosești o fereastră privată sau alt browser.
 - **Fructe reale, poze, cărți și desene:** detectorul caută și „a drawing of a fruit” și „a picture of a fruit in a book”. Când CLIP nu e sigur pe o imagine, mai întreabă o dată ca pentru un desen și păstrează răspunsul mai sigur. Dacă niciun răspuns nu trece pragurile, aplicația spune că nu e sigură, nu inventează un fruct.
+- **Viteză:** toate casetele găsite și cadrul întreg sunt clasificate de CLIP într-un singur apel (transformers.js recodifică toate etichetele text la fiecare apel). Scorurile etichetelor care țin de același fruct se adună.
+- **Diagnostic:** deschide site-ul cu `?debug` la final (ex. `.../FRUITAI/?debug`) și în consola browserului (F12) apar primele răspunsuri ale modelului pentru fiecare imagine.
 - **Cât de sigur e:** după identificare apare un indicator cu trei trepte (Sigur / Destul de sigur / Nu foarte sigur), fără procente.
 - Pragurile sunt cele din `main.py`: detector 0,10, fruct 0,30, cadru întreg 0,60, o analiză la 0,8 s, iar un rezultat rămâne afișat 4 s.
 - Când pagina rulează ca artifact Claude, recunoașterea se face cu Claude (fotografii), ca înainte.

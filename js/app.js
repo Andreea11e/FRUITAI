@@ -16,7 +16,7 @@ const CHECK_INTERVAL = 800;     // ms între analize în modul live
 const RESULT_TTL = 4000;        // ms cât rămâne valabil un rezultat live
 const DETECT_THRESHOLD = 0.10;
 const FRUIT_MIN_SCORE = 0.30;
-const FULLFRAME_MIN_SCORE = 0.60;
+const FULLFRAME_MIN_SCORE = 0.50;
 const NONFRUIT_FULL_MIN = 0.25;
 // Pragurile senzorilor ambientali (calibrate pe cadre reduse la 160×120)
 const AMB = { dark: 0.16, bright: 0.84, blurry: 0.0009, moving: 0.045, still: 0.012, near: 0.62, far: 0.05 };
@@ -511,7 +511,7 @@ async function claudeAnalyze(canvas) {
 // ---------------- Motor 2: modele locale în browser (OWL-ViT + CLIP) ----------------
 const local = { T: null, clip: null, det: null, loading: null };
 // Fructele pot fi reale, fotografiate, tipărite într-o carte sau desenate: toate cele trei întrebări înseamnă „fruct”.
-const FRUIT_QUERIES = ["a photo of a fruit", "a drawing of a fruit", "a picture of a fruit in a book"];
+const FRUIT_QUERIES = ["a photo of a fruit", "a drawing of a fruit"];
 const DET_QUERIES = [...FRUIT_QUERIES, "a photo of a person", "a photo of a human face", "a photo of a hand"];
 
 // Alegem varianta de model: fp16 pe WebGPU (dacă placa suportă shader-f16), altfel q8 pe WASM.
@@ -594,17 +594,47 @@ function loadLocal() {
 
 async function rawFrom(canvas) { return local.T.RawImage.fromBlob(await toBlob(canvas, 0.92)); }
 
-async function classify(canvas) {
-  const img = await rawFrom(canvas), labels = catalog.aiAllLabels();
-  const out = await local.clip(img, labels, { hypothesis_template: "a photo of a {}" });
-  // Când fotografia nu e clară (desen, ilustrație dintr-o carte), mai întrebăm o dată, ca pentru un desen.
-  // Păstrăm răspunsul cel mai sigur dintre cele două; dacă niciunul nu e sigur, pragurile obișnuite îl resping.
-  if (out[0].score < 0.45) {
-    const alt = await local.clip(img, labels, { hypothesis_template: "a drawing of a {}" });
-    if (alt[0].score > out[0].score) return { label: alt[0].label, score: alt[0].score, drawing: true };
+/** Scorurile CLIP adunate pe fiecare fruct / obiect din catalog.
+ *  Un fruct are adesea mai multe etichete (ex. „apple”, „red apple”): CLIP împarte probabilitatea între ele,
+ *  așa că le adunăm, altfel un fruct bine recunoscut putea părea „nesigur” și era respins. */
+function groupScores(out) {
+  const by = new Map();
+  for (const o of out) {
+    const hit = catalog.resolveAiLabel(o.label);
+    if (!hit) continue;
+    const key = hit.kind === "fruit" ? "f:" + hit.id : "n:" + hit.label;
+    const g = by.get(key) || { hit, label: o.label, score: 0 };
+    g.score += o.score; by.set(key, g);
   }
-  return { label: out[0].label, score: out[0].score };
+  return [...by.values()].sort((a, b) => b.score - a.score);
 }
+const debugAI = /[?&]debug/.test(location.search);
+
+/** Clasifică mai multe imagini (casetele + cadrul întreg) într-un singur apel CLIP.
+ *  transformers.js codifică toate cele ~120 de etichete text la fiecare apel, așa că un singur apel
+ *  pentru toate imaginile e de câteva ori mai rapid decât câte un apel pentru fiecare. */
+async function classifyMany(canvases, { drawing = false } = {}) {
+  const imgs = await Promise.all(canvases.map(rawFrom)), labels = catalog.aiAllLabels();
+  const run = async tpl => { const o = await local.clip(imgs.length === 1 ? imgs[0] : imgs, labels, { hypothesis_template: tpl }); return imgs.length === 1 ? [o] : o; };
+  let best = (await run("a photo of a {}")).map(groupScores);
+  // Pentru o poză încărcată (poate fi un desen sau o pagină de carte), când nu e sigur,
+  // mai întrebăm „ca pentru un desen” și facem media celor două răspunsuri.
+  if (drawing && best.some(b => (b[0]?.score ?? 0) < 0.5)) {
+    const alt = (await run("a drawing of a {}")).map(groupScores);
+    best = best.map((b, i) => {
+      const m = new Map();
+      for (const g of [...b, ...alt[i]]) { const k = g.hit.kind + ":" + (g.hit.id ?? g.hit.label); const x = m.get(k) || { ...g, score: 0 }; x.score += g.score / 2; m.set(k, x); }
+      const mixed = [...m.values()].sort((x, y) => y.score - x.score);
+      return mixed[0] && mixed[0].score > (b[0]?.score ?? 0) ? mixed : b;
+    });
+  }
+  return best.map(b => {
+    if (debugAI) console.log("[FruitAI] CLIP:", b.slice(0, 4).map(g => `${g.hit.id ?? g.hit.label} ${(g.score * 100).toFixed(0)}`).join(" · "));
+    const top = b[0];
+    return top ? { label: top.label, score: top.score, hit: top.hit } : { label: "", score: 0, hit: null };
+  });
+}
+const classify = async (canvas, opts) => (await classifyMany([canvas], opts))[0];
 
 const iou = (a, b) => {
   const x1 = Math.max(a.xmin, b.xmin), y1 = Math.max(a.ymin, b.ymin), x2 = Math.min(a.xmax, b.xmax), y2 = Math.min(a.ymax, b.ymax);
@@ -638,33 +668,27 @@ async function findFruitBoxes(canvas) {
 }
 const findFruitBox = async canvas => (await findFruitBoxes(canvas))[0] || null;
 
-async function localAnalyze(canvas) {
+async function localAnalyze(canvas, { photo = false } = {}) {
   await loadLocal();
   const boxes = await findFruitBoxes(canvas);
-  if (boxes.length) {
-    const found = [];
-    for (const box of boxes) {
-      const { label, score } = await classify(cropCanvas(canvas, box));
-      found.push({ hit: catalog.resolveAiLabel(label), score, box });   // eticheta CLIP → id din catalog
-    }
-    const fruits = found.filter(f => f.hit?.kind === "fruit" && f.score >= FRUIT_MIN_SCORE);
-    if (fruits.length) {
-      const [p, ...rest] = fruits;
-      return { kind: "fruit", label: p.hit.id, score: p.score, box: p.box, others: rest.map(f => ({ label: f.hit.id, box: f.box })) };
-    }
-    const top = found[0];
-    if (top.hit?.kind === "notfruit") return { kind: "notfruit", label: top.hit.label, score: top.score, box: top.box };
-    return { kind: "none", score: top.score };
+  if (debugAI) console.log("[FruitAI] casete:", boxes.length);
+  // casetele și cadrul întreg, într-un singur apel (fructul poate umple imaginea sau caseta poate fi greșită)
+  const res = await classifyMany([...boxes.map(b => cropCanvas(canvas, b)), canvas], { drawing: photo });
+  const found = boxes.map((box, i) => ({ ...res[i], box }));
+  const fruits = found.filter(f => f.hit?.kind === "fruit" && f.score >= FRUIT_MIN_SCORE);
+  if (fruits.length) {
+    const [p, ...rest] = fruits;
+    return { kind: "fruit", label: p.hit.id, score: p.score, box: p.box, others: rest.map(f => ({ label: f.hit.id, box: f.box })) };
   }
-  // Niciun fruct găsit: verificăm tot cadrul
-  const { label, score } = await classify(canvas);
-  const hit = catalog.resolveAiLabel(label);
-  if (hit?.kind === "fruit" && score >= FULLFRAME_MIN_SCORE) return { kind: "fruit", label: hit.id, score, box: [0, 0, 1, 1] };
+  const top = found[0] || null;
+  const { hit, score } = res[res.length - 1];
+  if (hit?.kind === "fruit" && score >= FULLFRAME_MIN_SCORE) return { kind: "fruit", label: hit.id, score, box: top?.box || [0, 0, 1, 1] };
+  if (top?.hit?.kind === "notfruit") return { kind: "notfruit", label: top.hit.label, score: top.score, box: top.box };
   if (hit?.kind === "notfruit" && score >= NONFRUIT_FULL_MIN) return { kind: "notfruit", label: hit.label, score, box: null };
-  return { kind: "none", score };
+  return { kind: "none", score: Math.max(score, top?.score ?? 0) };
 }
 
-const analyze = c => state.engine === "claude" ? claudeAnalyze(c) : localAnalyze(c);
+const analyze = c => state.engine === "claude" ? claudeAnalyze(c) : localAnalyze(c, { photo: true });
 
 function explainError(e) {
   const code = e && e.code;
@@ -767,7 +791,11 @@ function renderFlowMsg() {
       <button type="button" class="dbtn fm-now" data-flow-now hidden>Arată-mi-l acum</button>`;
     flowMsg.querySelector("[data-flow-now]").onclick = () => { sound.tick(); startReveal(); };
     // dacă fructul nu e scos în câteva secunde, apare și un buton
-    flow.slowTimer = setTimeout(() => { const b = flowMsg.querySelector("[data-flow-now]"); if (b && flow.phase === "remove") b.hidden = false; }, 6000);
+    // dacă fructul nu e scos, apare un buton după 3 s, iar după 6 s fructul 3D apare oricum (totul rămâne automat)
+    flow.slowTimer = setTimeout(() => {
+      const b = flowMsg.querySelector("[data-flow-now]"); if (b && flow.phase === "remove") b.hidden = false;
+      flow.slowTimer = setTimeout(() => { if (flow.phase === "remove") startReveal(); }, 3000);
+    }, 3000);
   } else if (p === "prepare") {
     flowMsg.innerHTML = `${foundHtml()}<span>Îl transform în 3D…</span><div class="fm-spin" aria-hidden="true"></div>`;
   } else { flowMsg.innerHTML = ""; }
@@ -779,8 +807,11 @@ function renderFlowMsg() {
 function flowOnResult(r) {
   const fruit = r.kind === "fruit";
   if (flow.phase === "scan" || flow.phase === "reveal") {
-    if (fruit && r.label === flow.cand) flow.streak++;
-    else { flow.cand = fruit ? r.label : null; flow.candNew = fruit && !collection.has(r.label); flow.streak = fruit ? 1 : 0; }
+    // vot pe ultimele 3 rezultate: un cadru ratat (mișcare, reflexie) nu mai anulează recunoașterea
+    flow.votes = [...(flow.votes || []), fruit ? r.label : null].slice(-3);
+    const count = fruit ? flow.votes.filter(v => v === r.label).length : 0;
+    if (fruit && r.label !== flow.cand) { flow.cand = r.label; flow.candNew = !collection.has(r.label); }
+    flow.streak = count;
     const canLock = flow.phase === "scan" || (Date.now() - flow.t > REVEAL_MIN_MS && !revealBusy());
     if (fruit && flow.streak >= LOCK_STREAK && canLock) {
       hideReveal();
@@ -798,7 +829,7 @@ function startReveal() {
   if (!flow.id) return;
   clearTimeout(state.discTimer);
   setFlow("reveal");
-  flow.cand = null; flow.streak = 0;
+  flow.cand = null; flow.streak = 0; flow.votes = [];
   setArTarget(null);
   showFruitCard(flow.id, { chipText: "Identificat", note: "fruct 3D" });
   setStatus(t("{name}, în 3D", { name: fruitName(flow.id) }), "ok");
