@@ -85,7 +85,7 @@ export class Catalog {
     if (this.aiToNonFruit.has(k)) return { kind: "notfruit", label: k };
     return null;
   }
-  nonFruitText(label) { return this.aiToNonFruit.get(norm(label))?.ro || "un obiect"; }
+  nonFruitText(label, lang = "ro") { const n = this.aiToNonFruit.get(norm(label)); return (lang === "en" ? n?.en : n?.ro) || (lang === "en" ? "an object" : "un obiect"); }
 
   // ---------- nutriție ----------
   nutritionFor(id, grams = 100) {

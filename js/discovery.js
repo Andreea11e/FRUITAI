@@ -5,6 +5,10 @@
 
 import { fruitArt } from "./fruit-art.js";
 import { sound } from "./sound.js";
+import { t, tf, getLang } from "./i18n.js";
+const ntitle = n => getLang() === "en" ? (n.title_en || n.title) : n.title;
+const nkid = n => getLang() === "en" ? (n.kid_en || n.kid) : n.kid;
+const bname = b => getLang() === "en" ? (b.en || b.ro) : b.ro;
 
 const KEY = "fruitai.discovered";
 /** Colecția fructelor descoperite cu scannerul (păstrată doar în acest browser). */
@@ -170,14 +174,14 @@ function openNutrient(n, card) {
   const p = q("discPanel");
   p.innerHTML = `
     <button type="button" class="dbtn round small" data-act="panel-close" aria-label="Închide explicația">${svgIcon("close")}</button>
-    <div class="p-head">${nIcon(n, true)}<div><div class="p-kind">${n.kind === "vitamin" ? "Vitamină" : n.kind === "mineral" ? "Mineral" : "Fibre"}</div><h4>${esc(n.title)}</h4></div></div>
-    <p class="p-kid">${esc(n.kid)}</p>
-    <div class="p-helps">${benefits.map(b => `<span>${b.icon} ${esc(b.ro)}</span>`).join("")}</div>
-    <p class="p-stat">${n.kind === "fiber" ? `${esc(String(n.amount).replace(".", ","))} g de fibre la 100 g de fruct.` : `O găsești în ${count} din ${catalog.count} fructe din catalog.`}</p>`;
+    <div class="p-head">${nIcon(n, true)}<div><div class="p-kind">${esc(t(n.kind === "vitamin" ? "Vitamină" : n.kind === "mineral" ? "Mineral" : "Fibre"))}</div><h4>${esc(ntitle(n))}</h4></div></div>
+    <p class="p-kid">${esc(nkid(n))}</p>
+    <div class="p-helps">${benefits.map(b => `<span>${b.icon} ${esc(bname(b))}</span>`).join("")}</div>
+    <p class="p-stat">${esc(n.kind === "fiber" ? t("{g} g de fibre la 100 g de fruct.", { g: String(n.amount).replace(".", ",") }) : t("O găsești în {c} din {n} fructe din catalog.", { c: count, n: catalog.count }))}</p>`;
   p.style.setProperty("--nc", n.color);
   p.hidden = false;
   p.classList.remove("in"); void p.offsetWidth; p.classList.add("in");
-  say(`${cheers[Math.floor(Math.random() * cheers.length)]} ${n.title} te ajută la: ${benefits.map(b => b.ro.toLowerCase()).join(", ")}.`);
+  say(t("{cheer} {v} te ajută la: {list}.", { cheer: t(cheers[Math.floor(Math.random() * cheers.length)]), v: ntitle(n), list: benefits.map(b => bname(b).toLowerCase()).join(", ") }));
 }
 
 /** Linii luminoase cu săgeți, de la marginea fructului la fiecare card. Recalculate la fiecare cadru. */
@@ -220,7 +224,7 @@ export async function openDiscovery(id, { source = "catalog", isNew = false } = 
   // titlul: emoji + nume în română (litere animate), apoi engleza
   const total = collection.all().size;
   q("discBadge").innerHTML = source === "scan"
-    ? (isNew ? `🎉 Fruct nou descoperit! <small>${total} din ${catalog.count}</small>` : `🔎 Descoperit din nou <small>${total} din ${catalog.count}</small>`)
+    ? (isNew ? `🎉 ${esc(t("Fruct nou descoperit!"))} <small>${esc(t("{a} din {b}", { a: total, b: catalog.count }))}</small>` : `🔎 ${esc(t("Descoperit din nou"))} <small>${esc(t("{a} din {b}", { a: total, b: catalog.count }))}</small>`)
     : source === "history" ? "🕘 Din istoric" : "📚 Din catalog";
   const ro = f.ro.toLocaleUpperCase("ro-RO");
   q("discRo").innerHTML = `<span class="emo">${f.emoji ? esc(f.emoji) : fruitArt(f, { size: 52, className: "emo-art" })}</span><span class="word">${[...ro].map((ch, i) => `<span style="--i:${i}">${ch === " " ? "&nbsp;" : esc(ch)}</span>`).join("")}</span>`;
@@ -238,7 +242,7 @@ export async function openDiscovery(id, { source = "catalog", isNew = false } = 
     card.className = "ncard";
     card.style.setProperty("--nc", n.color);
     card.style.setProperty("--d", (0.55 + i * 0.09) + "s");
-    card.innerHTML = `${nIcon(n)}<span class="nt"><b>${esc(n.title)}</b><small>${n.kind === "fiber" ? esc(String(n.amount).replace(".", ",")) + " g / 100 g" : "Atinge să afli"}</small></span>`;
+    card.innerHTML = `${nIcon(n)}<span class="nt"><b>${esc(ntitle(n))}</b><small>${n.kind === "fiber" ? esc(String(n.amount).replace(".", ",")) + " g / 100 g" : esc(t("Atinge să afli"))}</small></span>`;
     card.addEventListener("click", () => openNutrient(n, card));
     (i % 2 ? right : left).appendChild(card);
     const mid = "arr" + i;
@@ -257,22 +261,22 @@ export async function openDiscovery(id, { source = "catalog", isNew = false } = 
   q("discBenefits").replaceChildren(...benefits.map(b => {
     const chip = document.createElement("button");
     chip.type = "button"; chip.className = "bchip";
-    chip.innerHTML = `<span class="bi">${b.icon}</span>${esc(b.ro)}`;
+    chip.innerHTML = `<span class="bi">${b.icon}</span>${esc(bname(b))}`;
     chip.addEventListener("click", () => {
       sound.tick();
       cards.forEach(c => c.el.classList.toggle("glow", (c.n.benefits || []).includes(b.key)));
       setTimeout(() => cards.forEach(c => c.el.classList.remove("glow")), 1800);
-      say(`${b.icon} ${b.ro}: vine de la ${b.from.join(", ")}.`);
+      say(t("{icon} {b}: vine de la {list}.", { icon: b.icon, b: bname(b), list: b.from.map(x => ntitle(catalog.info.vitamins[Object.keys(catalog.info.vitamins).find(k => catalog.info.vitamins[k].title === x)] || catalog.info.minerals[Object.keys(catalog.info.minerals).find(k => catalog.info.minerals[k].title === x)] || catalog.info.fiber)).join(", ") }));
     });
     return chip;
   }));
   if (!benefits.length) q("discBenefits").innerHTML = `<p class="disc-none">Nu avem încă date pentru acest fruct.</p>`;
-  q("discFact").textContent = f.fact;
-  q("discDesc").textContent = f.description;
+  q("discFact").textContent = tf(f, "fact");
+  q("discDesc").textContent = tf(f, "description");
   const acts = q("discActions");
   acts.innerHTML = "";
-  if (ctx.canPlaceAR()) acts.insertAdjacentHTML("beforeend", `<button type="button" class="dbtn big ar" data-act="ar">${svgIcon("ar")}<span>Pune-l pe masă (AR)</span></button>`);
-  acts.insertAdjacentHTML("beforeend", `<button type="button" class="dbtn big primary" data-act="close"><span>${source === "catalog" ? "Înapoi la catalog" : "Caută alt fruct"}</span></button>`);
+  if (ctx.canPlaceAR()) acts.insertAdjacentHTML("beforeend", `<button type="button" class="dbtn big ar" data-act="ar">${svgIcon("ar")}<span>${esc(t("Pune-l pe masă (AR)"))}</span></button>`);
+  acts.insertAdjacentHTML("beforeend", `<button type="button" class="dbtn big primary" data-act="close"><span>${esc(t(source === "catalog" ? "Înapoi la catalog" : "Caută alt fruct"))}</span></button>`);
 
   q("discPanel").hidden = true;
   q("discArt").innerHTML = fruitArt(f, { size: 240 });
@@ -289,9 +293,12 @@ export async function openDiscovery(id, { source = "catalog", isNew = false } = 
   drawLinks();
   sound.discover();
   const n = nutrients.length;
+  const nRo = f.ro, nEn = f.en, same = nRo.toLowerCase() === nEn.toLowerCase();
   say(source === "scan"
-    ? `${isNew ? "Uau, un fruct nou!" : "Iar ai găsit"} ${f.ro}! ${f.ro.toLowerCase() === f.en.toLowerCase() ? "Și în engleză îi spune tot așa" : `În engleză îi spune „${f.en}”`}. ${n ? `Are ${n} ${n === 1 ? "comoară ascunsă" : "comori ascunse"}: atinge-le ca să afli ce fac!` : ""}`
-    : `Salut, eu sunt Vita! Hai să descoperim ${f.ro.toLowerCase()}. ${n ? "Atinge vitaminele din jurul lui!" : ""}`);
+    ? [t(isNew ? "Uau, un fruct nou!" : "Iar ai găsit"), t("{fruit}!", { fruit: getLang() === "en" ? nEn : nRo }),
+       t(same ? "Și în engleză îi spune tot așa." : getLang() === "en" ? "În română îi spune „{other}”." : "În engleză îi spune „{other}”.", { other: getLang() === "en" ? nRo : nEn }),
+       n ? t(n === 1 ? "Are o comoară ascunsă: atinge-o ca să afli ce face!" : "Are {n} comori ascunse: atinge-le ca să afli ce fac!", { n }) : ""].join(" ")
+    : t("Salut, eu sunt Vita! Hai să descoperim {fruit}.", { fruit: (getLang() === "en" ? nEn : nRo).toLowerCase() }) + (n ? " " + t("Atinge vitaminele din jurul lui!") : ""));
 
   // modelul 3D se încarcă abia acum (three.js), cu ilustrația 2D ca rezervă
   try {

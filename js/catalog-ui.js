@@ -3,6 +3,7 @@
 // din date: un fruct nou în data/fruits.json apare aici automat.
 
 import { fruitArt } from "./fruit-art.js";
+import { t, getLang } from "./i18n.js";
 
 const $ = id => document.getElementById(id);
 const fmt = v => {
@@ -32,22 +33,29 @@ export function mountCatalogUI(catalog, opts) {
   const search = $("catSearch"), select = $("catNutrient"), scanWrap = $("catScanWrap"), scan = $("catScan");
 
   // Exemplu de căutare luat din catalog, nu scris de mână
-  search.placeholder = `Caută un fruct, de ex. „${catalog.pick(catalog.fruits).ro.toLowerCase()}”`;
+  const ex = catalog.pick(catalog.fruits);
+  const paintPlaceholder = () => { search.placeholder = t("Caută un fruct, de ex. „{name}”", { name: (getLang() === "en" ? ex.en : ex.ro).toLowerCase() }); };
+  paintPlaceholder();
 
-  // Filtre de categorie: doar categoriile care au fructe
-  const catButtons = [{ id: null, ro: "Toate", count: catalog.count }, ...catalog.categoryCounts()].map(c =>
-    el("button", { type: "button", "aria-pressed": c.id === null ? "true" : "false", onclick: () => { state.category = c.id; sync(); } },
-      c.ro, el("small", {}, String(c.count))));
-  catButtons.forEach((b, i) => { b.dataset.cat = i === 0 ? "" : catalog.categoryCounts()[i - 1].id; });
-  filters.replaceChildren(...catButtons);
-
-  // Filtru de vitamine / minerale, derivat din valorile existente
+  // Filtre de categorie (doar categoriile care au fructe) și filtrul de vitamine / minerale, derivate din date
   const vit = catalog.facet("vitamins"), min = catalog.facet("minerals");
-  select.replaceChildren(
-    el("option", { value: "" }, "Toate vitaminele și mineralele"),
-    el("optgroup", { label: "Vitamine" }, vit.map(v => el("option", { value: v.value }, `Vitamina ${v.value} (${v.count})`))),
-    el("optgroup", { label: "Minerale" }, min.map(v => el("option", { value: v.value }, `${v.value.charAt(0).toUpperCase() + v.value.slice(1)} (${v.count})`)))
-  );
+  const en = () => getLang() === "en";
+  const vName = v => en() ? (catalog.info?.vitamins[v]?.title_en || "Vitamin " + v) : (catalog.info?.vitamins[v]?.title || "Vitamina " + v);
+  const mName = m => en() ? (catalog.info?.minerals[m]?.title_en || m) : m.charAt(0).toUpperCase() + m.slice(1);
+  function paintFilters() {
+    const catButtons = [{ id: null, ro: t("Toate"), count: catalog.count }, ...catalog.categoryCounts()].map(c =>
+      el("button", { type: "button", "data-no-i18n": "", "aria-pressed": String((c.id || null) === state.category), onclick: () => { state.category = c.id; sync(); } },
+        c.id ? (en() ? c.en || c.ro : c.ro) : c.ro, el("small", {}, String(c.count))));
+    catButtons.forEach((b, i) => { b.dataset.cat = i === 0 ? "" : catalog.categoryCounts()[i - 1].id; });
+    filters.replaceChildren(...catButtons);
+    select.replaceChildren(
+      el("option", { value: "" }, t("Toate vitaminele și mineralele")),
+      el("optgroup", { label: t("Vitamine") }, vit.map(v => el("option", { value: v.value }, `${vName(v.value)} (${v.count})`))),
+      el("optgroup", { label: t("Minerale") }, min.map(v => el("option", { value: v.value }, `${mName(v.value)} (${v.count})`)))
+    );
+    select.value = state.vitamin || "";
+  }
+  paintFilters();
   select.addEventListener("change", () => { state.vitamin = select.value || null; sync(); });
 
   // Filtrul „recunoscute de scanner” apare doar dacă există și fructe care nu au mapare AI
@@ -60,13 +68,14 @@ export function mountCatalogUI(catalog, opts) {
   function card(f) {
     const vit = f.vitamins.map(v => v.replace(/\s*\(.*\)$/, ""));
     const found = ctx.isDiscovered(f.id);
-    return el("button", { type: "button", class: "fcard" + (found ? " found" : ""), style: `--c:${f.visual.color}`, "aria-label": `${f.ro}, ${f.en}. Descoperă fructul`, onclick: () => ctx.onOpen(f.id) },
-      found ? el("span", { class: "found-badge", title: "Descoperit cu scannerul" }, "✓") : null,
+    const [first, second] = en() ? [f.en, f.ro] : [f.ro, f.en];
+    return el("button", { type: "button", "data-no-i18n": "", class: "fcard" + (found ? " found" : ""), style: `--c:${f.visual.color}`, "aria-label": `${first}, ${second}. ${t("Descoperă fructul")}`, onclick: () => ctx.onOpen(f.id) },
+      found ? el("span", { class: "found-badge", title: t("Descoperit cu scannerul") }, "✓") : null,
       el("span", { html: fruitArt(f, { size: 64 }) }).firstElementChild,
-      el("b", {}, f.ro),
-      el("span", { class: "en" }, f.en),
+      el("b", {}, first),
+      el("span", { class: "en" }, second),
       el("span", { class: "row" },
-        el("span", {}, vit.length ? ["Vit. ", el("em", {}, vit.slice(0, 3).join(", "))] : "Fără date"),
+        el("span", {}, vit.length ? ["Vit. ", el("em", {}, vit.slice(0, 3).join(", "))] : t("Fără date")),
         el("span", { class: "badge" + (f.ai ? "" : " off") }, f.emoji || (f.ai ? "AI" : "catalog")))
     );
   }
@@ -77,10 +86,11 @@ export function mountCatalogUI(catalog, opts) {
     grid.replaceChildren(...list.map(card));
     empty.hidden = list.length > 0;
     const found = catalog.fruits.filter(f => ctx.isDiscovered(f.id)).length;
-    meta.textContent = (list.length === catalog.count ? `${catalog.count} fructe · ${catalog.recognizable.length} recunoscute de scanner` : `${list.length} din ${catalog.count} fructe`) + ` · ai descoperit ${found} cu camera`;
+    meta.textContent = (list.length === catalog.count ? t("{n} fructe · {r} recunoscute de scanner", { n: catalog.count, r: catalog.recognizable.length }) : t("{a} din {b} fructe", { a: list.length, b: catalog.count })) + " · " + t("ai descoperit {n} cu camera", { n: found });
   }
   sync();
   // colecția se actualizează când descoperi un fruct nou cu camera
   window.addEventListener("fruitai:discovered", sync);
+  window.addEventListener("fruitai:lang", () => { paintPlaceholder(); paintFilters(); sync(); });
 }
 

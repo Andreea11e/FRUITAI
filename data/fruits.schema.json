@@ -27,6 +27,10 @@
           "ro": {
             "type": "string",
             "description": "Numele categoriei, afișat ca filtru"
+          },
+          "en": {
+            "type": "string",
+            "description": "Numele categoriei în engleză"
           }
         },
         "additionalProperties": false
@@ -81,9 +85,17 @@
           "type": "string",
           "description": "Descriere educativă scurtă (1–2 propoziții)"
         },
+        "descriptionEn": {
+          "type": "string",
+          "description": "Descrierea în engleză"
+        },
         "fact": {
           "type": "string",
           "description": "O curiozitate verificabilă"
+        },
+        "factEn": {
+          "type": "string",
+          "description": "Curiozitatea în engleză"
         },
         "vitamins": {
           "type": "array",
@@ -160,6 +172,114 @@
                 "spiky",
                 "star"
               ]
+            },
+            "color2": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "description": "A doua culoare a cojii (îmbujorare, dungi, solzi)"
+            },
+            "texture": {
+              "enum": [
+                "smooth",
+                "blush",
+                "dimpled",
+                "speckled",
+                "striped",
+                "fuzzy",
+                "netted",
+                "bloom",
+                "diamond",
+                "rough",
+                "leathery",
+                "fibrous",
+                "wrinkled"
+              ],
+              "description": "Textura cojii, generată procedural"
+            },
+            "features": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "stem",
+                  "leaf",
+                  "calyx",
+                  "crown",
+                  "blossom",
+                  "nubs",
+                  "seeds",
+                  "pair",
+                  "berries",
+                  "bunch",
+                  "pit-bottom",
+                  "scales"
+                ]
+              },
+              "description": "Detalii 3D: codiță, frunză, caliciu, coroană, coroniță, vârfuri, semințe, pereche, bace, mână de banane"
+            },
+            "slice": {
+              "enum": [
+                "citrus",
+                "greenseeds",
+                "melon",
+                "whiteseeds",
+                "pit",
+                "stone",
+                "arils",
+                "seedcenter",
+                "pulp",
+                "cream"
+              ],
+              "description": "Felia tăiată afișată lângă fruct"
+            },
+            "flesh": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "description": "Culoarea pulpei (felia)"
+            },
+            "aspect": {
+              "type": "number",
+              "description": "Alungire pe verticală (1 = normal)"
+            },
+            "spikes": {
+              "enum": [
+                "cones",
+                "bumps",
+                "hairs",
+                "soft"
+              ]
+            },
+            "spikeColor": {
+              "type": "string"
+            },
+            "calyxColor": {
+              "type": "string"
+            },
+            "rindInner": {
+              "type": "string"
+            },
+            "seeds": {
+              "enum": [
+                "cavity"
+              ]
+            },
+            "seedColor": {
+              "type": "string"
+            },
+            "stripes": {
+              "type": "integer"
+            },
+            "stripeWidth": {
+              "type": "number"
+            },
+            "blush": {
+              "type": "number",
+              "description": "Mărimea îmbujorării (0–1)"
+            },
+            "leafWidth": {
+              "type": "number"
+            },
+            "leafColor": {
+              "type": "string"
             }
           }
         },

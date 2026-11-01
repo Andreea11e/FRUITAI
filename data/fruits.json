@@ -3,31 +3,38 @@
   "categories": [
     {
       "id": "citrus",
-      "ro": "Citrice"
+      "ro": "Citrice",
+      "en": "Citrus fruits"
     },
     {
       "id": "berries",
-      "ro": "Bace și fructe de pădure"
+      "ro": "Bace și fructe de pădure",
+      "en": "Berries"
     },
     {
       "id": "stone",
-      "ro": "Fructe cu sâmbure"
+      "ro": "Fructe cu sâmbure",
+      "en": "Stone fruits"
     },
     {
       "id": "pome",
-      "ro": "Fructe cu semințe"
+      "ro": "Fructe cu semințe",
+      "en": "Pome fruits"
     },
     {
       "id": "tropical",
-      "ro": "Tropicale"
+      "ro": "Tropicale",
+      "en": "Tropical fruits"
     },
     {
       "id": "melons",
-      "ro": "Pepeni"
+      "ro": "Pepeni",
+      "en": "Melons"
     },
     {
       "id": "other",
-      "ro": "Altele"
+      "ro": "Altele",
+      "en": "Other"
     }
   ],
   "fruits": [
@@ -38,7 +45,9 @@
       "emoji": "🍎",
       "category": "pome",
       "description": "Fruct crocant și suculent, cu multe soiuri dulci sau acrișoare. Coaja concentrează o mare parte din fibre.",
+      "descriptionEn": "A crunchy, juicy fruit with many sweet or tangy varieties. The skin holds a large share of its fibre.",
       "fact": "Mărul face parte din familia trandafirului (Rosaceae), la fel ca para, gutuia și cireașa.",
+      "factEn": "The apple belongs to the rose family (Rosaceae), just like the pear, the quince and the cherry.",
       "vitamins": ["C"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -53,7 +62,11 @@
       },
       "visual": {
         "color": "#E2433B",
-        "shape": "round"
+        "shape": "round",
+        "color2": "#F2C94C",
+        "texture": "blush",
+        "features": ["leaf"],
+        "blush": 0.32
       },
       "ai": {
         "labels": ["apple"]
@@ -67,7 +80,9 @@
       "emoji": "🍌",
       "category": "tropical",
       "description": "Fruct moale și dulce, ușor de transportat, care se coace în continuare după cules.",
+      "descriptionEn": "A soft, sweet fruit that is easy to carry and keeps ripening after it is picked.",
       "fact": "Botanic, banana este o bacă, iar bananierul este o plantă ierboasă uriașă, nu un copac.",
+      "factEn": "Botanically, a banana is a berry, and the banana plant is a giant herb, not a tree.",
       "vitamins": ["B6", "C"],
       "minerals": ["potasiu", "magneziu"],
       "nutrition": {
@@ -82,7 +97,10 @@
       },
       "visual": {
         "color": "#F5D547",
-        "shape": "elongated"
+        "shape": "elongated",
+        "color2": "#3B2A1A",
+        "texture": "speckled",
+        "features": ["bunch"]
       },
       "ai": {
         "labels": ["banana"]
@@ -96,7 +114,9 @@
       "emoji": "🍊",
       "category": "citrus",
       "description": "Citric suculent, consumat ca atare sau ca suc, cu o aromă dulce-acrișoară.",
+      "descriptionEn": "A juicy citrus fruit, eaten as it is or as juice, with a sweet and slightly sour taste.",
       "fact": "Portocala dulce este un hibrid străvechi între pomelo și mandarină.",
+      "factEn": "The sweet orange is an ancient hybrid of the pomelo and the mandarin.",
       "vitamins": ["C", "B9 (folat)"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -111,7 +131,11 @@
       },
       "visual": {
         "color": "#FF9B2F",
-        "shape": "round"
+        "shape": "round",
+        "texture": "dimpled",
+        "features": ["stem"],
+        "slice": "citrus",
+        "flesh": "#FFA62B"
       },
       "ai": {
         "labels": ["orange"]
@@ -125,7 +149,9 @@
       "emoji": "🍐",
       "category": "pome",
       "description": "Fruct cu pulpă fină și suculentă, mai dulce când este bine copt.",
+      "descriptionEn": "A fruit with fine, juicy flesh that gets sweeter when it is fully ripe.",
       "fact": "Perele se coc mai bine după ce sunt culese: pe pom se înmoaie neuniform.",
+      "factEn": "Pears ripen better after they are picked: on the tree they soften unevenly.",
       "vitamins": ["C", "K"],
       "minerals": ["potasiu", "cupru"],
       "nutrition": {
@@ -140,7 +166,10 @@
       },
       "visual": {
         "color": "#C9D65A",
-        "shape": "teardrop"
+        "shape": "teardrop",
+        "color2": "#E2C35A",
+        "texture": "speckled",
+        "features": ["leaf"]
       },
       "ai": {
         "labels": ["pear"]
@@ -153,7 +182,9 @@
       "emoji": "🍑",
       "category": "stone",
       "description": "Fruct de vară cu coajă catifelată și pulpă parfumată, în jurul unui sâmbure tare.",
+      "descriptionEn": "A summer fruit with velvety skin and fragrant flesh around a hard stone.",
       "fact": "Piersicul provine din China, unde este cultivat de mii de ani.",
+      "factEn": "The peach tree comes from China, where it has been grown for thousands of years.",
       "vitamins": ["C", "A"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -168,7 +199,12 @@
       },
       "visual": {
         "color": "#FFB07A",
-        "shape": "round"
+        "shape": "round",
+        "color2": "#E8543F",
+        "texture": "fuzzy",
+        "features": ["leaf"],
+        "slice": "stone",
+        "flesh": "#FFC478"
       },
       "ai": {
         "labels": ["peach"]
@@ -181,7 +217,9 @@
       "emoji": "🥭",
       "category": "tropical",
       "description": "Fruct tropical cu pulpă cremoasă și foarte aromată, în jurul unui sâmbure plat.",
+      "descriptionEn": "A tropical fruit with creamy, very fragrant flesh around a flat stone.",
       "fact": "Mango face parte din aceeași familie de plante ca fisticul și caju.",
+      "factEn": "The mango belongs to the same plant family as pistachios and cashews.",
       "vitamins": ["C", "A", "B9 (folat)"],
       "minerals": ["cupru"],
       "nutrition": {
@@ -196,7 +234,11 @@
       },
       "visual": {
         "color": "#FFB53B",
-        "shape": "oval"
+        "shape": "oval",
+        "color2": "#E2563B",
+        "texture": "blush",
+        "features": ["stem"],
+        "blush": 0.5
       },
       "ai": {
         "labels": ["mango"]
@@ -209,7 +251,9 @@
       "emoji": "🍍",
       "category": "tropical",
       "description": "Fruct tropical acrișor-dulce, format din zeci de flori unite într-un singur fruct.",
+      "descriptionEn": "A tangy-sweet tropical fruit made of dozens of flowers joined together into one fruit.",
       "fact": "Ananasul conține bromelaină, o enzimă care descompune proteinele și poate înțepa ușor limba.",
+      "factEn": "Pineapple contains bromelain, an enzyme that breaks down proteins and can make your tongue tingle.",
       "vitamins": ["C", "B1"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -224,7 +268,10 @@
       },
       "visual": {
         "color": "#F2C14E",
-        "shape": "spiky"
+        "shape": "spiky",
+        "color2": "#8A5A1E",
+        "texture": "diamond",
+        "features": ["crown"]
       },
       "ai": {
         "labels": ["pineapple"]
@@ -237,7 +284,9 @@
       "emoji": "🍓",
       "category": "berries",
       "description": "Fruct de primăvară-vară, dulce și aromat, consumat proaspăt sau în deserturi.",
+      "descriptionEn": "A spring and summer fruit, sweet and fragrant, eaten fresh or in desserts.",
       "fact": "„Semințele” de pe exteriorul căpșunii sunt de fapt fructele adevărate ale plantei.",
+      "factEn": "The little “seeds” on the outside of a strawberry are actually the plant’s real fruits.",
       "vitamins": ["C", "B9 (folat)"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -252,7 +301,9 @@
       },
       "visual": {
         "color": "#E8343F",
-        "shape": "teardrop"
+        "shape": "teardrop",
+        "texture": "smooth",
+        "features": ["seeds", "calyx"]
       },
       "ai": {
         "labels": ["strawberry"]
@@ -266,7 +317,9 @@
       "emoji": "🍇",
       "category": "berries",
       "description": "Bace dulci care cresc în ciorchini, consumate proaspete, uscate (stafide) sau transformate în vin.",
+      "descriptionEn": "Sweet berries that grow in bunches, eaten fresh, dried (raisins) or made into juice.",
       "fact": "Vița de vie este cultivată de aproximativ 8000 de ani.",
+      "factEn": "Grapevines have been grown for about 8,000 years.",
       "vitamins": ["K", "C"],
       "minerals": ["cupru", "potasiu"],
       "nutrition": {
@@ -281,7 +334,9 @@
       },
       "visual": {
         "color": "#7A3E8F",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "bloom",
+        "features": ["leaf"]
       },
       "ai": {
         "labels": ["grape"]
@@ -294,7 +349,9 @@
       "emoji": "🍉",
       "category": "melons",
       "description": "Fruct mare și răcoritor, cu pulpă roșie foarte bogată în apă.",
+      "descriptionEn": "A big, refreshing fruit with red flesh that is very rich in water.",
       "fact": "Pepenele verde are aproximativ 91% apă.",
+      "factEn": "Watermelon is about 91% water.",
       "vitamins": ["C", "A"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -308,8 +365,14 @@
         }
       },
       "visual": {
-        "color": "#3E8E41",
-        "shape": "round"
+        "color": "#2F6B2A",
+        "shape": "round",
+        "color2": "#8CC152",
+        "texture": "striped",
+        "slice": "melon",
+        "flesh": "#F2545B",
+        "aspect": 1.15,
+        "rindInner": "#E8F5C8"
       },
       "ai": {
         "labels": ["watermelon"]
@@ -322,7 +385,9 @@
       "emoji": "🍋",
       "category": "citrus",
       "description": "Citric acru, folosit mai ales pentru suc, coajă rasă și aromatizare.",
+      "descriptionEn": "A sour citrus fruit, used mostly for juice, grated zest and flavouring.",
       "fact": "Sucul de lămâie conține în jur de 5% acid citric, de aici gustul foarte acru.",
+      "factEn": "Lemon juice contains about 5% citric acid, which is why it tastes so sour.",
       "vitamins": ["C", "B6"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -337,7 +402,11 @@
       },
       "visual": {
         "color": "#F7E04B",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "dimpled",
+        "features": ["nubs"],
+        "slice": "citrus",
+        "flesh": "#F7E36B"
       },
       "ai": {
         "labels": ["lemon"]
@@ -350,7 +419,9 @@
       "en": "Lime",
       "category": "citrus",
       "description": "Citric mic și verde, mai aromat și mai acru decât lămâia.",
+      "descriptionEn": "A small green citrus fruit, more fragrant and more sour than a lemon.",
       "fact": "Marinarii britanici primeau lime ca să prevină scorbutul, de unde porecla „limeys”.",
+      "factEn": "British sailors were given limes to prevent scurvy, which is where the nickname “limeys” comes from.",
       "vitamins": ["C"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -365,7 +436,10 @@
       },
       "visual": {
         "color": "#8BC34A",
-        "shape": "round"
+        "shape": "round",
+        "texture": "dimpled",
+        "slice": "citrus",
+        "flesh": "#B5D96A"
       },
       "ai": {
         "labels": ["lime"]
@@ -378,7 +452,9 @@
       "emoji": "🥝",
       "category": "tropical",
       "description": "Fruct cu coajă păroasă și pulpă verde, cu semințe negre mici, foarte bogat în vitamina C.",
+      "descriptionEn": "A fruit with hairy skin and green flesh with tiny black seeds, very rich in vitamin C.",
       "fact": "A fost numit inițial „agrișă chinezească” și a fost redenumit kiwi de exportatorii din Noua Zeelandă.",
+      "factEn": "It was first called the “Chinese gooseberry” and was renamed kiwi by exporters from New Zealand.",
       "vitamins": ["C", "K", "E"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -393,7 +469,10 @@
       },
       "visual": {
         "color": "#8A6A3B",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "fuzzy",
+        "slice": "greenseeds",
+        "flesh": "#8CC63F"
       },
       "ai": {
         "labels": ["kiwi"]
@@ -406,7 +485,9 @@
       "en": "Plum",
       "category": "stone",
       "description": "Fruct cu sâmbure, consumat proaspăt, uscat sau sub formă de gem și magiun.",
+      "descriptionEn": "A stone fruit eaten fresh, dried or as jam.",
       "fact": "România este unul dintre cei mai mari producători de prune din Europa.",
+      "factEn": "Romania is one of the largest plum growers in Europe.",
       "vitamins": ["C", "K"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -421,7 +502,11 @@
       },
       "visual": {
         "color": "#6B2C5E",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "bloom",
+        "features": ["stem"],
+        "slice": "stone",
+        "flesh": "#E9B84A"
       },
       "ai": {
         "labels": ["plum"]
@@ -434,7 +519,9 @@
       "emoji": "🍒",
       "category": "stone",
       "description": "Fruct mic și dulce de început de vară, cu un sâmbure tare.",
+      "descriptionEn": "A small, sweet early-summer fruit with a hard stone.",
       "fact": "Cireșul este rudă apropiată cu prunul, piersicul și caisul (genul Prunus).",
+      "factEn": "The cherry tree is a close relative of the plum, peach and apricot trees (genus Prunus).",
       "vitamins": ["C"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -449,7 +536,9 @@
       },
       "visual": {
         "color": "#B3122E",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "smooth",
+        "features": ["pair"]
       },
       "ai": {
         "labels": ["cherry"]
@@ -462,7 +551,9 @@
       "emoji": "🥥",
       "category": "tropical",
       "description": "Miezul alb al nucii de cocos este bogat în grăsimi și fibre, iar interiorul conține apă de cocos.",
+      "descriptionEn": "The white flesh of the coconut is rich in fat and fibre, and inside there is coconut water.",
       "fact": "Botanic, nuca de cocos nu este o nucă, ci o drupă, la fel ca piersica.",
+      "factEn": "Botanically, the coconut is not a nut but a drupe, just like the peach.",
       "vitamins": [],
       "minerals": ["mangan", "cupru", "seleniu", "fier"],
       "nutrition": {
@@ -477,7 +568,10 @@
       },
       "visual": {
         "color": "#8A5A3B",
-        "shape": "round"
+        "shape": "round",
+        "texture": "fibrous",
+        "slice": "cream",
+        "flesh": "#F8F4E8"
       },
       "ai": {
         "labels": ["coconut"]
@@ -489,7 +583,9 @@
       "en": "Papaya",
       "category": "tropical",
       "description": "Fruct tropical cu pulpă portocalie moale și semințe negre în centru.",
+      "descriptionEn": "A tropical fruit with soft orange flesh and black seeds in the middle.",
       "fact": "Papaya conține papaină, o enzimă folosită pentru frăgezirea cărnii.",
+      "factEn": "Papaya contains papain, an enzyme used to make meat more tender.",
       "vitamins": ["C", "A", "B9 (folat)"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -504,7 +600,12 @@
       },
       "visual": {
         "color": "#FF8A3D",
-        "shape": "oval"
+        "shape": "oval",
+        "color2": "#7DB343",
+        "texture": "blush",
+        "slice": "seedcenter",
+        "flesh": "#FF8A3D",
+        "aspect": 1.3
       },
       "ai": {
         "labels": ["papaya"]
@@ -516,7 +617,9 @@
       "en": "Pomegranate",
       "category": "other",
       "description": "Fruct cu coajă groasă și sute de semințe suculente, roșii, în interior.",
+      "descriptionEn": "A fruit with a thick skin and hundreds of juicy red seeds inside.",
       "fact": "O singură rodie poate conține câteva sute de semințe.",
+      "factEn": "A single pomegranate can hold several hundred seeds.",
       "vitamins": ["C", "K", "B9 (folat)"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -531,7 +634,11 @@
       },
       "visual": {
         "color": "#C0283E",
-        "shape": "round"
+        "shape": "round",
+        "texture": "leathery",
+        "features": ["blossom"],
+        "slice": "arils",
+        "flesh": "#C0102E"
       },
       "ai": {
         "labels": ["pomegranate"]
@@ -544,7 +651,9 @@
       "emoji": "🥑",
       "category": "tropical",
       "description": "Fruct cremos și puțin dulce, bogat în grăsimi nesaturate.",
+      "descriptionEn": "A creamy, slightly sweet fruit, rich in unsaturated fats.",
       "fact": "Avocado nu se coace pe pom: începe să se înmoaie abia după ce este cules.",
+      "factEn": "An avocado does not ripen on the tree: it only starts to soften after it is picked.",
       "vitamins": ["K", "E", "B9 (folat)", "B6", "C"],
       "minerals": ["potasiu", "cupru"],
       "nutrition": {
@@ -558,8 +667,12 @@
         }
       },
       "visual": {
-        "color": "#4E7A2E",
-        "shape": "teardrop"
+        "color": "#3A5A22",
+        "shape": "teardrop",
+        "texture": "rough",
+        "features": ["stem"],
+        "slice": "pit",
+        "flesh": "#D9E58A"
       },
       "ai": {
         "labels": ["avocado"]
@@ -571,7 +684,9 @@
       "en": "Apricot",
       "category": "stone",
       "description": "Fruct mic, catifelat și parfumat, consumat proaspăt sau uscat.",
+      "descriptionEn": "A small, velvety, fragrant fruit, eaten fresh or dried.",
       "fact": "Denumirea științifică, Prunus armeniaca, vine de la Armenia, unde caisele sunt cultivate de mii de ani.",
+      "factEn": "Its scientific name, Prunus armeniaca, comes from Armenia, where apricots have been grown for thousands of years.",
       "vitamins": ["A", "C"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -586,7 +701,12 @@
       },
       "visual": {
         "color": "#FFAE5A",
-        "shape": "round"
+        "shape": "round",
+        "color2": "#F06A3B",
+        "texture": "fuzzy",
+        "features": ["leaf"],
+        "slice": "stone",
+        "flesh": "#FFB35A"
       },
       "ai": {
         "labels": ["apricot"]
@@ -599,7 +719,9 @@
       "emoji": "🫐",
       "category": "berries",
       "description": "Bace mici, albastre, dulci-acrișoare, consumate proaspete sau congelate.",
+      "descriptionEn": "Small blue berries, sweet and slightly sour, eaten fresh or frozen.",
       "fact": "Culoarea albastră vine de la antociani, pigmenți naturali din coajă.",
+      "factEn": "The blue colour comes from anthocyanins, natural pigments in the skin.",
       "vitamins": ["K", "C"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -614,7 +736,9 @@
       },
       "visual": {
         "color": "#4B5BB5",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "bloom",
+        "features": ["berries", "blossom"]
       },
       "ai": {
         "labels": ["blueberry"]
@@ -626,7 +750,9 @@
       "en": "Raspberry",
       "category": "berries",
       "description": "Fruct delicat format din multe bobițe mici, foarte bogat în fibre.",
+      "descriptionEn": "A delicate fruit made of many tiny beads, very rich in fibre.",
       "fact": "Zmeura e goală pe interior pentru că miezul pe care crește rămâne pe plantă la cules.",
+      "factEn": "A raspberry is hollow because the core it grows on stays on the plant when it is picked.",
       "vitamins": ["C", "K"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -641,7 +767,8 @@
       },
       "visual": {
         "color": "#D63A5C",
-        "shape": "drupelets"
+        "shape": "drupelets",
+        "texture": "smooth"
       },
       "ai": {
         "labels": ["raspberry"]
@@ -653,7 +780,9 @@
       "en": "Blackberry",
       "category": "berries",
       "description": "Fruct de pădure închis la culoare, format din multe bobițe unite.",
+      "descriptionEn": "A dark forest fruit made of many little beads joined together.",
       "fact": "Fiecare bobiță a murei este un mic fruct cu sâmbure separat.",
+      "factEn": "Each little bead of a blackberry is a tiny fruit with its own seed.",
       "vitamins": ["C", "K"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -668,7 +797,9 @@
       },
       "visual": {
         "color": "#3B1F3F",
-        "shape": "drupelets"
+        "shape": "drupelets",
+        "texture": "smooth",
+        "features": ["calyx"]
       },
       "ai": {
         "labels": ["blackberry"]
@@ -680,7 +811,9 @@
       "en": "Grapefruit",
       "category": "citrus",
       "description": "Citric mare, acrișor și ușor amărui, cu pulpă roz sau roșie.",
+      "descriptionEn": "A large citrus fruit, tangy and slightly bitter, with pink or red flesh.",
       "fact": "Grepfrutul poate interacționa cu unele medicamente, de aceea prospectele avertizează uneori despre el.",
+      "factEn": "Grapefruit can interact with some medicines, which is why leaflets sometimes warn about it.",
       "vitamins": ["C", "A"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -694,8 +827,12 @@
         }
       },
       "visual": {
-        "color": "#F4845F",
-        "shape": "round"
+        "color": "#F6B26B",
+        "shape": "round",
+        "color2": "#F07A5F",
+        "texture": "dimpled",
+        "slice": "citrus",
+        "flesh": "#F7807A"
       },
       "ai": {
         "labels": ["grapefruit"]
@@ -707,7 +844,9 @@
       "en": "Fig",
       "category": "other",
       "description": "Fruct moale și foarte dulce, consumat proaspăt sau uscat.",
+      "descriptionEn": "A soft, very sweet fruit, eaten fresh or dried.",
       "fact": "Smochina este de fapt o inflorescență închisă, cu florile pe interior.",
+      "factEn": "A fig is actually a closed cluster of flowers, with the flowers on the inside.",
       "vitamins": ["K", "B6"],
       "minerals": ["potasiu", "cupru"],
       "nutrition": {
@@ -722,7 +861,12 @@
       },
       "visual": {
         "color": "#6E3B5C",
-        "shape": "teardrop"
+        "shape": "teardrop",
+        "texture": "bloom",
+        "features": ["stem"],
+        "slice": "seedcenter",
+        "flesh": "#E0565B",
+        "seedColor": "#F3D9A0"
       },
       "ai": {
         "labels": ["fig"]
@@ -734,7 +878,9 @@
       "en": "Guava",
       "category": "tropical",
       "description": "Fruct tropical parfumat, cu pulpă albă sau roz și multe semințe mici.",
+      "descriptionEn": "A fragrant tropical fruit with white or pink flesh and many small seeds.",
       "fact": "Guava are de peste patru ori mai multă vitamina C decât portocala, la aceeași cantitate.",
+      "factEn": "Guava has more than four times as much vitamin C as an orange, for the same amount.",
       "vitamins": ["C", "B9 (folat)", "A"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -749,7 +895,12 @@
       },
       "visual": {
         "color": "#9BC45A",
-        "shape": "round"
+        "shape": "round",
+        "texture": "dimpled",
+        "features": ["stem"],
+        "slice": "seedcenter",
+        "flesh": "#F58FA0",
+        "seedColor": "#F7E6B0"
       },
       "ai": {
         "labels": ["guava"]
@@ -761,7 +912,9 @@
       "en": "Dragon fruit",
       "category": "tropical",
       "description": "Fruct de cactus cu coajă roz și pulpă albă sau roșie, cu semințe negre mici.",
+      "descriptionEn": "A cactus fruit with pink skin and white or red flesh with tiny black seeds.",
       "fact": "Florile plantei se deschid doar noaptea.",
+      "factEn": "The plant’s flowers open only at night.",
       "vitamins": ["C"],
       "minerals": ["magneziu", "fier"],
       "nutrition": {
@@ -776,7 +929,12 @@
       },
       "visual": {
         "color": "#E8407A",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "smooth",
+        "slice": "whiteseeds",
+        "flesh": "#F7F3F0",
+        "spikeColor": "#8BC34A",
+        "features": ["scales"]
       },
       "ai": {
         "labels": ["dragon fruit"]
@@ -788,7 +946,9 @@
       "en": "Passion fruit",
       "category": "tropical",
       "description": "Fruct cu coajă tare și interior gelatinos, foarte aromat, plin de semințe.",
+      "descriptionEn": "A fruit with a hard shell and a very fragrant, jelly-like inside full of seeds.",
       "fact": "Numele vine de la floarea plantei, în care misionarii vedeau simboluri ale Patimilor.",
+      "factEn": "The name comes from the plant’s flower, in which missionaries saw symbols of the Passion.",
       "vitamins": ["C", "A"],
       "minerals": ["potasiu", "fier"],
       "nutrition": {
@@ -803,7 +963,11 @@
       },
       "visual": {
         "color": "#5B2A4A",
-        "shape": "round"
+        "shape": "round",
+        "texture": "wrinkled",
+        "features": ["stem"],
+        "slice": "pulp",
+        "flesh": "#F2C14E"
       },
       "ai": {
         "labels": ["passion fruit"]
@@ -815,7 +979,9 @@
       "en": "Lychee",
       "category": "tropical",
       "description": "Fruct cu coajă roșiatică și aspră, pulpă albă translucidă și aromă florală.",
+      "descriptionEn": "A fruit with reddish, rough skin, translucent white flesh and a flowery aroma.",
       "fact": "Litchi este cultivat în sudul Chinei de peste 2000 de ani.",
+      "factEn": "Lychee has been grown in southern China for more than 2,000 years.",
       "vitamins": ["C"],
       "minerals": ["cupru"],
       "nutrition": {
@@ -830,7 +996,9 @@
       },
       "visual": {
         "color": "#E36B6B",
-        "shape": "round"
+        "shape": "round",
+        "texture": "rough",
+        "features": ["stem"]
       },
       "ai": {
         "labels": ["lychee"]
@@ -843,7 +1011,9 @@
       "emoji": "🍑",
       "category": "stone",
       "description": "Fruct asemănător piersicii, dar cu coajă netedă.",
+      "descriptionEn": "A fruit similar to the peach, but with smooth skin.",
       "fact": "Nectarina este o varietate de piersică: diferența de coajă vine dintr-o singură genă.",
+      "factEn": "The nectarine is a kind of peach: the difference in the skin comes from a single gene.",
       "vitamins": ["C", "A"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -858,7 +1028,12 @@
       },
       "visual": {
         "color": "#F2694B",
-        "shape": "round"
+        "shape": "round",
+        "color2": "#FFC24D",
+        "texture": "blush",
+        "features": ["leaf"],
+        "slice": "stone",
+        "flesh": "#FFB35A"
       },
       "ai": {
         "labels": ["nectarine"]
@@ -870,7 +1045,9 @@
       "en": "Cranberry",
       "category": "berries",
       "description": "Bace roșii foarte acre, consumate mai ales ca suc, sos sau uscate.",
+      "descriptionEn": "Very sour red berries, eaten mostly as juice, sauce or dried.",
       "fact": "Merișoarele coapte sar dacă le lași să cadă, iar la recoltare câmpurile sunt inundate ca să plutească.",
+      "factEn": "Ripe cranberries bounce when dropped, and at harvest the fields are flooded so they float.",
       "vitamins": ["C", "E"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -885,7 +1062,9 @@
       },
       "visual": {
         "color": "#B5162F",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "smooth",
+        "features": ["berries"]
       },
       "ai": {
         "labels": ["cranberry"]
@@ -898,7 +1077,9 @@
       "emoji": "🍊",
       "category": "citrus",
       "description": "Citric mic și dulce, care se curăță ușor de coajă.",
+      "descriptionEn": "A small, sweet citrus fruit that is easy to peel.",
       "fact": "Numele englezesc vine de la orașul Tanger, din Maroc.",
+      "factEn": "The English name comes from the city of Tangier in Morocco.",
       "vitamins": ["C", "A"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -913,7 +1094,11 @@
       },
       "visual": {
         "color": "#FF8C1A",
-        "shape": "round"
+        "shape": "round",
+        "texture": "dimpled",
+        "features": ["leaf"],
+        "slice": "citrus",
+        "flesh": "#FF9B2F"
       },
       "ai": {
         "labels": ["tangerine"]
@@ -926,7 +1111,9 @@
       "emoji": "🍊",
       "category": "citrus",
       "description": "Citric mic, dulce și de obicei fără semințe.",
+      "descriptionEn": "A small, sweet citrus fruit, usually without seeds.",
       "fact": "Clementina este un hibrid între mandarină și portocala dulce.",
+      "factEn": "The clementine is a hybrid of the mandarin and the sweet orange.",
       "vitamins": ["C"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -941,7 +1128,11 @@
       },
       "visual": {
         "color": "#FF9426",
-        "shape": "round"
+        "shape": "round",
+        "texture": "dimpled",
+        "features": ["leaf"],
+        "slice": "citrus",
+        "flesh": "#FFA033"
       },
       "ai": {
         "labels": ["clementine"]
@@ -953,7 +1144,9 @@
       "en": "Persimmon",
       "category": "other",
       "description": "Fruct portocaliu, foarte dulce și moale când este complet copt.",
+      "descriptionEn": "An orange fruit, very sweet and soft when fully ripe.",
       "fact": "Unele soiuri sunt astringente din cauza taninurilor până se înmoaie complet.",
+      "factEn": "Some varieties are astringent because of tannins until they become completely soft.",
       "vitamins": ["A", "C"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -968,7 +1161,10 @@
       },
       "visual": {
         "color": "#F27F1B",
-        "shape": "round"
+        "shape": "round",
+        "texture": "smooth",
+        "features": ["calyx"],
+        "calyxColor": "#6B7A2A"
       },
       "ai": {
         "labels": ["persimmon"]
@@ -980,7 +1176,9 @@
       "en": "Date",
       "category": "other",
       "description": "Fruct de palmier foarte dulce, consumat de obicei uscat.",
+      "descriptionEn": "A very sweet palm fruit, usually eaten dried.",
       "fact": "Curmalul este cultivat în Orientul Mijlociu de mii de ani.",
+      "factEn": "The date palm has been grown in the Middle East for thousands of years.",
       "vitamins": ["B6"],
       "minerals": ["potasiu", "magneziu", "cupru"],
       "nutrition": {
@@ -995,7 +1193,8 @@
       },
       "visual": {
         "color": "#8B4A1F",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "wrinkled"
       },
       "ai": {
         "labels": ["date"]
@@ -1007,7 +1206,9 @@
       "en": "Durian",
       "category": "tropical",
       "description": "Fruct tropical mare, cu coajă țepoasă și pulpă cremoasă, foarte aromată.",
+      "descriptionEn": "A large tropical fruit with a spiky shell and creamy, very strong-smelling flesh.",
       "fact": "Mirosul lui este atât de puternic încât e interzis în unele mijloace de transport din Singapore.",
+      "factEn": "Its smell is so strong that it is banned on some public transport in Singapore.",
       "vitamins": ["C", "B1", "B6"],
       "minerals": ["potasiu", "mangan"],
       "nutrition": {
@@ -1022,7 +1223,10 @@
       },
       "visual": {
         "color": "#B5B04A",
-        "shape": "spiky"
+        "shape": "spiky",
+        "texture": "rough",
+        "features": ["stem"],
+        "spikes": "cones"
       },
       "ai": {
         "labels": ["durian"]
@@ -1034,7 +1238,9 @@
       "en": "Jackfruit",
       "category": "tropical",
       "description": "Cel mai mare fruct care crește pe un copac, cu pulpă galbenă și dulce.",
+      "descriptionEn": "The largest fruit that grows on a tree, with yellow, sweet flesh.",
       "fact": "Un singur jackfruit poate depăși 30 de kilograme.",
+      "factEn": "A single jackfruit can weigh more than 30 kilograms.",
       "vitamins": ["C", "B6"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1049,7 +1255,9 @@
       },
       "visual": {
         "color": "#9DB34A",
-        "shape": "spiky"
+        "shape": "spiky",
+        "texture": "rough",
+        "spikes": "bumps"
       },
       "ai": {
         "labels": ["jackfruit"]
@@ -1061,7 +1269,9 @@
       "en": "Starfruit",
       "category": "tropical",
       "description": "Fruct crocant și suculent, cu secțiune în formă de stea.",
+      "descriptionEn": "A crunchy, juicy fruit with a star-shaped cross-section.",
       "fact": "Carambola nu este recomandată persoanelor cu boli de rinichi, din cauza unor substanțe pe care le conține.",
+      "factEn": "Starfruit is not recommended for people with kidney disease, because of some substances it contains.",
       "vitamins": ["C"],
       "minerals": ["potasiu", "cupru"],
       "nutrition": {
@@ -1076,7 +1286,8 @@
       },
       "visual": {
         "color": "#E3D23A",
-        "shape": "star"
+        "shape": "star",
+        "texture": "smooth"
       },
       "ai": {
         "labels": ["starfruit"]
@@ -1088,7 +1299,9 @@
       "en": "Longan",
       "category": "tropical",
       "description": "Fruct mic cu coajă maronie și pulpă translucidă, asemănător cu litchi.",
+      "descriptionEn": "A small fruit with brownish skin and translucent flesh, similar to lychee.",
       "fact": "Numele înseamnă „ochi de dragon”, după aspectul sâmburelui văzut prin pulpă.",
+      "factEn": "Its name means “dragon’s eye”, after how the seed looks through the flesh.",
       "vitamins": ["C"],
       "minerals": ["cupru"],
       "nutrition": {
@@ -1103,7 +1316,8 @@
       },
       "visual": {
         "color": "#C9A15A",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "rough"
       },
       "ai": {
         "labels": ["longan"]
@@ -1115,7 +1329,9 @@
       "en": "Rambutan",
       "category": "tropical",
       "description": "Fruct tropical cu coajă roșie acoperită de „fire” moi și pulpă albă, dulce.",
+      "descriptionEn": "A tropical fruit with red skin covered in soft “hairs” and sweet white flesh.",
       "fact": "Numele vine din malaeziană: „rambut” înseamnă păr.",
+      "factEn": "The name comes from Malay: “rambut” means hair.",
       "vitamins": ["C"],
       "minerals": ["mangan", "cupru"],
       "nutrition": {
@@ -1130,7 +1346,10 @@
       },
       "visual": {
         "color": "#D92D3A",
-        "shape": "spiky"
+        "shape": "spiky",
+        "texture": "smooth",
+        "spikes": "hairs",
+        "spikeColor": "#6FAF3A"
       },
       "ai": {
         "labels": ["rambutan"]
@@ -1142,7 +1361,9 @@
       "en": "Quince",
       "category": "pome",
       "description": "Fruct tare și parfumat, folosit mai ales gătit, în dulcețuri și compoturi.",
+      "descriptionEn": "A hard, fragrant fruit, mostly eaten cooked, in jams and compotes.",
       "fact": "Gutuile sunt foarte bogate în pectină, de aceea dulceața de gutui se leagă ușor.",
+      "factEn": "Quinces are very rich in pectin, which is why quince jam sets so easily.",
       "vitamins": ["C"],
       "minerals": ["cupru"],
       "nutrition": {
@@ -1157,7 +1378,10 @@
       },
       "visual": {
         "color": "#E8CF4A",
-        "shape": "teardrop"
+        "shape": "teardrop",
+        "color2": "#D9C24A",
+        "texture": "fuzzy",
+        "features": ["leaf"]
       },
       "ai": {
         "labels": ["quince"]
@@ -1169,7 +1393,9 @@
       "en": "Mulberry",
       "category": "berries",
       "description": "Fruct dulce, asemănător murei, care crește pe dud.",
+      "descriptionEn": "A sweet fruit, similar to the blackberry, that grows on the mulberry tree.",
       "fact": "Frunzele dudului alb sunt hrana viermilor de mătase.",
+      "factEn": "The leaves of the white mulberry are the food of silkworms.",
       "vitamins": ["C", "K"],
       "minerals": ["fier"],
       "nutrition": {
@@ -1184,7 +1410,10 @@
       },
       "visual": {
         "color": "#4A1F3A",
-        "shape": "drupelets"
+        "shape": "drupelets",
+        "texture": "smooth",
+        "features": ["calyx"],
+        "aspect": 1.3
       },
       "ai": {
         "labels": ["mulberry"]
@@ -1196,7 +1425,9 @@
       "en": "Gooseberry",
       "category": "berries",
       "description": "Bace acrișoare, verzi sau roșiatice, folosite proaspete sau în gemuri.",
+      "descriptionEn": "Tangy green or reddish berries, eaten fresh or in jams.",
       "fact": "În Anglia secolului al XIX-lea existau cluburi de cultivatori care concurau pentru cea mai grea agrișă.",
+      "factEn": "In 19th-century England there were growers’ clubs that competed for the heaviest gooseberry.",
       "vitamins": ["C", "A"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -1211,7 +1442,12 @@
       },
       "visual": {
         "color": "#A7C957",
-        "shape": "round"
+        "shape": "round",
+        "color2": "#C8E28A",
+        "texture": "striped",
+        "features": ["stem"],
+        "stripes": 10,
+        "stripeWidth": 0.12
       },
       "ai": {
         "labels": ["gooseberry"]
@@ -1223,7 +1459,9 @@
       "en": "Pomelo",
       "category": "citrus",
       "description": "Cel mai mare citric, cu coajă groasă și pulpă dulce, ușor amăruie.",
+      "descriptionEn": "The largest citrus fruit, with a thick peel and sweet, slightly bitter flesh.",
       "fact": "Pomelo este unul dintre strămoșii grepfrutului și ai portocalei.",
+      "factEn": "The pomelo is one of the ancestors of the grapefruit and the orange.",
       "vitamins": ["C"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1238,7 +1476,11 @@
       },
       "visual": {
         "color": "#C8E07A",
-        "shape": "round"
+        "shape": "round",
+        "texture": "dimpled",
+        "slice": "citrus",
+        "flesh": "#F7D9C4",
+        "aspect": 0.95
       },
       "ai": {
         "labels": ["pomelo"]
@@ -1250,7 +1492,9 @@
       "en": "Kumquat",
       "category": "citrus",
       "description": "Citric foarte mic, care se mănâncă întreg, cu tot cu coajă.",
+      "descriptionEn": "A very small citrus fruit that is eaten whole, peel and all.",
       "fact": "La kumquat coaja este dulce, iar pulpa este acră.",
+      "factEn": "In a kumquat the peel is sweet and the flesh is sour.",
       "vitamins": ["C"],
       "minerals": ["calciu"],
       "nutrition": {
@@ -1265,7 +1509,9 @@
       },
       "visual": {
         "color": "#FF9F1C",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "dimpled",
+        "features": ["leaf"]
       },
       "ai": {
         "labels": ["kumquat"]
@@ -1277,7 +1523,9 @@
       "en": "Tamarind",
       "category": "tropical",
       "description": "Păstaie cu pulpă lipicioasă, dulce-acrișoară, folosită mult în bucătăriile asiatice.",
+      "descriptionEn": "A pod with sticky, sweet-and-sour pulp, used a lot in Asian cooking.",
       "fact": "Tamarindul este unul dintre ingredientele sosului Worcestershire.",
+      "factEn": "Tamarind is one of the ingredients of Worcestershire sauce.",
       "vitamins": ["B1", "B3"],
       "minerals": ["magneziu", "potasiu", "fier"],
       "nutrition": {
@@ -1292,7 +1540,10 @@
       },
       "visual": {
         "color": "#7B4A2A",
-        "shape": "elongated"
+        "shape": "elongated",
+        "color2": "#4A2A15",
+        "texture": "rough",
+        "aspect": 0.9
       },
       "ai": {
         "labels": ["tamarind"]
@@ -1305,7 +1556,9 @@
       "emoji": "🍈",
       "category": "melons",
       "description": "Pepene cu coajă reticulată și pulpă portocalie, dulce și parfumată.",
+      "descriptionEn": "A melon with a netted rind and sweet, fragrant orange flesh.",
       "fact": "O porție de pepene galben acoperă o bună parte din necesarul zilnic de vitamina A.",
+      "factEn": "One serving of cantaloupe covers a good part of the daily need for vitamin A.",
       "vitamins": ["A", "C"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1319,8 +1572,14 @@
         }
       },
       "visual": {
-        "color": "#E9A23B",
-        "shape": "round"
+        "color": "#B9A15A",
+        "shape": "round",
+        "color2": "#E8D7A8",
+        "texture": "netted",
+        "slice": "melon",
+        "flesh": "#FFA94D",
+        "seeds": "cavity",
+        "rindInner": "#F5E7B8"
       },
       "ai": {
         "labels": ["cantaloupe"]
@@ -1333,7 +1592,9 @@
       "emoji": "🍈",
       "category": "melons",
       "description": "Pepene cu coajă netedă și pulpă verde-pal, dulce și răcoritoare.",
+      "descriptionEn": "A melon with a smooth rind and pale green, sweet and refreshing flesh.",
       "fact": "Ca și pepenele verde, conține în jur de 90% apă.",
+      "factEn": "Like watermelon, it is about 90% water.",
       "vitamins": ["C", "B6"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1348,7 +1609,12 @@
       },
       "visual": {
         "color": "#C7E3A0",
-        "shape": "round"
+        "shape": "round",
+        "texture": "smooth",
+        "slice": "melon",
+        "flesh": "#C9E89A",
+        "seeds": "cavity",
+        "rindInner": "#E8F5C8"
       },
       "ai": {
         "labels": ["honeydew"]
@@ -1360,7 +1626,9 @@
       "en": "Plantain",
       "category": "tropical",
       "description": "Rudă a bananei, mai amidonoasă, care se consumă de obicei gătită.",
+      "descriptionEn": "A relative of the banana, starchier, usually eaten cooked.",
       "fact": "În multe țări tropicale, bananele plantain sunt un aliment de bază, ca și cartofii.",
+      "factEn": "In many tropical countries, plantains are a staple food, like potatoes.",
       "vitamins": ["A", "C", "B6"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1375,7 +1643,10 @@
       },
       "visual": {
         "color": "#B8A436",
-        "shape": "elongated"
+        "shape": "elongated",
+        "color2": "#3B2A1A",
+        "texture": "speckled",
+        "aspect": 1.15
       },
       "ai": {
         "labels": ["plantain"]
@@ -1387,7 +1658,9 @@
       "en": "Soursop",
       "category": "tropical",
       "description": "Fruct tropical mare, cu coajă verde țepoasă și pulpă albă, cremoasă.",
+      "descriptionEn": "A large tropical fruit with a spiky green skin and white, creamy flesh.",
       "fact": "Este cunoscut și sub numele de graviola.",
+      "factEn": "It is also known as graviola.",
       "vitamins": ["C", "B1"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1402,7 +1675,11 @@
       },
       "visual": {
         "color": "#5E8C3A",
-        "shape": "spiky"
+        "shape": "spiky",
+        "texture": "smooth",
+        "features": ["stem"],
+        "spikes": "soft",
+        "spikeColor": "#3E6B2A"
       },
       "ai": {
         "labels": ["soursop"]
@@ -1414,7 +1691,9 @@
       "en": "Custard apple",
       "category": "tropical",
       "description": "Fruct tropical cu pulpă albă, cremoasă și dulce, ca o cremă de vanilie.",
+      "descriptionEn": "A tropical fruit with white, creamy and sweet flesh, like vanilla custard.",
       "fact": "Denumirea științifică, Annona reticulata, vine de la modelul de plasă al cojii.",
+      "factEn": "Its scientific name, Annona reticulata, comes from the net pattern on its skin.",
       "vitamins": ["C", "B6"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1429,7 +1708,9 @@
       },
       "visual": {
         "color": "#A08A4A",
-        "shape": "round"
+        "shape": "round",
+        "texture": "rough",
+        "features": ["stem"]
       },
       "ai": {
         "labels": ["custard apple"]
@@ -1441,7 +1722,9 @@
       "en": "Elderberry",
       "category": "berries",
       "description": "Bace mici și închise la culoare, folosite gătite, în siropuri și dulcețuri.",
+      "descriptionEn": "Small dark berries, used cooked, in syrups and jams.",
       "fact": "Bacele crude și necoapte ale socului pot fi toxice, de aceea se consumă doar gătite.",
+      "factEn": "Raw and unripe elderberries can be toxic, which is why they are only eaten cooked.",
       "vitamins": ["C", "A", "B6"],
       "minerals": ["fier", "potasiu"],
       "nutrition": {
@@ -1456,7 +1739,9 @@
       },
       "visual": {
         "color": "#2E1A3A",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "bloom",
+        "features": ["berries", "stem"]
       },
       "ai": {
         "labels": ["elderberry"]
@@ -1468,7 +1753,9 @@
       "en": "Mangosteen",
       "category": "tropical",
       "description": "Fruct tropical cu coajă mov groasă și segmente albe, dulci-acrișoare.",
+      "descriptionEn": "A tropical fruit with a thick purple shell and sweet-and-sour white segments.",
       "fact": "În Asia de Sud-Est este numit „regina fructelor”.",
+      "factEn": "In Southeast Asia it is called the “queen of fruits”.",
       "vitamins": ["B9 (folat)"],
       "minerals": ["mangan"],
       "nutrition": {
@@ -1483,7 +1770,12 @@
       },
       "visual": {
         "color": "#5A1E3D",
-        "shape": "round"
+        "shape": "round",
+        "texture": "smooth",
+        "features": ["calyx"],
+        "slice": "cream",
+        "flesh": "#FBFAF5",
+        "calyxColor": "#5E7A2A"
       },
       "ai": {
         "labels": ["mangosteen"]
@@ -1495,7 +1787,9 @@
       "en": "Blackcurrant",
       "category": "berries",
       "description": "Bace mici, negre și acrișoare, cu un conținut foarte mare de vitamina C.",
+      "descriptionEn": "Small black, tangy berries with a very high vitamin C content.",
       "fact": "Coacăzele negre au de peste trei ori mai multă vitamina C decât portocalele, la aceeași cantitate.",
+      "factEn": "Blackcurrants have more than three times as much vitamin C as oranges, for the same amount.",
       "vitamins": ["C"],
       "minerals": ["potasiu", "fier"],
       "nutrition": {
@@ -1510,7 +1804,9 @@
       },
       "visual": {
         "color": "#2B1B2E",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "bloom",
+        "features": ["berries", "stem"]
       },
       "ai": {
         "labels": ["blackcurrant"]
@@ -1522,7 +1818,9 @@
       "en": "Redcurrant",
       "category": "berries",
       "description": "Bace roșii translucide și acre, folosite des în jeleuri și sosuri.",
+      "descriptionEn": "Translucent, sour red berries, often used in jellies and sauces.",
       "fact": "Coacăzele roșii au multă pectină, de aceea se leagă ușor în jeleu.",
+      "factEn": "Redcurrants are rich in pectin, which is why they set easily into jelly.",
       "vitamins": ["C", "K"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1537,7 +1835,9 @@
       },
       "visual": {
         "color": "#D7263D",
-        "shape": "cluster"
+        "shape": "cluster",
+        "texture": "smooth",
+        "features": ["berries", "stem"]
       },
       "ai": {
         "labels": ["redcurrant"]
@@ -1549,7 +1849,9 @@
       "en": "Greengage",
       "category": "stone",
       "description": "Prună verde-gălbuie, foarte dulce și parfumată.",
+      "descriptionEn": "A green-yellow plum, very sweet and fragrant.",
       "fact": "Numele englezesc vine de la Sir William Gage, care a adus soiul în Anglia în secolul al XVIII-lea.",
+      "factEn": "Its English name comes from Sir William Gage, who brought the variety to England in the 18th century.",
       "vitamins": ["C", "K"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1564,7 +1866,11 @@
       },
       "visual": {
         "color": "#A8C256",
-        "shape": "round"
+        "shape": "round",
+        "texture": "bloom",
+        "features": ["stem"],
+        "slice": "stone",
+        "flesh": "#D9E58A"
       },
       "ai": {
         "labels": ["greengage"]
@@ -1576,7 +1882,9 @@
       "en": "Blood orange",
       "category": "citrus",
       "description": "Portocală cu pulpă roșie și aromă ușor de fructe de pădure.",
+      "descriptionEn": "An orange with red flesh and a slight berry-like flavour.",
       "fact": "Culoarea roșie apare datorită antocianilor, care se formează când nopțile sunt reci.",
+      "factEn": "The red colour comes from anthocyanins, which form when the nights are cold.",
       "vitamins": ["C", "B9 (folat)"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1591,7 +1899,11 @@
       },
       "visual": {
         "color": "#C7372F",
-        "shape": "round"
+        "shape": "round",
+        "color2": "#C7372F",
+        "texture": "dimpled",
+        "slice": "citrus",
+        "flesh": "#B3122E"
       },
       "ai": {
         "labels": ["blood orange"]
@@ -1603,7 +1915,9 @@
       "en": "Prickly pear",
       "category": "other",
       "description": "Fruct de cactus, cu pulpă dulce și multe semințe, acoperit de țepi foarte fini.",
+      "descriptionEn": "A cactus fruit with sweet flesh and many seeds, covered in very fine spines.",
       "fact": "Țepii minusculi se desprind ușor, de aceea fructul se curăță cu mănuși.",
+      "factEn": "The tiny spines come off easily, which is why the fruit is peeled with gloves.",
       "vitamins": ["C"],
       "minerals": ["magneziu", "calciu"],
       "nutrition": {
@@ -1618,7 +1932,10 @@
       },
       "visual": {
         "color": "#C2386B",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "speckled",
+        "slice": "whiteseeds",
+        "flesh": "#E0457B"
       },
       "ai": {
         "labels": ["prickly pear"]
@@ -1630,7 +1947,9 @@
       "en": "Cherimoya",
       "category": "tropical",
       "description": "Fruct sud-american cu pulpă albă și cremoasă, cu gust de ananas, banană și vanilie.",
+      "descriptionEn": "A South American fruit with white, creamy flesh that tastes like pineapple, banana and vanilla.",
       "fact": "Mark Twain o considera cel mai delicios fruct cunoscut.",
+      "factEn": "Mark Twain thought it was the most delicious fruit known.",
       "vitamins": ["C", "B6"],
       "minerals": ["potasiu"],
       "nutrition": {
@@ -1645,7 +1964,9 @@
       },
       "visual": {
         "color": "#8FB35A",
-        "shape": "teardrop"
+        "shape": "teardrop",
+        "texture": "rough",
+        "features": ["stem"]
       },
       "ai": {
         "labels": ["cherimoya"]
@@ -1657,7 +1978,9 @@
       "en": "Medlar",
       "category": "pome",
       "description": "Fruct mic și maroniu, care se mănâncă doar după ce se înmoaie complet.",
+      "descriptionEn": "A small brown fruit that is only eaten after it has gone completely soft.",
       "fact": "Moșmoanele se lasă să se „bletească”: devin comestibile abia când sunt foarte coapte.",
+      "factEn": "Medlars are left to “blet”: they only become edible when they are very ripe.",
       "vitamins": [],
       "minerals": [],
       "nutrition": {
@@ -1672,7 +1995,10 @@
       },
       "visual": {
         "color": "#8C6239",
-        "shape": "round"
+        "shape": "round",
+        "texture": "rough",
+        "features": ["calyx"],
+        "calyxColor": "#6B4E2A"
       },
       "ai": {
         "labels": ["medlar"]
@@ -1685,7 +2011,9 @@
       "emoji": "🫒",
       "category": "stone",
       "description": "Fruct mic și amărui, consumat doar după ce este tratat sau folosit pentru ulei.",
+      "descriptionEn": "A small, bitter fruit that is only eaten after it is treated, or used for oil.",
       "fact": "Măslinele proaspete sunt foarte amare și devin comestibile abia după murare sau saramură.",
+      "factEn": "Fresh olives are very bitter and only become edible after curing or brining.",
       "vitamins": ["E"],
       "minerals": ["fier", "cupru"],
       "nutrition": {
@@ -1700,7 +2028,11 @@
       },
       "visual": {
         "color": "#556B2F",
-        "shape": "oval"
+        "shape": "oval",
+        "texture": "smooth",
+        "features": ["leaf"],
+        "leafWidth": 0.08,
+        "leafColor": "#7A9A6A"
       },
       "ai": {
         "labels": ["olive"]

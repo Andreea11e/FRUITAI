@@ -938,3 +938,195 @@ header.nav { background: rgba(13,9,38,.62); }
 .fruit-reveal.reduced.portrait .rv-actions { transform: none !important; }
 .fruit-reveal.reduced .rv-line, .fruit-reveal.reduced .rv-glowline { stroke-dashoffset: 0 !important; }
 .hero-vita ~ .hcard.c3, .hcard.c3 { display: none; }
+
+/* ---------- Camera AR v2: nutrienți interactivi, săgeți, controale, card bilingv ---------- */
+.rv-arrow { opacity: 0; animation: rvDot .35s cubic-bezier(.2,1.8,.4,1) forwards; filter: drop-shadow(0 0 5px rgba(255,255,255,.5)); }
+.fruit-reveal.reduced .rv-arrow { opacity: 1 !important; }
+button.rv-label { font: inherit; cursor: pointer; text-align: left; pointer-events: auto; }
+.rv-label.nut { display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 9px; transition: box-shadow .2s, border-color .2s; }
+.rv-label.nut small { margin-bottom: 3px; }
+.rv-label.nut b { font: 900 17px/1.1 "Nunito", var(--f-sans); color: #fff; }
+.rv-label.nut .nicon { width: 42px; height: 42px; }
+.rv-label.nut:hover { box-shadow: 0 0 0 2px var(--lc), 0 0 34px -4px var(--lc); }
+.rv-label.nut.active { box-shadow: 0 0 0 3px var(--lc), 0 0 44px -2px var(--lc); }
+.rv-label.pop { animation: rvLabel .6s cubic-bezier(.2,1.6,.4,1) forwards, cardPop .5s cubic-bezier(.2,1.8,.4,1); }
+.rv-col { gap: 10px; }
+.rv-top { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 999px; background: rgba(13,9,38,.72); border: 1px solid rgba(255,255,255,.2); color: #fff; font: 800 14px "Nunito", var(--f-sans);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); white-space: nowrap; opacity: 0; animation: rvAct2 .5s ease .3s forwards; }
+@keyframes rvAct2 { to { opacity: 1; } }
+.rv-ok { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #DFFF7A, #8EF0C9); color: #0F1A00; font-weight: 900; }
+.conf { display: inline-flex; gap: 3px; }
+.conf i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.22); }
+.conf-1 i:nth-child(-n+1), .conf-2 i:nth-child(-n+2), .conf-3 i { background: #DFFF7A; box-shadow: 0 0 8px rgba(223,255,122,.8); }
+.conf-1 i:first-child { background: #FFB547; box-shadow: 0 0 8px rgba(255,181,71,.8); }
+.rv-tools { position: absolute; left: 50%; bottom: 92px; transform: translateX(-50%); display: flex; gap: 10px; z-index: 3; opacity: 0; animation: rvAct2 .5s ease forwards; animation-delay: var(--d, 1.5s); }
+.rv-tools .dbtn.round { width: 50px; height: 50px; }
+.rv-tools .dbtn svg { width: 22px; height: 22px; }
+.fruit-reveal.moving .rv-canvas { cursor: move; }
+.fruit-reveal.portrait .rv-tools { left: auto; right: 10px; bottom: auto; top: 50%; transform: translateY(-50%); flex-direction: column; }
+.fruit-reveal.portrait .rv-tools .dbtn.round { width: 46px; height: 46px; }
+.fruit-reveal.portrait .rv-col.right { bottom: 88px; }
+.fruit-reveal.portrait .rv-label.nut { padding: 6px 11px 6px 6px; gap: 7px; }
+.fruit-reveal.portrait .rv-label.nut b { font-size: 14px; }
+.fruit-reveal.portrait .rv-label.nut .nicon { width: 34px; height: 34px; }
+.fruit-reveal.portrait .rv-label.nut small { display: none; }
+.fruit-reveal.portrait .rv-top { top: max(62px, calc(env(safe-area-inset-top) + 50px)); font-size: 13px; }
+.fruit-reveal.portrait .rv-col.left { top: max(108px, calc(env(safe-area-inset-top) + 96px)); }
+.fruit-reveal.reduced .rv-tools, .fruit-reveal.reduced .rv-top { opacity: 1 !important; }
+.rv-actions { flex-wrap: wrap; justify-content: center; width: max-content; max-width: calc(100% - 24px); }
+.fruit-reveal.portrait .rv-actions .dbtn.big { min-height: 50px; font-size: 15px; padding: 0 10px; }
+.fruit-reveal.portrait .rv-actions .dbtn.big svg { width: 20px; height: 20px; }
+
+.rv-card { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 8; width: min(440px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto;
+  padding: 18px 20px 16px; border-radius: 26px; color: #fff; font-family: "Nunito", var(--f-sans);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--nc) 32%, rgba(20,14,50,.9)), rgba(14,10,38,.94));
+  border: 1.5px solid color-mix(in srgb, var(--nc) 65%, white); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,.85), 0 0 50px -10px var(--nc); }
+.rv-card.in { animation: rcIn .5s cubic-bezier(.2,1.5,.4,1); }
+@keyframes rcIn { from { opacity: 0; transform: translate(-50%, -40%) scale(.85); } }
+.rv-card-x { position: absolute; top: 12px; right: 12px; }
+.rc-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; padding-right: 44px; }
+.rc-kind { font: 800 12px "Nunito", var(--f-sans); letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.75); }
+.rc-lang { position: relative; padding: 10px 12px 10px 48px; border-radius: 16px; background: rgba(255,255,255,.08); margin-top: 8px; }
+.rc-lang .flag { position: absolute; left: 10px; top: 12px; font: 900 11px/1 "Nunito", var(--f-sans); padding: 5px 6px; border-radius: 7px; background: #FFE27A; color: #2A1600; }
+.rc-lang.en .flag { background: #8EF0C9; color: #04261C; }
+.rc-lang h4 { margin: 0 0 4px; font: 900 19px/1.15 "Nunito", var(--f-sans); letter-spacing: .02em; }
+.rc-lang p { margin: 0; font: 700 15px/1.45 "Nunito", var(--f-sans); color: rgba(255,255,255,.92); }
+.rc-helps { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+.rc-helps span { padding: 6px 11px; border-radius: 999px; background: rgba(255,255,255,.12); font: 800 13px "Nunito", var(--f-sans); }
+.rc-helps i { font-style: normal; opacity: .75; }
+.rc-stat { margin: 10px 0 0; font: 700 13px "Nunito", var(--f-sans); color: rgba(255,255,255,.75); }
+.fm-name { display: flex; align-items: center; gap: 10px; font: 900 clamp(26px, 4vw, 36px)/1.05 "Nunito", var(--f-sans); }
+.fm-name em { font-style: normal; font-size: .6em; letter-spacing: .14em; color: #8EF0C9; }
+.fm-conf { display: inline-flex; align-items: center; gap: 8px; font: 800 13px "Nunito", var(--f-sans); color: rgba(255,255,255,.85); padding: 5px 12px; border-radius: 999px; background: rgba(255,255,255,.08); }
+.rv-col { width: min(360px, 34%); }
+.rv-label.ro b { font-size: clamp(24px, 3.3vw, 44px); flex-wrap: wrap; row-gap: 2px; overflow-wrap: anywhere; }
+.rv-label.en b { font-size: clamp(18px, 2.6vw, 30px); overflow-wrap: anywhere; }
+
+/* AR spațial: overlay (dom-overlay) */
+#xrOverlay { font-family: "Nunito", var(--f-sans); }
+#xrOverlay .xr-pill { font: 800 15px "Nunito", var(--f-sans); background: rgba(13,9,38,.72); padding: 10px 16px; }
+#xrOverlay .xr-top .dbtn.round { width: 50px; height: 50px; font-size: 28px; pointer-events: auto; }
+.xr-tools { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: grid; gap: 10px; pointer-events: auto; }
+.xr-tools .dbtn.round { width: 54px; height: 54px; font-size: 24px; font-weight: 900; }
+.xr-card { position: absolute; left: 12px; right: 78px; bottom: 90px; pointer-events: auto; padding: 14px 16px; border-radius: 22px; color: #fff;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--nc, #8EF0C9) 30%, rgba(20,14,50,.92)), rgba(14,10,38,.94)); border: 1.5px solid var(--nc, #8EF0C9); }
+.xr-card .xr-x { position: absolute; top: 8px; right: 10px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255,255,255,.15); color: #fff; font-size: 22px; }
+.xr-c-lang { position: relative; padding-left: 42px; margin-top: 6px; }
+.xr-c-lang b { position: absolute; left: 0; top: 2px; font: 900 11px "Nunito", var(--f-sans); padding: 4px 6px; border-radius: 6px; background: #FFE27A; color: #2A1600; }
+.xr-c-lang.en b { background: #8EF0C9; color: #04261C; }
+.xr-c-lang h4 { margin: 0; font: 900 18px "Nunito", var(--f-sans); }
+.xr-c-lang p { margin: 2px 0 0; font: 700 14px/1.4 "Nunito", var(--f-sans); }
+
+/* ================= Prima pagină: fruct 3D, vitamine pe orbită ================= */
+.hero-canvas { position: absolute; left: 4%; top: 2%; width: 92%; height: 92%; opacity: 0; transition: opacity .8s ease; transform: translateZ(40px); }
+.scene3d.has3d .hero-canvas { opacity: 1; }
+.scene3d.has3d .orb-wrap .orb, .scene3d.has3d .orb-wrap .leaf, .scene3d.has3d .orb-wrap .brackets { opacity: 0; transition: opacity .6s; }
+.hero-orbit { position: absolute; left: 50%; top: 47%; width: 0; height: 0; transform: translateZ(70px); animation: heroSpin 22s linear infinite; }
+.hero-orbit .ho { position: absolute; left: 0; top: 0; transform: rotate(var(--a)) translateX(min(220px, 38vw)) rotate(calc(-1 * var(--a))); }
+.hero-orbit .ho > .nicon { transform: translate(-50%, -50%); animation: heroSpinBack 22s linear infinite, bob 3.2s ease-in-out infinite; }
+.hero-orbit .nicon { width: 54px; height: 54px; }
+.hero-orbit .nicon b { font-size: 18px; }
+@keyframes heroSpin { to { rotate: 360deg; } }
+@keyframes heroSpinBack { to { rotate: -360deg; } }
+.hero-hit { position: absolute; left: 25%; top: 22%; width: 50%; height: 50%; border-radius: 50%; background: transparent; border: 0; cursor: pointer; transform: translateZ(120px); }
+.hero-hit:focus-visible { outline: 3px solid #FFE27A; }
+@media (max-width: 560px) { .hero-orbit .nicon { width: 42px; height: 42px; } .hero-orbit .nicon b { font-size: 14px; } }
+
+/* 4 pași */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; }
+@media (max-width: 980px) { .steps { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 520px) { .steps { grid-template-columns: minmax(0,1fr); } }
+.step { position: relative; padding: 24px 20px 22px; border-radius: 26px; border: 1px solid rgba(255,255,255,.14); min-width: 0;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--sc) 22%, rgba(255,255,255,.06)), rgba(255,255,255,.03));
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 20px 40px -24px rgba(0,0,0,.8); transition: transform .35s cubic-bezier(.2,1.6,.4,1); }
+.step:hover { transform: translateY(-6px) rotate(-1deg); }
+.step .sn { position: absolute; top: 16px; right: 18px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 900 16px "Nunito", var(--f-sans); color: #1A1033; background: var(--sc); box-shadow: 0 0 20px -2px var(--sc); }
+.step .si { font-size: 46px; line-height: 1; margin-bottom: 14px; filter: drop-shadow(0 8px 14px rgba(0,0,0,.4)); animation: float 4s ease-in-out infinite; }
+.step:nth-child(2) .si { animation-delay: -1s; } .step:nth-child(3) .si { animation-delay: -2s; } .step:nth-child(4) .si { animation-delay: -3s; }
+.step h3 { margin: 0 0 6px; font: 900 20px/1.15 "Nunito", var(--f-sans); }
+.step p { margin: 0; color: rgba(255,255,255,.78); font: 600 15px/1.45 "Nunito", var(--f-sans); }
+.steps-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 26px; }
+.steps-cta .btn { min-height: 56px; border-radius: 18px; font: 800 17px "Nunito", var(--f-sans); padding: 0 24px; }
+
+/* hub AR */
+.hub-actions { margin-top: 16px; }
+.hub-actions .btn, .hub-fruit { font-family: "Nunito", var(--f-sans); }
+.hub-xr { margin-top: 14px; }
+.hub-pick { font: 800 14px "Nunito", var(--f-sans); color: var(--ink) !important; margin: 0 0 10px !important; }
+.hub-fruits { display: flex; flex-wrap: wrap; gap: 8px; }
+.hub-fruit { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px 0 8px; border-radius: 16px; cursor: pointer; color: #fff; font-weight: 800; font-size: 15px;
+  border: 1px solid rgba(139,108,255,.5); background: linear-gradient(135deg, rgba(139,108,255,.22), rgba(255,111,181,.16)); transition: transform .2s cubic-bezier(.2,1.6,.4,1); }
+.hub-fruit:hover { transform: translateY(-2px) scale(1.04); }
+.hub-fruit .e { font-size: 26px; }
+.hub-fruit svg { width: 32px; height: 32px; }
+.hub-fallback { margin-top: 12px !important; padding: 12px 14px; border-radius: 14px; background: rgba(255,181,71,.1); border: 1px solid rgba(255,181,71,.3); color: var(--ink) !important; font-size: 14px !important; }
+
+/* ================= Joc: steluțe, limbă, provocare, toast, colecție, quiz ================= */
+.star-pill { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; cursor: pointer; color: #2A1600;
+  font: 900 16px "Nunito", var(--f-sans); border: 0; background: linear-gradient(135deg, #FFE27A, #FFB547); box-shadow: 0 6px 18px -6px rgba(255,181,71,.8), inset 0 1px 0 rgba(255,255,255,.6); }
+.star-pill.bump { animation: cardPop .6s cubic-bezier(.2,1.8,.4,1); }
+.lang-switch { display: inline-flex; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
+.lang-switch button { min-width: 40px; min-height: 34px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 900 13px "Nunito", var(--f-sans); cursor: pointer; }
+.lang-switch button[aria-pressed="true"] { background: linear-gradient(135deg, #8B6CFF, #FF6FB5); color: #fff; }
+@media (max-width: 560px) { header.nav .status { display: none; } .nav-right { gap: 8px; } }
+.challenge-chip { display: none; position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 4; align-items: center; gap: 10px; max-width: calc(100% - 160px);
+  padding: 6px 8px 6px 14px; border-radius: 999px; color: #fff; font: 800 14px/1.25 "Nunito", var(--f-sans);
+  background: linear-gradient(135deg, rgba(139,108,255,.85), rgba(255,111,181,.8)); box-shadow: 0 10px 26px -10px rgba(255,111,181,.8); }
+.stage:is([data-flow="scan"], [data-flow="idle"], :not([data-flow])) .challenge-chip:not([hidden]) { display: flex; }
+.challenge-chip .nicon { width: 34px; height: 34px; animation: none; } .challenge-chip .nicon b { font-size: 13px; }
+@media (max-width: 560px) { .challenge-chip { top: auto; bottom: 64px; max-width: calc(100% - 24px); font-size: 12.5px; } }
+.game-toast { position: fixed; left: 50%; top: max(76px, calc(env(safe-area-inset-top) + 64px)); z-index: 2147483000; transform: translateX(-50%); display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px 12px 14px; border-radius: 22px; color: #1A1033; background: linear-gradient(135deg, #FFF6C9, #FFE27A); box-shadow: 0 20px 40px -14px rgba(0,0,0,.7); font-family: "Nunito", var(--f-sans); }
+.game-toast.in { animation: toastIn .55s cubic-bezier(.2,1.6,.4,1); }
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, -30px) scale(.8); } }
+.game-toast .ti { font-size: 30px; }
+.game-toast b { display: block; font: 900 16px "Nunito", var(--f-sans); } .game-toast small { font: 700 13px "Nunito", var(--f-sans); opacity: .8; }
+dialog.game { width: min(620px, calc(100% - 20px)); max-height: min(92vh, 860px); padding: 0; border-radius: 30px; border: 1px solid rgba(255,255,255,.18); color: #fff; overflow: auto;
+  background: radial-gradient(ellipse at 20% 0%, rgba(139,108,255,.35), transparent 60%), radial-gradient(ellipse at 100% 100%, rgba(255,111,181,.25), transparent 60%), #140F33;
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,.9); font-family: "Nunito", var(--f-sans); }
+dialog.game::backdrop { background: rgba(5,3,15,.7); backdrop-filter: blur(6px); }
+dialog.game[open] { animation: pop .4s cubic-bezier(.2,1.5,.4,1); }
+.game-x { position: absolute; top: 14px; right: 14px; width: 46px !important; height: 46px !important; font-size: 26px; z-index: 2; }
+.game-body { padding: 26px 22px 24px; }
+.gc-head { display: flex; gap: 12px; flex-wrap: wrap; padding-right: 50px; }
+.gc-head > div { display: flex; align-items: baseline; gap: 8px; padding: 12px 16px; border-radius: 20px; background: rgba(255,255,255,.08); font-size: 22px; }
+.gc-head b { font: 900 30px "Nunito", var(--f-sans); } .gc-head span { font: 700 14px "Nunito", var(--f-sans); color: rgba(255,255,255,.75); }
+.gc-chal { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 12px 14px; border-radius: 20px; background: linear-gradient(135deg, rgba(139,108,255,.35), rgba(255,111,181,.25)); }
+.gc-chal > div { display: grid; flex: 1; } .gc-chal b { font: 900 15px "Nunito", var(--f-sans); } .gc-chal span { font: 700 14px "Nunito", var(--f-sans); }
+.cc-i { font-size: 24px; }
+dialog.game h4 { margin: 22px 0 10px; font: 900 13px "Nunito", var(--f-sans); letter-spacing: .14em; text-transform: uppercase; color: #FFE27A; }
+.gc-badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.gb { display: grid; gap: 2px; padding: 12px; border-radius: 18px; background: rgba(255,255,255,.05); border: 1px dashed rgba(255,255,255,.18); opacity: .7; }
+.gb.ok { opacity: 1; border: 1px solid rgba(255,226,122,.55); background: linear-gradient(135deg, rgba(255,226,122,.18), rgba(255,181,71,.08)); }
+.gb .gi { font-size: 30px; } .gb b { font: 900 14px "Nunito", var(--f-sans); } .gb small { font: 700 12px "Nunito", var(--f-sans); color: rgba(255,255,255,.65); }
+.gc-fruits { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
+.gf { display: grid; justify-items: center; gap: 4px; padding: 10px 6px; border-radius: 18px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); color: #fff; cursor: pointer; font: 800 13px "Nunito", var(--f-sans); }
+.gf:hover { transform: translateY(-2px); border-color: #FFE27A; }
+.qe { font-size: 40px; line-height: 1; }
+.gc-empty { color: rgba(255,255,255,.75); font: 700 15px "Nunito", var(--f-sans); }
+.gc-btns, .qz-next, .qz-end-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+.qz-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-right: 54px; font: 800 14px "Nunito", var(--f-sans); color: rgba(255,255,255,.75); }
+.qz-dots { display: flex; gap: 6px; } .qz-dots i { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.18); }
+.qz-dots i.done { background: #8EF0C9; } .qz-dots i.now { background: #FFE27A; box-shadow: 0 0 10px #FFE27A; }
+.qz-q { display: flex; align-items: center; gap: 14px; margin: 18px 0 16px; }
+.qz-q h3 { margin: 0; font: 900 clamp(21px, 4vw, 27px)/1.2 "Nunito", var(--f-sans); }
+.qz-icon { flex: none; font-size: 44px; line-height: 1; } .qz-icon .nicon { width: 56px; height: 56px; }
+.qz-opts { display: grid; gap: 10px; }
+.qz-opt { display: flex; align-items: center; gap: 14px; min-height: 66px; padding: 8px 18px 8px 12px; border-radius: 20px; cursor: pointer; color: #fff; text-align: left;
+  font: 800 19px "Nunito", var(--f-sans); border: 2px solid rgba(255,255,255,.16); background: rgba(255,255,255,.07); transition: transform .2s cubic-bezier(.2,1.6,.4,1), border-color .2s, background .2s; }
+.qz-opt:hover:not(:disabled) { transform: translateY(-2px) scale(1.01); border-color: #FFE27A; }
+.qz-opt svg { width: 48px; height: 48px; flex: none; }
+.qz-opt.right { border-color: #3DDC97; background: rgba(61,220,151,.18); }
+.qz-opt.wrong { border-color: #FF5F7E; background: rgba(255,95,126,.15); animation: shake .45s; }
+.qz-opt.yay { animation: cardPop .55s cubic-bezier(.2,1.8,.4,1); }
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.qz-explain { margin: 14px 0 0; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,.08); font: 700 15px/1.45 "Nunito", var(--f-sans); }
+.qz-end { text-align: center; padding-top: 10px; }
+.qz-trophy { font-size: 80px; animation: emoPop .9s cubic-bezier(.2,1.6,.4,1) both; }
+.qz-end h3 { font: 900 24px/1.2 "Nunito", var(--f-sans); margin: 8px 0; } .qz-end p { font: 700 16px "Nunito", var(--f-sans); color: rgba(255,255,255,.8); }
+.qz-stars { font-size: 30px; display: flex; gap: 6px; justify-content: center; align-items: center; } .qz-stars span { font: 900 16px "Nunito", var(--f-sans); color: #FFE27A; margin-left: 8px; }
+.confetti { position: fixed; z-index: 2147483001; width: 0; height: 0; pointer-events: none; }
+.confetti i { position: absolute; width: 10px; height: 14px; border-radius: 3px; background: var(--c); animation: conf 1s cubic-bezier(.2,.8,.3,1) forwards; transform: rotate(var(--a)) translateY(0); }
+@keyframes conf { to { transform: rotate(var(--a)) translateY(-120px) rotate(200deg); opacity: 0; } }

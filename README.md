@@ -16,11 +16,16 @@ Scanner de fructe cu realitate augmentată, care rulează direct în browser. Î
 | `js/catalog.js` | Citește și validează datele; oferă căutare, filtre și maparea AI → fruct |
 | `js/catalog-ui.js` | Generează catalogul și filtrele din date |
 | `js/discovery.js` | Ecranul „Descoperă fructul”, cu personajul Vita, vitaminele interactive și beneficiile |
-| `js/fruit3d.js` | Modelul 3D procedural al fructului (three.js), încărcat doar în ecranul „Descoperă” |
+| `js/fruit3d.js` | Scena 3D a fructului (three.js): lumini, strălucire, gesturi, rotire, zoom, mutare |
+| `js/fruit-models.js` | Modelele 3D ale fructelor, construite din câmpul `visual` din catalog (formă, textură, detalii, felie) |
+| `js/reveal.js` | Camera AR: fructul 3D peste cameră, cu liniuțe spre nume și nutrienți, controale și fișa bilingvă |
+| `js/game.js` | Steluțe, insigne, provocări, colecție și quiz-uri |
+| `js/i18n.js` | Româna / engleza: traduce automat interfața |
+| `data/i18n/en.json` | Traducerile în engleză (cheia = textul în română) |
 | `js/sound.js` | Efecte sonore sintetizate (fără fișiere audio) |
 | `js/fruit-art.js` | Imaginea fiecărui fruct (fotografie sau ilustrație generată) |
 | `js/app.js` | Scannerul, AI, AR în cameră, senzorii ambientali |
-| `js/xr.js` | AR spațial (WebXR), încărcat doar la cerere |
+| `js/xr.js` | AR spațial (WebXR) cu fructul 3D pe masă, încărcat doar la cerere |
 | `scripts/check-catalog.mjs` | Verifică datele și că niciun fruct nu e scris direct în cod |
 | `start-mac-linux.sh` | Pornește un server local și deschide site-ul (macOS / Linux) |
 | `start-windows.bat` | Același lucru pe Windows |
@@ -46,6 +51,8 @@ Ai nevoie doar de Python 3, fără alte pachete.
 - Varianta e aleasă automat: fp16 pe WebGPU, dacă placa video suportă `shader-f16`, altfel q8 pe WASM. Versiunea 8 folosea fp32 pe WebGPU (~1,2 GB), care putea depăși spațiul de cache și se descărca din nou la fiecare vizită.
 - După încărcare, aplicația rulează o analiză de încălzire pe o imagine mică, ca prima analiză reală să fie rapidă.
 - Modelele trebuie descărcate din nou doar dacă ștergi datele site-ului, folosești o fereastră privată sau alt browser.
+- **Fructe reale, poze, cărți și desene:** detectorul caută și „a drawing of a fruit” și „a picture of a fruit in a book”. Când CLIP nu e sigur pe o imagine, mai întreabă o dată ca pentru un desen și păstrează răspunsul mai sigur. Dacă niciun răspuns nu trece pragurile, aplicația spune că nu e sigură, nu inventează un fruct.
+- **Cât de sigur e:** după identificare apare un indicator cu trei trepte (Sigur / Destul de sigur / Nu foarte sigur), fără procente.
 - Pragurile sunt cele din `main.py`: detector 0,10, fruct 0,30, cadru întreg 0,60, o analiză la 0,8 s, iar un rezultat rămâne afișat 4 s.
 - Când pagina rulează ca artifact Claude, recunoașterea se face cu Claude (fotografii), ca înainte.
 
@@ -55,7 +62,8 @@ Totul se întâmplă singur, fără butoane:
 2. Când același fruct e recunoscut de 2 ori la rând, apare mesajul **„Am găsit fructul! Acum scoate fructul sau poza din fața camerei”**. Numele nu se dezvăluie încă.
 3. Când fructul nu mai e văzut de 2 ori la rând (și după cel puțin 1,4 s), în locul lui apare **fructul 3D**, peste imaginea camerei, cu strălucire și particule.
 4. Apoi, pe rând, se desenează **liniuțe luminoase** către: **numele în română** (cu emoji), **numele în engleză** și fiecare **vitamină** a fructului, fiecare cu un mic sunet.
-5. Butoane: „Află mai multe” (ecranul „Descoperă”) și „Alt fruct”. Dacă arăți camerei un alt fruct (după cel puțin 7 s), fluxul pornește din nou automat.
+5. Fructul 3D rămâne pe ecran, independent de obiectul scanat. Îl rotești cu un deget, îl mărești cu două degete (sau rotița), îl muți cu modul „Mută” și ai butoane pentru rotire automată, mărire, micșorare și resetare.
+6. Atingi un nutrient și se deschide fișa lui în română și engleză. Butoane: „Află mai multe” (ecranul „Descoperă”), „Pune-l în spațiu” (doar pe dispozitive cu WebXR) și „Alt fruct”. Dacă arăți camerei un alt fruct (după cel puțin 7 s), fluxul pornește din nou automat.
 
 Dacă fructul nu e scos din cadru în 6 secunde, apare și butonul „Arată-mi-l acum”. La o **poză încărcată**: „Am găsit fructul!”, poza dispare, apoi apare fructul 3D cu aceleași etichete.
 
@@ -66,7 +74,7 @@ Dacă fructul nu e scos din cadru în 6 secunde, apare și butonul „Arată-mi-
 - **Etichete interactive:** atingi eticheta AR și se deschide fișa completă a fructului.
 - **AR pe tot ecranul:** camera și etichetele ocupă tot ecranul, cu buton de captură și de ieșire (Esc pe desktop).
 - **Salvează captura:** descarcă imaginea cu toate încadrările și etichetele, la rezoluția sursei.
-- **AR spațial (WebXR):** pe dispozitivele compatibile (ex. Chrome pe Android cu ARCore), plasezi pe o suprafață reală o etichetă 3D cu numele, vitaminele și mineralele fructului, cu vitaminele orbitând în jurul unui fruct 3D. Butonul apare doar dacă browserul suportă `immersive-ar`.
+- **AR spațial (WebXR):** pe dispozitivele compatibile (ex. Chrome pe Android cu ARCore), telefonul găsește masa sau podeaua și pui acolo **modelul 3D al fructului**, cu numele în română și engleză deasupra și nutrienții pe orbită. Îl rotești cu un deget, îl scalezi cu două, îl muți atingând altă suprafață; atingi un nutrient și apare fișa bilingvă. Butoanele AR spațial apar doar dacă browserul suportă `immersive-ar`; altfel secțiunea AR recomandă Camera AR.
 
 ### Inteligență ambientală
 Calculată din pixelii reali ai cadrului (redus la 160×120), de ~4 ori pe secundă:
@@ -88,6 +96,24 @@ Se deschide automat după ce o fotografie e recunoscută. Se mai deschide la ati
 - **Colecție:** fructele găsite cu camera sunt marcate „descoperit” în catalog și numărate („3 din 61”). Prima descoperire primește insigna „Fruct nou descoperit!”. Colecția e păstrată doar în browserul respectiv.
 
 **Corectitudinea informațiilor:** un fruct afișează doar vitaminele și mineralele din propria înregistrare din `data/fruits.json`. Nimic nu e atribuit automat. Fibrele apar doar la fructele cu cel puțin 3 g la 100 g (pragul UE pentru „sursă de fibre”). Explicațiile din `data/nutrient-info.json` descriu rolurile recunoscute ale fiecărui nutrient, pe înțelesul copiilor. Validarea verifică că fiecare vitamină și mineral din catalog are o explicație.
+
+### Modele 3D
+Fiecare fruct are modelul lui, construit din câmpul `visual` din `data/fruits.json`: formă (rotund, oval, picătură, alungit, ciorchine, drupeole, țepi, stea), textură generată (pete, puf, plasă, solzi, pori de citrice, dungi, brumă), detalii (codiță, frunză, coroană, caliciu, semințe la suprafață, perechi de cireșe, mănunchi de banane) și o felie cu interiorul specific (citrice, kiwi, pepene, sâmburi, arile).
+
+### Joacă
+- **Steluțe:** +3 pentru un fruct nou, +1 pentru unul regăsit, +1 la primul contact cu fiecare nutrient, +2 pentru o provocare reușită.
+- **Provocări:** ex. „Găsește un fruct bogat în vitamina C!”. Se verifică doar cu datele din catalog.
+- **Insigne și colecție:** butonul cu steluța din meniu.
+- **Quiz:** 5 întrebări generate din catalog (vitamine, nume în engleză, beneficii).
+- Totul se păstrează doar în browserul respectiv.
+
+### Română și engleză
+Selectorul RO / EN din meniu traduce meniurile, instrucțiunile, mesajele, numele fructelor, vitaminele, explicațiile nutrienților și quiz-urile. Alegerea e ținută minte. În modul AR apar mereu ambele nume, pentru învățare. Traducerile sunt în `data/i18n/en.json`, iar descrierile fructelor în câmpurile `descriptionEn` / `factEn` din catalog.
+
+### Limitări cunoscute
+- AR spațial a fost testat doar simulat (fără un telefon ARCore real); pe dispozitiv real comportamentul poate diferi.
+- Recunoașterea desenelor și a imaginilor din cărți e mai puțin sigură decât a fructelor reale; desenele foarte stilizate pot fi respinse.
+- Modelele 3D sunt procedurale (generate din cod), nu scanări fotorealiste.
 
 ### Informații despre fructe
 - La identificare: numele în română, numele în engleză, vitaminele și mineralele principale, o descriere și o curiozitate. Aplicația nu afișează calorii.

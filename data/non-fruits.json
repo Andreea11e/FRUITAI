@@ -3,227 +3,283 @@
   "labels": [
     {
       "label": "person",
-      "ro": "o persoană"
+      "ro": "o persoană",
+      "en": "a person"
     },
     {
       "label": "human face",
-      "ro": "o față"
+      "ro": "o față",
+      "en": "a human face"
     },
     {
       "label": "human hand",
-      "ro": "o mână"
+      "ro": "o mână",
+      "en": "a human hand"
     },
     {
       "label": "man",
-      "ro": "un bărbat"
+      "ro": "un bărbat",
+      "en": "a man"
     },
     {
       "label": "woman",
-      "ro": "o femeie"
+      "ro": "o femeie",
+      "en": "a woman"
     },
     {
       "label": "child",
-      "ro": "un copil"
+      "ro": "un copil",
+      "en": "a child"
     },
     {
       "label": "head and shoulders of a person",
-      "ro": "o persoană"
+      "ro": "o persoană",
+      "en": "a person"
     },
     {
       "label": "cat",
-      "ro": "o pisică"
+      "ro": "o pisică",
+      "en": "a cat"
     },
     {
       "label": "dog",
-      "ro": "un câine"
+      "ro": "un câine",
+      "en": "a dog"
     },
     {
       "label": "mobile phone",
-      "ro": "un telefon"
+      "ro": "un telefon",
+      "en": "a mobile phone"
     },
     {
       "label": "laptop computer",
-      "ro": "un laptop"
+      "ro": "un laptop",
+      "en": "a laptop computer"
     },
     {
       "label": "computer keyboard",
-      "ro": "o tastatură"
+      "ro": "o tastatură",
+      "en": "a computer keyboard"
     },
     {
       "label": "computer monitor",
-      "ro": "un monitor"
+      "ro": "un monitor",
+      "en": "a computer monitor"
     },
     {
       "label": "bottle",
-      "ro": "o sticlă"
+      "ro": "o sticlă",
+      "en": "a bottle"
     },
     {
       "label": "cup",
-      "ro": "o cană"
+      "ro": "o cană",
+      "en": "a cup"
     },
     {
       "label": "mug",
-      "ro": "o cană"
+      "ro": "o cană",
+      "en": "a mug"
     },
     {
       "label": "glass",
-      "ro": "un pahar"
+      "ro": "un pahar",
+      "en": "a glass"
     },
     {
       "label": "plate",
-      "ro": "o farfurie"
+      "ro": "o farfurie",
+      "en": "a plate"
     },
     {
       "label": "bowl",
-      "ro": "un bol"
+      "ro": "un bol",
+      "en": "a bowl"
     },
     {
       "label": "book",
-      "ro": "o carte"
+      "ro": "o carte",
+      "en": "a book"
     },
     {
       "label": "pen",
-      "ro": "un pix"
+      "ro": "un pix",
+      "en": "a pen"
     },
     {
       "label": "remote control",
-      "ro": "o telecomandă"
+      "ro": "o telecomandă",
+      "en": "a remote control"
     },
     {
       "label": "chair",
-      "ro": "un scaun"
+      "ro": "un scaun",
+      "en": "a chair"
     },
     {
       "label": "table",
-      "ro": "o masă"
+      "ro": "o masă",
+      "en": "a table"
     },
     {
       "label": "sofa",
-      "ro": "o canapea"
+      "ro": "o canapea",
+      "en": "a sofa"
     },
     {
       "label": "bed",
-      "ro": "un pat"
+      "ro": "un pat",
+      "en": "a bed"
     },
     {
       "label": "door",
-      "ro": "o ușă"
+      "ro": "o ușă",
+      "en": "a door"
     },
     {
       "label": "window",
-      "ro": "o fereastră"
+      "ro": "o fereastră",
+      "en": "a window"
     },
     {
       "label": "wall",
-      "ro": "un perete"
+      "ro": "un perete",
+      "en": "a wall"
     },
     {
       "label": "ceiling",
-      "ro": "un tavan"
+      "ro": "un tavan",
+      "en": "a ceiling"
     },
     {
       "label": "room",
-      "ro": "o cameră"
+      "ro": "o cameră",
+      "en": "a room"
     },
     {
       "label": "curtain",
-      "ro": "o perdea"
+      "ro": "o perdea",
+      "en": "a curtain"
     },
     {
       "label": "lamp",
-      "ro": "o lampă"
+      "ro": "o lampă",
+      "en": "a lamp"
     },
     {
       "label": "poster",
-      "ro": "un poster"
+      "ro": "un poster",
+      "en": "a poster"
     },
     {
       "label": "backpack",
-      "ro": "un rucsac"
+      "ro": "un rucsac",
+      "en": "a backpack"
     },
     {
       "label": "clothes",
-      "ro": "haine"
+      "ro": "haine",
+      "en": "clothes"
     },
     {
       "label": "shirt",
-      "ro": "o cămașă"
+      "ro": "o cămașă",
+      "en": "a shirt"
     },
     {
       "label": "toy",
-      "ro": "o jucărie"
+      "ro": "o jucărie",
+      "en": "a toy"
     },
     {
       "label": "ball",
-      "ro": "o minge"
+      "ro": "o minge",
+      "en": "a ball"
     },
     {
       "label": "plant",
-      "ro": "o plantă"
+      "ro": "o plantă",
+      "en": "a plant"
     },
     {
       "label": "flower",
-      "ro": "o floare"
+      "ro": "o floare",
+      "en": "a flower"
     },
     {
       "label": "tree",
-      "ro": "un copac"
+      "ro": "un copac",
+      "en": "a tree"
     },
     {
       "label": "tomato",
-      "ro": "o roșie (legumă)"
+      "ro": "o roșie (legumă)",
+      "en": "a tomato (vegetable)"
     },
     {
       "label": "cucumber",
-      "ro": "un castravete (legumă)"
+      "ro": "un castravete (legumă)",
+      "en": "a cucumber (vegetable)"
     },
     {
       "label": "potato",
-      "ro": "un cartof (legumă)"
+      "ro": "un cartof (legumă)",
+      "en": "a potato (vegetable)"
     },
     {
       "label": "carrot",
-      "ro": "un morcov (legumă)"
+      "ro": "un morcov (legumă)",
+      "en": "a carrot (vegetable)"
     },
     {
       "label": "onion",
-      "ro": "o ceapă (legumă)"
+      "ro": "o ceapă (legumă)",
+      "en": "an onion (vegetable)"
     },
     {
       "label": "bell pepper",
-      "ro": "un ardei (legumă)"
+      "ro": "un ardei (legumă)",
+      "en": "a bell pepper (vegetable)"
     },
     {
       "label": "cabbage",
-      "ro": "o varză (legumă)"
+      "ro": "o varză (legumă)",
+      "en": "a cabbage (vegetable)"
     },
     {
       "label": "bread",
-      "ro": "pâine"
+      "ro": "pâine",
+      "en": "bread"
     },
     {
       "label": "cheese",
-      "ro": "brânză"
+      "ro": "brânză",
+      "en": "cheese"
     },
     {
       "label": "egg",
-      "ro": "un ou"
+      "ro": "un ou",
+      "en": "an egg"
     },
     {
       "label": "pizza",
-      "ro": "o pizza"
+      "ro": "o pizza",
+      "en": "a pizza"
     },
     {
       "label": "blurry image",
-      "ro": "o imagine neclară"
+      "ro": "o imagine neclară",
+      "en": "a blurry image"
     },
     {
       "label": "dark image",
-      "ro": "o imagine întunecată"
+      "ro": "o imagine întunecată",
+      "en": "a dark image"
     },
     {
       "label": "empty background",
-      "ro": "fundal gol"
+      "ro": "fundal gol",
+      "en": "an empty background"
     }
   ]
 }

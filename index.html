@@ -27,6 +27,10 @@
       <a href="#beneficii">Beneficii</a>
     </nav>
     <div class="nav-right">
+      <button type="button" class="star-pill" id="starPill" aria-label="Steluțele și colecția mea"><span aria-hidden="true">⭐</span><b>0</b></button>
+      <div class="lang-switch" role="group" aria-label="Limba" data-no-i18n>
+        <button type="button" data-lang="ro" aria-pressed="true">RO</button><button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
       <div class="status" role="status" aria-live="polite"><i class="dot" id="dot"></i><span id="status">Pregătit</span></div>
       <a class="btn sm primary nav-cta" href="#scanner" data-start>Deschide scannerul</a>
     </div>
@@ -40,25 +44,29 @@
       <div>
         <span class="kicker">Pentru copii curioși · AI + realitate augmentată</span>
         <h1>Descoperă <em>superputerile</em> fructelor!</h1>
-        <p class="lead">Îndreaptă camera spre unul sau mai multe fructe. FruitAI le recunoaște direct pe dispozitivul tău și le ancorează în imagine numele în română, în engleză și vitaminele, care rămân lipite de fruct când miști camera.</p>
+        <p class="lead">Arată camerei un fruct adevărat sau poza unui fruct. FruitAI îl recunoaște, îl transformă într-un fruct 3D pe care îl poți învârti, mări și chiar pune pe masă în realitate augmentată, și îți arată vitaminele lui, în română și engleză.</p>
         <div class="hero-cta">
-          <button class="btn kid-cta" type="button" id="btnDemo"><span aria-hidden="true">✨</span><span>Descoperă un fruct acum</span></button>
-          <button class="btn primary" type="button" data-start>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
-            <span>Scanează cu camera</span>
+          <button class="btn kid-cta" type="button" data-start>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
+            <span>Descoperă fructele</span>
           </button>
-          <a class="btn" href="#cum">Cum funcționează</a>
+          <a class="btn primary" href="#ar-sec">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>
+            <span>Explorează AR</span>
+          </a>
         </div>
         <div class="facts">
           <div><b data-count="scannable">—</b>fructe recunoscute</div>
-          <div><b>Local</b>modelele rulează în browser</div>
-          <div><b>AR live</b>etichete ancorate pe fruct</div>
+          <div><b>3D</b>fiecare fruct are modelul lui</div>
+          <div><b>2 × AR</b>în cameră și pe masă</div>
         </div>
       </div>
 
       <div class="scene3d" id="scene3d" aria-hidden="true">
         <div class="rig" id="rig">
           <div class="floor"></div>
+          <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+          <div class="hero-orbit" id="heroOrbit" aria-hidden="true"></div>
           <div class="orb-wrap">
             <div class="ring r2"></div>
             <div class="ring r1"></div>
@@ -70,7 +78,27 @@
           <div class="hero-vita" id="heroVita" aria-hidden="true"><div class="mascot"></div><div class="bubble">Salut, eu sunt Vita! Arată-mi un fruct și îți spun ce vitamine are!</div></div>
           <div class="hcard c3" id="heroPortion"></div>
         </div>
-        <div class="scene-cap">Ilustrație a interfeței · rezultatul real apare în scanner</div>
+        <button type="button" class="hero-hit" id="heroHit" aria-label="Descoperă fructul din imagine"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CUM TE JOCI (4 pași) ================= -->
+  <section class="block steps-sec" id="pasi">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Cum te joci</div>
+        <h2>Patru pași până la <em>superputerile fructelor</em></h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal" style="--sc:#FFB547"><span class="sn">1</span><div class="si" aria-hidden="true">📷</div><h3>Scanează un fruct</h3><p>Arată camerei un fruct adevărat, o poză, o carte sau un desen.</p></div>
+        <div class="step reveal" style="--sc:#8B6CFF"><span class="sn">2</span><div class="si" aria-hidden="true">🧊</div><h3>Descoperă modelul 3D</h3><p>Fructul devine 3D. Îl învârți, îl mărești și îl pui pe masă.</p></div>
+        <div class="step reveal" style="--sc:#3DDC97"><span class="sn">3</span><div class="si" aria-hidden="true">✨</div><h3>Explorează vitaminele</h3><p>Atinge vitaminele din jurul fructului și află ce fac pentru corpul tău.</p></div>
+        <div class="step reveal" style="--sc:#FF6FB5"><span class="sn">4</span><div class="si" aria-hidden="true">🏆</div><h3>Învață prin joacă</h3><p>Strânge steluțe și insigne, rezolvă provocări și quiz-uri.</p></div>
+      </div>
+      <div class="steps-cta">
+        <button class="btn kid-cta" type="button" id="btnDemo"><span aria-hidden="true">✨</span><span>Încearcă fără cameră</span></button>
+        <button class="btn primary" type="button" data-quiz><span aria-hidden="true">🎯</span><span>Joacă un quiz</span></button>
       </div>
     </div>
   </section>
@@ -110,6 +138,7 @@
             <button class="btn sm imm-shot" id="btnImmShot" type="button" hidden>Salvează captura</button>
             <div class="guide" id="guide" hidden></div>
             <div class="flow-msg" id="flowMsg" hidden role="status" aria-live="polite"></div>
+            <div class="challenge-chip" id="challengeChip" hidden></div>
             <div class="scan" id="scan" hidden></div>
             <div class="progress" id="progress" hidden>
               <div id="progText">Se descarcă modelele AI…</div>
@@ -290,6 +319,7 @@
           <h3>AR în cameră</h3>
           <p>Fiecare fruct detectat e încadrat, iar eticheta cu numele și vitaminele e prinsă de el, cu vitaminele plutind în jurul lui. Atingi eticheta ca să deschizi fișa, treci pe tot ecranul și salvezi captura.</p>
           <div class="support" id="supCam"><i></i><span>Se verifică…</span></div>
+          <div class="hub-actions"><button class="btn kid-cta" type="button" data-start id="hubCam"><span aria-hidden="true">📷</span><span>Pornește Camera AR</span></button></div>
         </div>
         <div class="card reveal">
           <div class="ar-visual" aria-hidden="true">
@@ -298,8 +328,13 @@
             <div class="float" id="arDemo2"></div>
           </div>
           <h3>AR spațial (WebXR)</h3>
-          <p>După ce ai identificat sau ales un fruct, aplicația detectează suprafețele din jur, iar tu plasezi eticheta 3D pe masă și o privești din orice unghi. Necesită Chrome pe Android cu ARCore.</p>
+          <p>Telefonul găsește masa sau podeaua, iar tu pui acolo fructul 3D. Îl învârți, îl mărești, îl muți și te plimbi în jurul lui. Atinge vitaminele care orbitează ca să afli ce fac. Merge pe telefoanele Android cu Chrome și ARCore.</p>
           <div class="support" id="supXR"><i></i><span>Se verifică…</span></div>
+          <div class="hub-xr" id="hubXR" hidden>
+            <p class="hub-pick">Alege fructul pe care îl pui pe masă:</p>
+            <div class="hub-fruits" id="hubFruits"></div>
+          </div>
+          <p class="hub-fallback" id="hubFallback" hidden>Pe acest dispozitiv, AR spațial nu e disponibil. Folosește Camera AR: fructul 3D apare peste imaginea camerei și îl poți învârti și mări cu degetele.</p>
         </div>
       </div>
     </div>
@@ -362,10 +397,19 @@
 
 <div id="xrOverlay" hidden>
   <div class="xr-top">
-    <span class="xr-pill" id="xrMsg">Mișcă încet telefonul ca să găsesc o suprafață</span>
-    <button class="btn sm" id="xrClose" type="button">Închide</button>
+    <span class="xr-pill" id="xrMsg">Mișcă încet telefonul ca să găsesc masa sau podeaua</span>
+    <button class="dbtn round" id="xrClose" type="button" aria-label="Închide AR spațial">×</button>
   </div>
-  <div class="xr-bottom"><span class="xr-pill" id="xrHint">Atinge ecranul ca să plasezi eticheta</span></div>
+  <div class="xr-tools" id="xrTools" hidden role="group" aria-label="Controale fruct">
+    <button type="button" class="dbtn round" data-xr="left" aria-label="Rotește la stânga">⟲</button>
+    <button type="button" class="dbtn round" data-xr="right" aria-label="Rotește la dreapta">⟳</button>
+    <button type="button" class="dbtn round" data-xr="bigger" aria-label="Mărește">＋</button>
+    <button type="button" class="dbtn round" data-xr="smaller" aria-label="Micșorează">－</button>
+    <button type="button" class="dbtn round" data-xr="auto" aria-pressed="true" aria-label="Rotire automată">↻</button>
+    <button type="button" class="dbtn round" data-xr="reset" aria-label="Resetează">⌂</button>
+  </div>
+  <div class="xr-card" id="xrCard" hidden></div>
+  <div class="xr-bottom"><span class="xr-pill" id="xrHint">Când apare cercul, atinge ecranul ca să pui fructul acolo</span></div>
 </div>
 
 <script type="module" src="js/app.js"></script>
