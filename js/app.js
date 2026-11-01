@@ -1,7 +1,9 @@
 import { loadCatalog } from "./catalog.js";
 import { fruitArt, orbGradient } from "./fruit-art.js";
 import { mountCatalogUI } from "./catalog-ui.js";
-import { initDiscovery, openDiscovery, collection } from "./discovery.js";
+import { initDiscovery, openDiscovery, collection, MASCOT } from "./discovery.js";
+import { showReveal, hideReveal } from "./reveal.js";
+import { sound } from "./sound.js";
 
 
 // ---------------- Configurare (ca în main.py) ----------------
@@ -355,9 +357,11 @@ function renderGuide() {
   const a = state.ambient, r = state.result;
   let text = null, ok = false;
   if (!state.live && !state.frameShown) { el.guide.hidden = true; return; }
+  if (flow.phase === "remove" || flow.phase === "reveal" || flow.phase === "prepare") { el.guide.hidden = true; return; }
   if (state.busy && !state.live) { el.guide.hidden = true; return; }
   const fruit = r && r.kind === "fruit";
-  if (fruit) {
+  if (fruit && state.live) { text = "Ține fructul nemișcat o clipă… îl recunosc!"; ok = true; }
+  else if (fruit) {
     // Fructul e identificat: sfaturile despre încadrare contează, cele despre calitatea imaginii nu
     if (a.area != null && a.area < AMB.far) text = "Apropie fructul, ocupă prea puțin din cadru.";
     else if (a.area != null && a.area > AMB.near) text = "Depărtează puțin fructul ca să-l văd întreg.";
@@ -368,7 +372,7 @@ function renderGuide() {
   } else if (a.light != null && a.light < AMB.dark) text = state.live ? "Lumina e slabă. Apropie-te de o fereastră sau aprinde o lumină." : "Fotografia e prea întunecată. Încearcă una făcută la lumină.";
   else if (state.live && a.motion != null && a.motion > AMB.moving) text = "Ține camera nemișcată o clipă.";
   else if (a.sharp != null && a.sharp < AMB.blurry) text = state.live ? "Imaginea e neclară. Atinge ecranul ca să focalizezi." : "Fotografia pare neclară. Încearcă una mai focalizată.";
-  else if (state.live) text = "Arată un fruct oriunde în cadru.";
+  else if (state.live) text = "Arată-mi un fruct adevărat sau poza unui fruct.";
   else if (r && r.kind === "notfruit") text = "Pune fructul în centrul cadrului, pe un fundal simplu.";
   el.guide.hidden = !text;
   if (text) { el.guide.textContent = text; el.guide.classList.toggle("ok", ok); }
@@ -389,11 +393,18 @@ function applyResult(result, thumb) {
     const isNew = collection.add(result.label);
     (result.others || []).forEach(o => collection.add(o.label));
     window.dispatchEvent(new Event("fruitai:discovered"));
-    // la o fotografie, după ce copilul vede eticheta AR, se deschide experiența „Descoperă”
+    // la o fotografie încărcată: „Am găsit fructul!” → poza dispare → fructul 3D cu etichetele
     if (!state.live) {
       const id = result.label;
+      flow.id = id; flow.isNew = isNew; flow.src = "photo";
+      setFlow("prepare");
+      sound.pop();
       clearTimeout(state.discTimer);
-      state.discTimer = setTimeout(() => { if (!state.live && state.result?.label === id) openDiscovery(id, { source: "scan", isNew }); }, 1100);
+      state.discTimer = setTimeout(() => {
+        if (state.live || flow.phase !== "prepare" || flow.id !== id) return;
+        el.stage.classList.add("photo-out");
+        state.discTimer = setTimeout(startReveal, 650);
+      }, 1500);
     }
   } else if (result.kind === "notfruit") {
     showMessageCard("notfruit", result.label);
@@ -660,6 +671,9 @@ async function handleFile(file) {
   if (state.engine === "none") { setStatus("Analiza AI nu este disponibilă aici", "err"); return; }
   if (state.busy) return;
   stopCamera();
+  hideReveal(); clearTimeout(state.discTimer);
+  el.stage.classList.remove("photo-out");
+  setFlow("idle");
   let bmp;
   try { bmp = await createImageBitmap(file, { imageOrientation: "from-image" }); }
   catch { setStatus("Imaginea nu a putut fi deschisă. Încearcă JPG sau PNG.", "err"); return; }
@@ -699,6 +713,92 @@ window.addEventListener("paste", e => {
   if (item) handleFile(item.getAsFile());
 });
 
+// ---------------- Fluxul automat: arată fructul → scoate-l → fructul 3D cu etichete ----------------
+// scan:    camera caută un fruct (real sau poză)
+// remove:  fructul a fost recunoscut stabil → „Scoate fructul din fața camerei”
+// reveal:  fructul nu mai e în cadru → apare fructul 3D, apoi liniuțele către RO, EN și vitamine
+// prepare: (doar pentru poze încărcate) scurtă pauză înainte de 3D
+const flow = { phase: "idle", cand: null, candNew: false, streak: 0, miss: 0, id: null, isNew: false, t: 0, src: "camera" };
+const LOCK_STREAK = 2;        // de câte ori la rând trebuie văzut același fruct ca să fie „sigur”
+const REMOVE_MISS = 2;        // de câte ori la rând nu trebuie să mai fie văzut ca să considerăm că a fost scos
+const REMOVE_MIN_MS = 1400;   // cât rămâne mesajul „scoate fructul” cel puțin
+const REVEAL_MIN_MS = 7000;   // după cât timp un fruct nou arătat camerei poate porni un flux nou
+const flowMsg = $("flowMsg");
+
+function setFlow(phase) {
+  flow.phase = phase; flow.t = Date.now();
+  el.stage.dataset.flow = phase;
+  renderFlowMsg();
+  renderGuide();
+}
+
+function renderFlowMsg() {
+  const p = flow.phase;
+  clearTimeout(flow.slowTimer);
+  if (p === "remove") {
+    flowMsg.innerHTML = `<div class="fm-badge" aria-hidden="true">✓</div>
+      <b>Am găsit fructul!</b>
+      <span>Acum scoate fructul sau poza din fața camerei</span>
+      <div class="fm-anim" aria-hidden="true"><i class="fm-frame"></i><i class="fm-item"></i><i class="fm-arrow">➜</i></div>
+      <button type="button" class="dbtn fm-now" data-flow-now hidden>Arată-mi-l acum</button>`;
+    flowMsg.querySelector("[data-flow-now]").onclick = () => { sound.tick(); startReveal(); };
+    // dacă fructul nu e scos în câteva secunde, apare și un buton
+    flow.slowTimer = setTimeout(() => { const b = flowMsg.querySelector("[data-flow-now]"); if (b && flow.phase === "remove") b.hidden = false; }, 6000);
+  } else if (p === "prepare") {
+    flowMsg.innerHTML = `<div class="fm-badge" aria-hidden="true">✓</div><b>Am găsit fructul!</b><span>Îl transform în 3D…</span><div class="fm-spin" aria-hidden="true"></div>`;
+  } else { flowMsg.innerHTML = ""; }
+  flowMsg.hidden = !(p === "remove" || p === "prepare");
+  if (!flowMsg.hidden) { flowMsg.classList.remove("in"); void flowMsg.offsetWidth; flowMsg.classList.add("in"); }
+}
+
+/** Primește fiecare rezultat brut din camera live și avansează fluxul. */
+function flowOnResult(r) {
+  const fruit = r.kind === "fruit";
+  if (flow.phase === "scan" || flow.phase === "reveal") {
+    if (fruit && r.label === flow.cand) flow.streak++;
+    else { flow.cand = fruit ? r.label : null; flow.candNew = fruit && !collection.has(r.label); flow.streak = fruit ? 1 : 0; }
+    const canLock = flow.phase === "scan" || Date.now() - flow.t > REVEAL_MIN_MS;
+    if (fruit && flow.streak >= LOCK_STREAK && canLock) {
+      hideReveal();
+      flow.id = r.label; flow.isNew = flow.candNew; flow.miss = 0;
+      sound.pop();
+      setFlow("remove");
+    }
+  } else if (flow.phase === "remove") {
+    flow.miss = fruit ? 0 : flow.miss + 1;
+    if (flow.miss >= REMOVE_MISS && Date.now() - flow.t >= REMOVE_MIN_MS) startReveal();
+  }
+}
+
+function startReveal() {
+  if (!flow.id) return;
+  clearTimeout(state.discTimer);
+  setFlow("reveal");
+  flow.cand = null; flow.streak = 0;
+  setArTarget(null);
+  showFruitCard(flow.id, { chipText: "Identificat", note: "fruct 3D" });
+  setStatus(`${fruitName(flow.id)}, în 3D`, "ok");
+  showReveal(el.stage, flow.id, {
+    catalog, reduceMotion, source: flow.src,
+    onMore: id => openDiscovery(id, { source: "scan", isNew: flow.isNew }),
+    onAgain: restartFlow
+  });
+}
+
+function restartFlow() {
+  hideReveal();
+  clearTimeout(state.discTimer);
+  el.stage.classList.remove("photo-out");
+  if (state.live) { state.result = null; setArTarget(null); setFlow("scan"); setStatus("Caut un fruct…", "busy"); return; }
+  setFlow("idle");
+  el.frame.hidden = true; el.empty.hidden = false; state.frameShown = false; state.result = null;
+  el.stage.style.aspectRatio = "4 / 3"; setArTarget(null);
+  state.ambient = { light: null, sharp: null, motion: null, area: null };
+  el.btnCapture.disabled = el.btnImm.disabled = true;
+  renderAmbient();
+  el.fileUp.click();
+}
+
 // ---------------- Camera AR live (cu modelele locale) ----------------
 async function startCamera() {
   if (state.live) { stopCamera(); return; }
@@ -718,6 +818,10 @@ async function startCamera() {
   el.btnCamera.querySelector("span").textContent = "Oprește camera";
   el.btnCapture.disabled = el.btnImm.disabled = false;
   prevLuma = null;
+  hideReveal(); el.stage.classList.remove("photo-out");
+  flow.src = "camera"; flow.cand = null; flow.streak = 0;
+  setFlow("scan");
+  setImmersive(true);                        // camera ocupă tot ecranul: experiența e automată de aici
   ambientLoop();
   try { await loadLocal(); } catch (e) { setStatus(explainError(e), "err"); stopCamera(); return; }
   if (!state.live) return;
@@ -731,6 +835,8 @@ function stopCamera() {
   state.stream = null;
   el.video.hidden = true; el.live.hidden = true;
   setArTarget(null);
+  hideReveal(); clearTimeout(state.discTimer); setFlow("idle");
+  if (el.stage.classList.contains("immersive")) setImmersive(false);
   state.ambient = { light: null, sharp: null, motion: null, area: null };
   el.btnCamera.querySelector("span").textContent = "Pornește camera AR";
   if (el.frame.hidden) { el.empty.hidden = false; el.stage.style.aspectRatio = "4 / 3"; el.btnCapture.disabled = el.btnImm.disabled = true; if (el.stage.classList.contains("immersive")) setImmersive(false); }
@@ -756,7 +862,7 @@ async function liveLoop() {
     if (el.video.videoWidth) {
       const a = state.ambient;
       // Scenă nemișcată + rezultat valid → păstrăm rezultatul fără a rula modelele (economie de baterie)
-      const still = a.motion != null && a.motion < AMB.still;
+      const still = a.motion != null && a.motion < AMB.still && flow.phase !== "remove";
       const fresh = state.result && state.result.kind === "fruit" && Date.now() - state.lastModelRun < SKIP_MAX;
       if (still && fresh) {
         state.result.time = Date.now();
@@ -766,6 +872,7 @@ async function liveLoop() {
           const r = await localAnalyze(c);
           state.lastModelRun = Date.now();
           if (!state.live) break;
+          flowOnResult(r);
           if (r.kind === "none" && state.result && Date.now() - state.result.time < RESULT_TTL) {
             // păstrăm ultimul rezultat cât e încă valabil
           } else {
@@ -989,6 +1096,9 @@ async function boot() {
     onOpen: id => openDiscovery(id, { source: "catalog" }),
     isDiscovered: id => collection.has(id)
   });
+  // pagina principală: Vita în hero + o descoperire demonstrativă, fără cameră
+  document.querySelector("#heroVita .mascot").innerHTML = MASCOT.replace(/id="vita/g, 'id="hvita').replace(/url\(#vita/g, "url(#hvita");
+  $("btnDemo").addEventListener("click", () => openDiscovery(catalog.pick().id, { source: "catalog" }));
   el.btnSheet.addEventListener("click", () => state.shownFruit && openDiscovery(state.shownFruit, { source: state.example ? "catalog" : "scan" }));
   showFruitCard(catalog.pick().id, { chipText: "Exemplu", note: "așa arată un rezultat" });
   renderAmbient();

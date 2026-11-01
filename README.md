@@ -49,6 +49,16 @@ Ai nevoie doar de Python 3, fără alte pachete.
 - Pragurile sunt cele din `main.py`: detector 0,10, fruct 0,30, cadru întreg 0,60, o analiză la 0,8 s, iar un rezultat rămâne afișat 4 s.
 - Când pagina rulează ca artifact Claude, recunoașterea se face cu Claude (fotografii), ca înainte.
 
+### Fluxul automat (camera)
+Totul se întâmplă singur, fără butoane:
+1. **Arăți un fruct** camerei: un fruct adevărat sau poza unui fruct (pe telefon, tabletă sau hârtie). Camera trece automat pe tot ecranul.
+2. Când același fruct e recunoscut de 2 ori la rând, apare mesajul **„Am găsit fructul! Acum scoate fructul sau poza din fața camerei”**. Numele nu se dezvăluie încă.
+3. Când fructul nu mai e văzut de 2 ori la rând (și după cel puțin 1,4 s), în locul lui apare **fructul 3D**, peste imaginea camerei, cu strălucire și particule.
+4. Apoi, pe rând, se desenează **liniuțe luminoase** către: **numele în română** (cu emoji), **numele în engleză** și fiecare **vitamină** a fructului, fiecare cu un mic sunet.
+5. Butoane: „Află mai multe” (ecranul „Descoperă”) și „Alt fruct”. Dacă arăți camerei un alt fruct (după cel puțin 7 s), fluxul pornește din nou automat.
+
+Dacă fructul nu e scos din cadru în 6 secunde, apare și butonul „Arată-mi-l acum”. La o **poză încărcată**: „Am găsit fructul!”, poza dispare, apoi apare fructul 3D cu aceleași etichete.
+
 ### Realitate augmentată
 - **AR în cameră** (orice browser modern cu cameră): fiecare fruct detectat e încadrat, iar eticheta lui arată, în ordine, **numele în română, numele în engleză și vitaminele**. Eticheta urmărește lin fructul când miști camera.
 - **Mai multe fructe deodată:** până la 3 fructe din același cadru primesc fiecare propria etichetă. Etichetele se așază automat, fără să se acopere între ele, peste fructe sau peste indicatori.

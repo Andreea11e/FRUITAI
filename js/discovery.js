@@ -20,7 +20,7 @@ export const collection = {
 };
 
 // Personajul Vita: un mugure prietenos (desen original, SVG)
-const MASCOT = `<svg viewBox="0 0 120 130" aria-hidden="true">
+export const MASCOT = `<svg viewBox="0 0 120 130" aria-hidden="true">
   <defs>
     <radialGradient id="vitaBody" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#F1FFB8"/><stop offset=".5" stop-color="#C9F25C"/><stop offset="1" stop-color="#6FB52C"/></radialGradient>
     <linearGradient id="vitaLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8BE26A"/><stop offset="1" stop-color="#2F8F3A"/></linearGradient>
@@ -137,7 +137,7 @@ function teardown() {
 }
 
 /** Pictograma „3D” a unui nutrient: sferă (vitamine), cristal (minerale), frunză (fibre). */
-function nIcon(n, big = false) {
+export function nIcon(n, big = false) {
   return `<span class="nicon ${n.kind}${big ? " big" : ""}" style="--nc:${n.color}"><b>${esc(n.symbol)}</b></span>`;
 }
 

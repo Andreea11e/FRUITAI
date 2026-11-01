@@ -189,7 +189,7 @@ function dotTexture() {
  * Creează scena 3D într-un <canvas>.
  * Întoarce un controller: zoom(±1), reset(), setAuto(bool), celebrate(), burst(color, dirX, dirY), screenInfo(), dispose().
  */
-export function createFruitScene(canvas, fruit, { reducedMotion = false } = {}) {
+export function createFruitScene(canvas, fruit, { reducedMotion = false, distance = 1 } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -315,7 +315,7 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false } = {}) 
     state.zoom += (state.targetZoom - state.zoom) * 0.12;
     // pe ecrane înguste (portret) camera se depărtează, ca fructul să lase loc cardurilor din jur
     const base = Math.max(HOME_Z, 6.4 / Math.max(0.3, camera.aspect));
-    camera.position.z = state.zoom / HOME_Z * base;
+    camera.position.z = state.zoom / HOME_Z * base * distance;   // distance > 1: fructul apare mai mic (lasă loc etichetelor)
     // apariția: scalare elastică
     if (state.appear < 1) state.appear = Math.min(1, state.appear + dt / (reducedMotion ? 0.01 : 0.9));
     const e = state.appear, elastic = e >= 1 ? 1 : 1 - Math.pow(2, -10 * e) * Math.cos(e * Math.PI * 4.2);

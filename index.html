@@ -38,15 +38,16 @@
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <span class="kicker">Recunoaștere AI + realitate augmentată, în browser</span>
-        <h1>Fructele tale, <em>etichetate</em> în realitate.</h1>
+        <span class="kicker">Pentru copii curioși · AI + realitate augmentată</span>
+        <h1>Descoperă <em>superputerile</em> fructelor!</h1>
         <p class="lead">Îndreaptă camera spre unul sau mai multe fructe. FruitAI le recunoaște direct pe dispozitivul tău și le ancorează în imagine numele în română, în engleză și vitaminele, care rămân lipite de fruct când miști camera.</p>
         <div class="hero-cta">
+          <button class="btn kid-cta" type="button" id="btnDemo"><span aria-hidden="true">✨</span><span>Descoperă un fruct acum</span></button>
           <button class="btn primary" type="button" data-start>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
-            <span>Încearcă scannerul AR</span>
+            <span>Scanează cu camera</span>
           </button>
-          <a class="btn" href="#cum">Descoperă tehnologia</a>
+          <a class="btn" href="#cum">Cum funcționează</a>
         </div>
         <div class="facts">
           <div><b data-count="scannable">—</b>fructe recunoscute</div>
@@ -66,7 +67,7 @@
             <div class="leaf"></div>
           </div>
           <div class="hcard c1" id="heroCard"></div>
-          <div class="hcard c2"><span class="k">Ambient</span><b>Lumină bună</b>Imagine stabilă</div>
+          <div class="hero-vita" id="heroVita" aria-hidden="true"><div class="mascot"></div><div class="bubble">Salut, eu sunt Vita! Arată-mi un fruct și îți spun ce vitamine are!</div></div>
           <div class="hcard c3" id="heroPortion"></div>
         </div>
         <div class="scene-cap">Ilustrație a interfeței · rezultatul real apare în scanner</div>
@@ -108,6 +109,7 @@
             <button class="btn sm imm-exit" id="btnExitImm" type="button" hidden aria-label="Ieși din ecran complet">Ieși</button>
             <button class="btn sm imm-shot" id="btnImmShot" type="button" hidden>Salvează captura</button>
             <div class="guide" id="guide" hidden></div>
+            <div class="flow-msg" id="flowMsg" hidden role="status" aria-live="polite"></div>
             <div class="scan" id="scan" hidden></div>
             <div class="progress" id="progress" hidden>
               <div id="progText">Se descarcă modelele AI…</div>
