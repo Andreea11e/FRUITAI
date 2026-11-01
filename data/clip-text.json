@@ -21,6 +21,14 @@
    ]
   }
  ],
+ "fruitTemplates": {
+  "photo": [
+   "a photo of a {}, a type of fruit"
+  ],
+  "drawing": [
+   "a drawing of a {}, a type of fruit"
+  ]
+ },
  "labels": [
   "blueberry",
   "blueberries",

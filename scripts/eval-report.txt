@@ -1,63 +1,188 @@
-✓ blueberry      → blueberry 0.85 · elderberry 0.06 · blackcurrant 0.04  (fundal 0)
-✓ gooseberry     → gooseberry 0.95 · honeydew 0.01 · quince 0.01  (fundal 0)
-✓ pineapple      → pineapple 0.98 · dragon-fruit 0.01 · durian 0  (fundal 0)
-✗ custard-apple  → medlar 0.48 · passion-fruit 0.1 · fig 0.07  (fundal 0)
-✗ avocado        → fig 0.63 · passion-fruit 0.12 · date 0.08  (fundal 0)
-✓ banana         → banana 0.86 · plantain 0.13 · date 0  (fundal 0)
-~ plantain       → banana 0.88 · plantain 0.11 · jackfruit 0  (fundal 0)
-✓ apricot        → apricot 0.6 · peach 0.2 · persimmon 0.07  (fundal 0)
-✓ starfruit      → starfruit 0.63 · jackfruit 0.13 · lime 0.06  (fundal 0)
-✓ strawberry     → strawberry 0.97 · raspberry 0.03 · blackberry 0  (fundal 0)
-~ cherimoya      → custard-apple 0.48 · fig 0.13 · cherimoya 0.05  (fundal 0)
-✓ cherry         → cherry 0.62 · apple 0.18 · cranberry 0.1  (fundal 0)
-~ clementine     → orange 0.51 · tangerine 0.16 · clementine 0.09  (fundal 0)
-✓ blackcurrant   → blackcurrant 0.97 · redcurrant 0.01 · grape 0.01  (fundal 0)
-~ redcurrant     → elderberry 0.48 · redcurrant 0.29 · blackcurrant 0.09  (fundal 0)
-✓ persimmon      → persimmon 0.79 · apricot 0.07 · peach 0.03  (fundal 0)
-✓ date           → date 0.93 · tamarind 0.02 · pomegranate 0.01  (fundal 0)
-✓ mulberry       → mulberry 0.25 · plum 0.1 · pear 0.08  (fundal 0.01)
-durian: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-✓ dragon-fruit   → dragon-fruit 0.99 · starfruit 0 · passion-fruit 0  (fundal 0)
-passion-fruit: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-~ grapefruit     → blood-orange 0.64 · grapefruit 0.19 · orange 0.08  (fundal 0)
-soursop: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-✓ guava          → guava 0.27 · passion-fruit 0.17 · grapefruit 0.14  (fundal 0)
-quince: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-jackfruit: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-kiwi: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-kumquat: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-lemon: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-lime: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-✓ lychee         → lychee 0.93 · date 0.04 · longan 0.01  (fundal 0)
-longan: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-tangerine: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-✓ mango          → mango 0.43 · peach 0.25 · apricot 0.12  (fundal 0)
-~ mangosteen     → medlar 0.78 · lychee 0.1 · mangosteen 0.04  (fundal 0)
-✓ apple          → apple 0.39 · nectarine 0.23 · peach 0.08  (fundal 0)
-✓ olive          → olive 0.99 · passion-fruit 0 · plum 0  (fundal 0)
-✓ cranberry      → cranberry 0.92 · elderberry 0.03 · redcurrant 0.01  (fundal 0)
-✓ medlar         → medlar 0.49 · fig 0.14 · date 0.08  (fundal 0)
-~ blackberry     → blackcurrant 0.7 · blackberry 0.27 · elderberry 0.01  (fundal 0)
-✗ nectarine      → lychee 0.18 · apricot 0.16 · mulberry 0.1  (fundal 0.01)
-✓ coconut        → coconut 0.97 · kiwi 0.01 · longan 0.01  (fundal 0.01)
-✓ papaya         → papaya 0.54 · pineapple 0.09 · soursop 0.07  (fundal 0)
-✓ pear           → pear 0.85 · mango 0.07 · fig 0.01  (fundal 0)
-✗ cantaloupe     → watermelon 0.83 · ~cucumber 0.08 · ~cabbage 0.03  (fundal 0)
-✓ honeydew       → honeydew 0.73 · fig 0.12 · papaya 0.03  (fundal 0)
-✓ watermelon     → watermelon 0.81 · cantaloupe 0.11 · honeydew 0.03  (fundal 0)
-✗ peach          → lychee 0.18 · apricot 0.16 · mulberry 0.1  (fundal 0.01)
-~ pomelo         → lemon 0.42 · pomelo 0.32 · starfruit 0.07  (fundal 0)
-✓ orange         → orange 0.66 · tangerine 0.15 · clementine 0.1  (fundal 0)
-blood-orange: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-plum: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-rambutan: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-greengage: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-✓ pomegranate    → pomegranate 0.96 · apple 0.01 · dragon-fruit 0.01  (fundal 0)
-prickly-pear: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-fig: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-elderberry: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
-✓ grape          → grape 0.91 · blackcurrant 0.05 · blueberry 0.02  (fundal 0)
-✓ tamarind       → tamarind 0.72 · date 0.16 · banana 0.03  (fundal 0)
-raspberry: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+✓ blueberry      → blueberry 0.86 · blackcurrant 0.08 · elderberry 0.02
+~ blueberry      → grape 0.56 · blueberry 0.32 · blackcurrant 0.09
+✗ blueberry      → fig 0.43 · plum 0.10 · apple 0.09
+✓ gooseberry     → gooseberry 0.97 · quince 0.01 · plum 0.00
+~ gooseberry     → plum 0.31 · cranberry 0.20 · gooseberry 0.15
+✓ gooseberry     → gooseberry 0.31 · mulberry 0.26 · blackcurrant 0.16
+✓ pineapple      → pineapple 0.99 · dragon-fruit 0.00 · durian 0.00
+✓ pineapple      → pineapple 0.58 · durian 0.21 · coconut 0.05
+✓ pineapple      → pineapple 0.98 · passion-fruit 0.01 · banana 0.00
+✗ custard-apple  → passion-fruit 0.20 · olive 0.12 · pear 0.10
+✗ custard-apple  → longan 0.44 · fig 0.11 · date 0.10
+✗ custard-apple  → tamarind 0.23 · pear 0.15 · lime 0.13
+✗ avocado        → fig 0.79 · date 0.04 · passion-fruit 0.04
+✓ avocado        → avocado 0.83 · kiwi 0.08 · fig 0.02
+✗ avocado        → passion-fruit 0.18 · lime 0.12 · starfruit 0.11
+✓ banana         → banana 0.95 · plantain 0.05 · date 0.00
+✗ banana         → coconut 0.91 · ~cabbage 0.02 · cantaloupe 0.01
+✗ banana         → ~plant 0.41 · plantain 0.27 · coconut 0.06
+~ plantain       → banana 0.95 · plantain 0.04 · jackfruit 0.00
+~ plantain       → banana 0.95 · plantain 0.05 · date 0.00
+~ plantain       → banana 0.86 · plantain 0.11 · mango 0.01
+✓ apricot        → apricot 0.70 · peach 0.18 · persimmon 0.05
+✗ apricot        → ~tree 0.89 · mulberry 0.06 · lime 0.01
+✗ apricot        → mulberry 0.59 · lime 0.12 · plum 0.05
+✓ starfruit      → starfruit 0.49 · lime 0.12 · jackfruit 0.12
+✗ starfruit      → elderberry 0.39 · ~plant 0.19 · ~tree 0.12
+~ starfruit      → ~tree 0.39 · starfruit 0.13 · lychee 0.05
+✓ strawberry     → strawberry 0.96 · raspberry 0.03 · blackberry 0.00
+✗ strawberry     → redcurrant 0.60 · blackcurrant 0.13 · gooseberry 0.10
+~ strawberry     → raspberry 0.69 · strawberry 0.14 · blackberry 0.09
+✗ cherimoya      → custard-apple 0.48 · fig 0.11 · lime 0.07
+✓ cherimoya      → cherimoya 0.61 · custard-apple 0.27 · fig 0.03
+~ cherimoya      → custard-apple 0.42 · cherimoya 0.41 · passion-fruit 0.05
+✓ cherry         → cherry 0.61 · apple 0.25 · plum 0.05
+✓ cherry         → cherry 0.80 · cranberry 0.14 · redcurrant 0.03
+✗ cherry         → ~lamp 0.22 · apple 0.08 · pear 0.07
+~ clementine     → orange 0.66 · tangerine 0.18 · clementine 0.08
+✓ clementine     → clementine 0.57 · orange 0.18 · tangerine 0.08
+✗ clementine     → orange 0.24 · tangerine 0.11 · passion-fruit 0.06
+✓ blackcurrant   → blackcurrant 0.98 · redcurrant 0.01 · grape 0.01
+✓ blackcurrant   → blackcurrant 0.75 · blackberry 0.17 · elderberry 0.05
+~ blackcurrant   → gooseberry 0.55 · redcurrant 0.19 · blackcurrant 0.11
+✓ redcurrant     → redcurrant 0.57 · elderberry 0.17 · mulberry 0.09
+✓ redcurrant     → redcurrant 0.17 · gooseberry 0.11 · mulberry 0.09
+✓ redcurrant     → redcurrant 0.84 · blackcurrant 0.05 · cherry 0.03
+✓ persimmon      → persimmon 0.71 · apricot 0.14 · peach 0.03
+✗ persimmon      → quince 0.50 · pear 0.14 · ~flower 0.07
+✗ persimmon      → lime 0.24 · fig 0.13 · olive 0.11
+✓ date           → date 0.92 · pomegranate 0.03 · mulberry 0.01
+✗ date           → coconut 0.74 · ~tree 0.10 · fig 0.09
+✗ date           → ~plant 0.88 · plantain 0.06 · pineapple 0.02
+✓ mulberry       → mulberry 0.22 · pear 0.17 · plum 0.13
+~ mulberry       → elderberry 0.41 · mulberry 0.19 · grape 0.18
+✗ mulberry       → ~plant 0.37 · grape 0.07 · lime 0.07
+✓ durian         → durian 0.96 · pineapple 0.01 · lychee 0.01
+~ durian         → kiwi 0.77 · passion-fruit 0.12 · durian 0.05
+✗ durian         → starfruit 0.43 · date 0.15 · gooseberry 0.06
+✓ dragon-fruit   → dragon-fruit 0.99 · starfruit 0.00 · fig 0.00
+✓ dragon-fruit   → dragon-fruit 0.96 · starfruit 0.01 · lychee 0.01
+~ dragon-fruit   → custard-apple 0.38 · pineapple 0.34 · dragon-fruit 0.14
+~ passion-fruit  → ~flower 0.57 · passion-fruit 0.26 · ~plant 0.11
+✓ passion-fruit  → passion-fruit 0.79 · fig 0.10 · kiwi 0.04
+~ passion-fruit  → quince 0.28 · longan 0.20 · passion-fruit 0.09
+~ grapefruit     → blood-orange 0.45 · grapefruit 0.26 · orange 0.17
+✗ grapefruit     → quince 0.20 · apricot 0.15 · fig 0.12
+✓ grapefruit     → grapefruit 0.55 · blood-orange 0.23 · orange 0.12
+✓ soursop        → soursop 0.48 · cherimoya 0.18 · passion-fruit 0.07
+~ soursop        → lychee 0.43 · soursop 0.31 · fig 0.07
+✗ soursop        → pear 0.43 · starfruit 0.29 · quince 0.08
+✓ guava          → guava 0.27 · grapefruit 0.23 · passion-fruit 0.06
+✗ guava          → gooseberry 0.17 · fig 0.13 · mulberry 0.09
+✗ guava          → ~flower 0.33 · fig 0.07 · mulberry 0.06
+~ quince         → lemon 0.40 · quince 0.24 · medlar 0.07
+~ quince         → ~flower 0.42 · quince 0.34 · plum 0.08
+✓ quince         → quince 0.43 · apricot 0.15 · lemon 0.08
+✓ jackfruit      → jackfruit 0.91 · soursop 0.03 · durian 0.02
+~ jackfruit      → ~tree 0.65 · tamarind 0.14 · jackfruit 0.12
+~ jackfruit      → fig 0.52 · jackfruit 0.12 · pear 0.07
+✓ kiwi           → kiwi 0.80 · olive 0.05 · fig 0.04
+✓ kiwi           → kiwi 0.98 · apple 0.00 · lime 0.00
+✓ kiwi           → kiwi 0.65 · lemon 0.09 · grapefruit 0.04
+✗ kumquat        → orange 0.67 · tangerine 0.20 · clementine 0.11
+✓ kumquat        → kumquat 0.54 · apricot 0.29 · olive 0.08
+✗ kumquat        → lime 0.40 · lemon 0.31 · quince 0.06
+✓ lemon          → lemon 0.61 · quince 0.12 · passion-fruit 0.05
+✗ lemon          → lime 0.32 · ~plant 0.16 · olive 0.06
+✗ lemon          → quince 0.28 · mulberry 0.11 · lime 0.09
+✓ lime           → lime 0.92 · lemon 0.02 · pomelo 0.01
+✗ lime           → mulberry 0.20 · ~tree 0.13 · tamarind 0.09
+✗ lime           → passion-fruit 0.13 · plum 0.07 · olive 0.06
+✓ lychee         → lychee 0.95 · date 0.02 · mango 0.01
+✗ lychee         → medlar 0.27 · olive 0.15 · elderberry 0.08
+✓ lychee         → lychee 0.77 · rambutan 0.06 · pomegranate 0.03
+✗ longan         → ~tree 0.20 · tamarind 0.16 · mango 0.11
+✗ longan         → ~tree 0.37 · tamarind 0.26 · mulberry 0.13
+✗ longan         → olive 0.37 · lime 0.16 · starfruit 0.08
+~ tangerine      → orange 0.59 · tangerine 0.30 · clementine 0.06
+~ tangerine      → orange 0.34 · tangerine 0.26 · apricot 0.12
+~ tangerine      → orange 0.41 · tangerine 0.30 · apricot 0.06
+✓ mango          → mango 0.34 · peach 0.33 · apricot 0.12
+✗ mango          → apricot 0.21 · peach 0.15 · pomegranate 0.13
+✗ mango          → fig 0.37 · mulberry 0.15 · date 0.10
+~ mangosteen     → medlar 0.54 · mangosteen 0.10 · lychee 0.07
+✓ mangosteen     → mangosteen 0.58 · coconut 0.23 · fig 0.13
+✗ mangosteen     → jackfruit 0.39 · ~tree 0.27 · mulberry 0.13
+✓ apple          → apple 0.50 · nectarine 0.17 · peach 0.09
+✗ apple          → apricot 0.44 · cherry 0.16 · ~flower 0.11
+✗ apple          → apricot 0.31 · cherry 0.20 · plum 0.16
+✓ olive          → olive 0.99 · plum 0.00 · fig 0.00
+~ olive          → ~tree 0.75 · olive 0.18 · plum 0.01
+✓ olive          → olive 0.56 · ~tree 0.10 · pear 0.07
+✓ cranberry      → cranberry 0.94 · redcurrant 0.02 · strawberry 0.01
+✗ cranberry      → ~pen 0.20 · ~ball 0.20 · ~laptop computer 0.14
+✓ cranberry      → cranberry 0.94 · cherry 0.04 · pomegranate 0.00
+✓ medlar         → medlar 0.34 · fig 0.22 · date 0.07
+✗ medlar         → gooseberry 0.14 · ~plant 0.09 · lime 0.09
+✗ medlar         → gooseberry 0.20 · ~flower 0.19 · blackberry 0.12
+~ blackberry     → blackcurrant 0.59 · blackberry 0.38 · mulberry 0.01
+~ blackberry     → ~flower 0.38 · blackberry 0.35 · gooseberry 0.05
+~ blackberry     → date 0.27 · grape 0.14 · blackberry 0.11
+✗ nectarine      → apricot 0.24 · mulberry 0.19 · lychee 0.11
+~ nectarine      → peach 0.43 · apricot 0.35 · nectarine 0.11
+✗ nectarine      → ~tree 0.36 · plum 0.15 · cherry 0.13
+✓ coconut        → coconut 0.98 · kiwi 0.01 · longan 0.00
+✗ coconut        → gooseberry 0.24 · date 0.14 · apple 0.08
+✓ coconut        → coconut 0.54 · banana 0.17 · plantain 0.16
+✓ papaya         → papaya 0.21 · soursop 0.13 · mulberry 0.09
+✗ papaya         → ~plant 0.73 · lime 0.12 · gooseberry 0.02
+✗ papaya         → ~plant 0.20 · pineapple 0.15 · elderberry 0.10
+✓ pear           → pear 0.87 · mango 0.07 · peach 0.01
+✓ pear           → pear 0.81 · fig 0.16 · gooseberry 0.01
+✓ pear           → pear 0.22 · greengage 0.17 · gooseberry 0.13
+✗ cantaloupe     → watermelon 0.76 · ~cucumber 0.09 · ~cabbage 0.08
+✓ cantaloupe     → cantaloupe 0.91 · honeydew 0.05 · kiwi 0.01
+~ honeydew       → fig 0.43 · honeydew 0.28 · cantaloupe 0.10
+✗ honeydew       → passion-fruit 0.18 · cantaloupe 0.14 · mango 0.11
+✗ honeydew       → ~flower 0.58 · ~plant 0.25 · ~cabbage 0.07
+✓ watermelon     → watermelon 0.96 · cantaloupe 0.04 · honeydew 0.00
+✓ watermelon     → watermelon 0.97 · cantaloupe 0.01 · fig 0.00
+~ watermelon     → prickly-pear 0.95 · ~plant 0.01 · watermelon 0.01
+✗ peach          → apricot 0.24 · mulberry 0.19 · lychee 0.11
+✓ peach          → peach 0.43 · apricot 0.35 · nectarine 0.11
+✗ peach          → ~tree 0.36 · plum 0.15 · cherry 0.13
+~ pomelo         → lemon 0.50 · pomelo 0.20 · lime 0.05
+✗ pomelo         → lime 0.29 · kumquat 0.16 · ~plant 0.11
+✗ pomelo         → blackcurrant 0.25 · gooseberry 0.21 · apricot 0.08
+✓ orange         → orange 0.73 · tangerine 0.16 · clementine 0.06
+✗ orange         → quince 0.27 · ~flower 0.23 · olive 0.14
+✗ orange         → cranberry 0.32 · ~plant 0.16 · olive 0.08
+✓ blood-orange   → blood-orange 0.77 · grapefruit 0.10 · orange 0.07
+✗ blood-orange   → kiwi 0.52 · lime 0.31 · ~cucumber 0.09
+✗ blood-orange   → ~glass 0.38 · ~cup 0.25 · cranberry 0.08
+✓ plum           → plum 0.32 · fig 0.19 · grape 0.09
+✗ plum           → cherry 0.46 · apricot 0.17 · ~tree 0.15
+✗ plum           → pear 0.27 · olive 0.23 · fig 0.13
+✓ rambutan       → rambutan 0.59 · lychee 0.30 · pomegranate 0.03
+✓ rambutan       → rambutan 0.56 · lychee 0.20 · mulberry 0.16
+✗ rambutan       → mulberry 0.39 · lime 0.16 · starfruit 0.06
+~ greengage      → gooseberry 0.73 · greengage 0.08 · grape 0.07
+~ greengage      → gooseberry 0.42 · greengage 0.12 · grape 0.10
+✗ greengage      → cherry 0.37 · blackcurrant 0.14 · apricot 0.12
+✓ pomegranate    → pomegranate 0.93 · dragon-fruit 0.03 · apple 0.02
+✓ pomegranate    → pomegranate 0.95 · cranberry 0.03 · apple 0.01
+✗ pomegranate    → ~flower 0.42 · quince 0.15 · cherry 0.07
+✓ prickly-pear   → prickly-pear 0.41 · ~plant 0.35 · banana 0.06
+✓ prickly-pear   → prickly-pear 0.86 · ~flower 0.06 · dragon-fruit 0.06
+✓ prickly-pear   → prickly-pear 0.84 · dragon-fruit 0.15 · pomegranate 0.00
+~ fig            → mulberry 0.40 · medlar 0.24 · fig 0.08
+✗ fig            → mulberry 0.67 · blackcurrant 0.05 · elderberry 0.05
+✗ fig            → pear 0.17 · mulberry 0.13 · lime 0.10
+✓ elderberry     → elderberry 0.69 · blackberry 0.17 · blackcurrant 0.12
+✗ elderberry     → ~tree 0.52 · cherry 0.11 · apricot 0.05
+✓ elderberry     → elderberry 0.70 · ~plant 0.15 · ~flower 0.10
+✓ grape          → grape 0.84 · blackcurrant 0.10 · blueberry 0.04
+✗ grape          → ~plant 0.52 · elderberry 0.14 · mulberry 0.06
+✓ grape          → grape 0.94 · blackcurrant 0.02 · mulberry 0.02
+✓ tamarind       → tamarind 0.75 · mulberry 0.07 · ~tree 0.05
+~ tamarind       → gooseberry 0.46 · ~plant 0.20 · tamarind 0.10
+~ tamarind       → ~tree 0.84 · mulberry 0.06 · tamarind 0.02
+~ raspberry      → strawberry 0.73 · raspberry 0.17 · watermelon 0.02
+✗ raspberry      → blackberry 0.25 · blackcurrant 0.20 · date 0.12
+✓ raspberry      → raspberry 0.97 · strawberry 0.01 · lychee 0.01
 
-Test pe 42 fotografii reale (Wikipedia): corect din prima 29/42 (69%), în primele 3: 37/42 (88%). Model de imagine q8, 17 ms/imagine pe serverul GitHub.
+Test pe 182 fotografii reale (Wikipedia), model de imagine q8, 25 ms/imagine pe serverul GitHub:
+  formulări simple       · fără prior → corect din prima 41%, în primele 3 65%
+  formulări simple       · cu prior  → corect din prima 39%, în primele 3 63%
+  cu formulări pt. fructe · fără prior → corect din prima 42%, în primele 3 63%
+  cu formulări pt. fructe · cu prior  → corect din prima 41%, în primele 3 62%
