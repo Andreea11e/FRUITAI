@@ -112,7 +112,7 @@ const proto = (ids, pick) => {
   fruitIdx.forEach((id, c) => { const L = pick(imgEmb[id] || []); for (const v of L) for (let j = 0; j < D; j++) P[c * D + j] += v[j]; });
   return normalize(P, fruitIdx.length, D);
 };
-const split = L => [L.filter((_, i) => i % 10 < 7), L.filter((_, i) => i % 10 >= 7)];     // 70% învățare / 30% test
+const split = L => [L.filter(v => !v.test), L.filter(v => v.test)];     // 70% învățare / 30% test
 const prior = k => hits[k]?.kind === "fruit" ? (catalog.get(hits[k].id)?.ai?.prior ?? 1) : 1;
 // scorurile, exact ca în browser: text (×100) + alpha · exp(-beta · (1 − asemănarea cu prototipul fructului))
 function probs(img, Es, P, alpha, beta) {
@@ -149,7 +149,12 @@ function evaluate(P, alpha, beta) {
   }
   return { n, top1: ok1 / n, top3: ok3 / n, common: cok / Math.max(1, cn), cn };
 }
-const Ptrain = proto(fruitIdx, L => split(L)[0]);
+// curățare: la învățare păstrăm doar fotografiile în care fructul e printre primele 5 după text
+// (căutarea pe Commons aduce și copaci, flori, hărți sau alte obiecte); pozele de test rămân neatinse
+const clean = id => v => predict(v, null, 0, 0).slice(0, 5).some(t => t[0] === id);
+for (const id of fruitIdx) imgEmb[id] = (imgEmb[id] || []).map((v, i) => Object.assign(v, { test: i % 10 >= 7 }));
+const trainOf = id => (imgEmb[id] || []).filter(v => !v.test && clean(id)(v));
+const Ptrain = proto(fruitIdx, (L) => L.length ? trainOf(fruitIdx.find(id => imgEmb[id] === L)) : []);
 const base = evaluate(null, 0, 0);
 let best = { alpha: 0, beta: 0, ...base };
 const grid = [];
@@ -167,7 +172,7 @@ console.log("\n" + grid.join("\n") + "\n\n" + report);
 await writeFile(new URL("../scripts/eval-report.txt", import.meta.url), report + "\n\n" + grid.join("\n") + "\n");
 
 // Prototipurile finale: din toate fotografiile; se salvează după vectorii de text, în același fișier
-const Pall = proto(fruitIdx, L => L);
+const Pall = proto(fruitIdx, L => { const id = fruitIdx.find(x => imgEmb[x] === L); return L.filter(v => clean(id)(v)); });
 const bin = new Float32Array(out.length + Pall.length);
 bin.set(out); bin.set(Pall, out.length);
 await writeFile(new URL("clip-text.bin", root), Buffer.from(bin.buffer));
