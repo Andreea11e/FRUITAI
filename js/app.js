@@ -1186,7 +1186,7 @@ async function startXR() {
     setStatus("Se pornește AR spațial…", "busy");
     const xr = await import("./xr.js");   // relativ la js/app.js
     await xr.startSession(f, catalog.nutrientsFor(f.id), {
-      overlay, msg: $("xrMsg"), hint: $("xrHint"), close: $("xrClose"), tools: $("xrTools"), card: $("xrCard"), t,
+      overlay, msg: null, hint: null, close: $("xrClose"), tools: $("xrTools"), card: $("xrCard"), t,
       onNutrient: n => window.dispatchEvent(new CustomEvent("fruitai:nutrient", { detail: n.key })),
       onEnd: () => { state.xrActive = false; overlay.hidden = true; updateXRButton(); setStatus("Sesiunea AR spațial s-a încheiat", "ok"); }
     });

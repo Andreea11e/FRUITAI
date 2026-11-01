@@ -1157,3 +1157,6 @@ dialog.game h4 { margin: 22px 0 10px; font: 900 13px "Nunito", var(--f-sans); le
   font: 800 13px "Nunito", var(--f-sans); color: #1A1033; background: #FFE27A; padding: 5px 12px; border-radius: 999px; box-shadow: 0 6px 18px -6px rgba(0,0,0,.5); }
 @keyframes seekPulse { 50% { border-color: rgba(255, 226, 122, .25); } }
 @media (prefers-reduced-motion: reduce) { .seek-box { animation: none; transition: none; } }
+
+/* AR spațial: fără texte peste cameră, doar butonul de închidere (în dreapta) */
+#xrOverlay #xrClose { margin-left: auto; }

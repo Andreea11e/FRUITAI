@@ -541,7 +541,7 @@ function sliceMesh(v, R) {
  * Construiește modelul unui fruct din catalog, normalizat la o sferă de rază 1 centrată în origine.
  * Felia (dacă există) se adaugă alături, în fața fructului.
  */
-export function buildFruitModel(fruit, { slice = true } = {}) {
+export function buildFruitModel(fruit, { slice = false } = {}) {   // felia din interior: doar la cerere
   const v = { ...fruit.visual };
   const R = rng(fruit.id);
   const { g } = body(v, R);
