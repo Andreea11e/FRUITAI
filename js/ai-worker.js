@@ -9,6 +9,10 @@
 let T = null, cfg = null;
 let tokenizer = null, processor = null, textModel = null, visionModel = null, detector = null, detLoading = null;
 const emb = {};                       // șablon → Float32Array [N × D], vectori normalizați
+const setEmb = {};                    // set („photo” / „drawing”) → media normalizată a șabloanelor gata calculate
+// Modelele nu pot rula în paralel: toate rulările trec pe rând prin acest „lacăt”
+let chain = Promise.resolve();
+function lock(fn) { const r = chain.then(fn); chain = r.catch(() => {}); return r; }
 let D = 512;
 const post = m => self.postMessage(m);
 
@@ -67,12 +71,14 @@ async function textEmbeddings(tpl, backend) {
   if (cached && cached.length === cfg.labels.length * D) { emb[tpl] = cached; return; }
   const texts = cfg.labels.map(l => tpl.replace("{}", l));
   const out = new Float32Array(texts.length * D);
-  const B = 16;
+  const B = 8;                          // bucăți mici: o analiză de imagine nu așteaptă mult între ele
   for (let i = 0; i < texts.length; i += B) {
-    const inputs = tokenizer(texts.slice(i, i + B), { padding: true, truncation: true });
-    const { text_embeds } = await textModel(inputs);
-    out.set(f32(text_embeds), i * D);
-    post({ type: "textProgress", tpl, done: Math.min(texts.length, i + B), total: texts.length });
+    await lock(async () => {
+      const inputs = tokenizer(texts.slice(i, i + B), { padding: true, truncation: true });
+      const { text_embeds } = await textModel(inputs);
+      out.set(f32(text_embeds), i * D);
+    });
+    post({ type: "textProgress", tpl, done: Math.min(texts.length, i + B), total: texts.length, background: !!self.__ready });
   }
   emb[tpl] = normalize(out, texts.length, D);
   cachePut(key, emb[tpl]);
@@ -105,26 +111,44 @@ async function init(msg) {
   visionModel = await load(T.CLIPVisionModelWithProjection, cfg.clip);
   textModel = await load(T.CLIPTextModelWithProjection, cfg.clip);
   D = textModel.config?.projection_dim || 512;
-  for (const tpl of cfg.templates) await textEmbeddings(tpl, backend);
-  // modelul de text nu mai e necesar: eliberăm memoria (important pe telefon)
-  try { await textModel.dispose?.(); } catch {}
-  textModel = null;
-  // încălzire: o imagine gri, ca primul cadru real să fie analizat imediat
+  // Pornim cât mai repede: doar primul șablon („a photo of a …”). Restul (desene, variante) se calculează
+  // în fundal, după ce scannerul e deja gata, și îmbunătățesc treptat recunoașterea (media mai multor descrieri).
+  const [photo, drawing] = cfg.sets;
+  await textEmbeddings(photo.templates[0], backend);
+  rebuild();
   const gray = new Uint8ClampedArray(224 * 224 * 4).fill(128);
-  await classify({ images: [{ data: gray.buffer, width: 224, height: 224 }] });
-  self.__backend = backend;
+  await classify({ images: [{ data: gray.buffer, width: 224, height: 224 }] });   // încălzire
+  self.__backend = backend; self.__ready = true;
   post({ type: "ready", ...backend });
+  (async () => {
+    const rest = [drawing.templates[0], ...photo.templates.slice(1), ...drawing.templates.slice(1)];
+    for (const tpl of rest) { await textEmbeddings(tpl, backend); rebuild(); post({ type: "ensemble", tpl }); }
+    try { await textModel.dispose?.(); } catch {}
+    textModel = null;                                  // eliberăm memoria (important pe telefon)
+  })().catch(e => console.warn("Descrieri suplimentare:", e));
+}
+
+/** Media (normalizată) a vectorilor de text pentru fiecare set de șabloane deja calculate. */
+function rebuild() {
+  const N = cfg.labels.length;
+  for (const set of cfg.sets) {
+    const ready = set.templates.filter(t => emb[t]);
+    if (!ready.length) continue;
+    const m = new Float32Array(N * D);
+    for (const t of ready) { const E = emb[t]; for (let i = 0; i < m.length; i++) m[i] += E[i]; }
+    setEmb[set.name] = normalize(m, N, D);
+  }
 }
 
 async function classify({ images }) {
   const raws = images.map(toRaw);
   const inputs = await processor(raws);
-  const { image_embeds } = await visionModel(inputs);
+  const { image_embeds } = await lock(() => visionModel(inputs));
   const n = raws.length, img = normalize(f32(image_embeds), n, D);
   const N = cfg.labels.length;
-  // pentru fiecare imagine și fiecare șablon: probabilitățile (softmax peste toate etichetele)
-  return images.map((_, i) => cfg.templates.map(tpl => {
-    const E = emb[tpl], logits = new Float32Array(N);
+  // pentru fiecare imagine și fiecare set (fotografie, desen): probabilitățile (softmax peste toate etichetele)
+  return images.map((_, i) => cfg.sets.map(set => {
+    const E = setEmb[set.name] || setEmb[cfg.sets[0].name], logits = new Float32Array(N);
     let max = -Infinity;
     for (let k = 0; k < N; k++) {
       let s = 0; for (let j = 0; j < D; j++) s += img[i * D + j] * E[k * D + j];
@@ -149,7 +173,7 @@ async function loadDetector() {
 
 async function detect({ image, queries, threshold }) {
   const d = await loadDetector();
-  return d(toRaw(image), queries, { threshold, percentage: true });
+  return lock(() => d(toRaw(image), queries, { threshold, percentage: true }));
 }
 
 self.onmessage = async e => {

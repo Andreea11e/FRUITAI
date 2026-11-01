@@ -12,7 +12,7 @@ import { sound } from "./sound.js";
 const CLIP_NAME = "Xenova/clip-vit-base-patch32";
 const DETECTOR_NAME = "Xenova/owlvit-base-patch32";
 const TRANSFORMERS_URL = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2";
-const CHECK_INTERVAL = 800;     // ms între analize în modul live
+const CHECK_INTERVAL = 450;     // ms între analize în modul live (300 pe WebGPU)
 const RESULT_TTL = 4000;        // ms cât rămâne valabil un rezultat live
 const DETECT_THRESHOLD = 0.10;
 const FRUIT_MIN_SCORE = 0.30;
@@ -513,11 +513,18 @@ async function claudeAnalyze(canvas) {
 // CLIP: descrierile text se calculează o singură dată (apoi stau în cache); la fiecare cadru rulează doar
 // modelul de imagine, pe câteva decupaje pătrate ale cadrului. OWL-ViT (foarte greu) e folosit doar pentru
 // fotografii, pe calculatoare cu WebGPU; pe telefon, decupajele CLIP țin locul detectorului.
-const TEMPLATES = ["a photo of a {}", "a drawing of a {}"];
+// Seturi de descrieri: media mai multor formulări e mai precisă decât una singură (tehnica „prompt ensemble” de la CLIP).
+// Primul șablon din fiecare set e calculat la pornire; celelalte, în fundal.
+const SETS = [
+  { name: "photo", templates: ["a photo of a {}", "a close-up photo of a {}", "a bright photo of a {}"] },
+  { name: "drawing", templates: ["a drawing of a {}", "an illustration of a {}", "a cartoon {}"] }
+];
 const FRUIT_QUERIES = ["a photo of a fruit", "a drawing of a fruit"];
 const DET_QUERIES = [...FRUIT_QUERIES, "a photo of a person", "a photo of a human face", "a photo of a hand"];
 const IS_MOBILE = matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
-const CROP_MIN_SCORE = 0.40;     // un decupaj fără detector trebuie să fie mai sigur decât o casetă de detector
+const CROP_MIN_SCORE = 0.45;     // scor relativ (fără fundal) pentru un decupaj
+const RAW_MIN = 0.10;            // un fruct trebuie să aibă și un scor brut minim (altfel cadrul e doar fundal)
+const INSTANT_SCORE = 0.60;      // peste acest scor fructul e acceptat din prima, fără să mai aștepte alt cadru
 const local = { worker: null, loading: null, ready: false, backend: null, seq: 0, pending: new Map(), labels: [], detOK: false, tick: 0 };
 const debugAI = /[?&]debug/.test(location.search);
 
@@ -574,6 +581,10 @@ function loadLocal() {
         el.progText.textContent = cached
           ? t("Se pornesc modelele AI salvate pe dispozitiv… {p}%", { p: Math.round(pct) })
           : t("Prima pornire: se descarcă modelele AI (o singură dată)… {a} / {b} MB", { a: (m.loaded / 1048576).toFixed(0), b: (m.total / 1048576).toFixed(0) });
+      } else if (m.type === "textProgress" && m.background) {
+        /* descrierile suplimentare se calculează în fundal, scannerul e deja gata */
+      } else if (m.type === "ensemble") {
+        if (debugAI) console.log("[FruitAI] descriere nouă:", m.tpl);
       } else if (m.type === "textProgress") {
         const pct = Math.round(m.done / m.total * 100);
         el.progBar.style.width = pct + "%";
@@ -585,7 +596,7 @@ function loadLocal() {
       for (const p of local.pending.values()) p.rej(new Error(e.message || "worker"));
       local.pending.clear();
     };
-    await call("init", { url: TRANSFORMERS_URL, clip: CLIP_NAME, detector: DETECTOR_NAME, labels: local.labels, templates: TEMPLATES });
+    await call("init", { url: TRANSFORMERS_URL, clip: CLIP_NAME, detector: DETECTOR_NAME, labels: local.labels, sets: SETS });
     try { await navigator.storage?.persist?.(); } catch {}
     el.progress.hidden = true;
     local.ready = true;
@@ -636,20 +647,100 @@ function sq(src, cx, cy, frac) {
   return [x - hw, y - hh, x + hw, y + hh];
 }
 
+/** Decizia pentru o imagine. Fundalul (mâini, oameni, masă, perete, o carte…) nu concurează cu fructul:
+ *  scorul fructului e calculat față de restul obiectelor, nu față de mâna care îl ține. */
+function decide(probs) {
+  const g = groupScores(probs);
+  const isBg = x => x.hit.kind === "notfruit" && x.hit.bg;
+  const bg = g.reduce((acc, x) => acc + (isBg(x) ? x.score : 0), 0);
+  const fg = g.filter(x => !isBg(x));
+  const top = fg[0], rest = Math.max(1e-6, 1 - bg);
+  return { top, bgTop: g.find(isBg), bg, score: top ? Math.min(1, top.score / rest) : 0, raw: top?.score || 0, list: g };
+}
+
 /** Clasifică mai multe regiuni într-un singur apel (doar modelul de imagine rulează). */
 async function classifyRegions(src, regions) {
   const imgs = regions.map(r => prep(src, r));
   const res = await call("classify", { images: imgs }, imgs.map(i => i.data));
   return res.map(([photo, drawing], i) => {
-    let best = groupScores(photo);
-    // nesigur ca fotografie? poate e un desen sau o pagină de carte: facem media cu „a drawing of a …”
-    if ((best[0]?.score ?? 0) < 0.5) {
-      const mix = groupScores(photo.map((p, k) => (p + drawing[k]) / 2));
-      if (mix[0] && mix[0].score > (best[0]?.score ?? 0)) best = mix;
+    let d = decide(photo);
+    // nesigur ca fotografie? poate e un desen sau o pagină de carte: facem media cu descrierile de desen
+    if (d.score < 0.5) {
+      const m = decide(photo.map((p, k) => (p + drawing[k]) / 2));
+      if (m.score > d.score) d = m;
     }
-    if (debugAI) console.log("[FruitAI] CLIP", regions[i].tag || "", best.slice(0, 4).map(g => `${g.hit.id ?? g.hit.label} ${(g.score * 100).toFixed(0)}`).join(" · "));
-    return { ...regions[i], hit: best[0]?.hit || null, score: best[0]?.score || 0 };
+    if (debugAI) console.log("[FruitAI] CLIP", regions[i].tag || "", `fundal ${(d.bg * 100).toFixed(0)}% ·`, d.list.slice(0, 4).map(g => `${g.hit.id ?? g.hit.label} ${(g.score * 100).toFixed(0)}`).join(" · "), `→ ${d.top?.hit.id ?? d.top?.hit.label} ${(d.score * 100).toFixed(0)}`);
+    return { ...regions[i], hit: d.top?.hit || null, score: d.score, raw: d.raw, bg: d.bg, bgTop: d.bgTop };
   });
+}
+
+// ---------------- Localizare rapidă: unde e obiectul în cadru? ----------------
+// Fără model AI: comparăm fiecare pixel cu culoarea marginilor cadrului (fundalul) și păstrăm cea mai mare
+// zonă colorată diferit (un fruct, o poză, o pagină). Durează ~1 ms, deci rulează de câteva ori pe secundă.
+const LOC_W = 64, LOC_H = 48;
+const locCv = document.createElement("canvas"); locCv.width = LOC_W; locCv.height = LOC_H;
+const locCtx = locCv.getContext("2d", { willReadFrequently: true });
+function locate(src) {
+  const W = src.videoWidth || src.width, H = src.videoHeight || src.height;
+  if (!W || !H) return null;
+  locCtx.drawImage(src, 0, 0, LOC_W, LOC_H);
+  const d = locCtx.getImageData(0, 0, LOC_W, LOC_H).data, N = LOC_W * LOC_H;
+  // culoarea fundalului = media marginilor
+  let r = 0, g = 0, b = 0, n = 0;
+  const edge = (x, y) => x < 3 || y < 3 || x >= LOC_W - 3 || y >= LOC_H - 3;
+  for (let y = 0; y < LOC_H; y++) for (let x = 0; x < LOC_W; x++) if (edge(x, y)) { const i = (y * LOC_W + x) * 4; r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
+  r /= n; g /= n; b /= n;
+  const w = new Float32Array(N);
+  let edgeDev = 0;
+  for (let y = 0; y < LOC_H; y++) for (let x = 0; x < LOC_W; x++) {
+    const k = y * LOC_W + x, i = k * 4, R = d[i], G = d[i + 1], B = d[i + 2];
+    const mx = Math.max(R, G, B), mn = Math.min(R, G, B), sat = mx ? (mx - mn) / mx : 0;
+    w[k] = Math.hypot(R - r, G - g, B - b) / 441 * (0.6 + sat);
+    if (edge(x, y)) edgeDev += w[k];
+  }
+  const thr = Math.max(0.14, (edgeDev / n) * 1.7);
+  // cea mai „grea” zonă conectată peste prag
+  const seen = new Uint8Array(N), q = new Int32Array(N);
+  let best = null;
+  for (let s0 = 0; s0 < N; s0++) {
+    if (seen[s0] || w[s0] <= thr) continue;
+    let h = 0, t = 0, mass = 0, area = 0, x1 = LOC_W, y1 = LOC_H, x2 = 0, y2 = 0;
+    q[t++] = s0; seen[s0] = 1;
+    while (h < t) {
+      const k = q[h++], x = k % LOC_W, y = (k / LOC_W) | 0;
+      mass += w[k]; area++;
+      if (x < x1) x1 = x; if (x > x2) x2 = x; if (y < y1) y1 = y; if (y > y2) y2 = y;
+      const nbs = [x > 0 ? k - 1 : -1, x < LOC_W - 1 ? k + 1 : -1, y > 0 ? k - LOC_W : -1, y < LOC_H - 1 ? k + LOC_W : -1];
+      for (const nb of nbs) if (nb >= 0 && !seen[nb] && w[nb] > thr) { seen[nb] = 1; q[t++] = nb; }
+    }
+    if (area < N * 0.012) continue;                                           // minim ~1% din cadru
+    if ((x2 - x1) > LOC_W * 0.94 && (y2 - y1) > LOC_H * 0.94) continue;      // tot cadrul: nu e un obiect
+    if (!best || mass > best.mass) best = { mass, x1, y1, x2: x2 + 1, y2: y2 + 1 };
+  }
+  if (!best) return null;
+  const px = (best.x2 - best.x1) * 0.15, py = (best.y2 - best.y1) * 0.15;
+  return [Math.max(0, (best.x1 - px) / LOC_W), Math.max(0, (best.y1 - py) / LOC_H), Math.min(1, (best.x2 + px) / LOC_W), Math.min(1, (best.y2 + py) / LOC_H)];
+}
+/** Caseta găsită → pătrat (CLIP lucrează pe pătrate), cu latura minimă 30% din cadru. */
+function squareOf(src, box) {
+  const W = src.videoWidth || src.width, H = src.videoHeight || src.height;
+  const cx = (box[0] + box[2]) / 2, cy = (box[1] + box[3]) / 2;
+  const side = Math.max((box[2] - box[0]) * W, (box[3] - box[1]) * H, 0.3 * Math.min(W, H));
+  return sq(src, cx, cy, Math.min(1, side / Math.min(W, H)));
+}
+
+// Rama „Caut fructul…” arată imediat unde a găsit aplicația obiectul
+const seekEl = document.createElement("div");
+seekEl.className = "seek-box"; seekEl.hidden = true;
+seekEl.innerHTML = `<i></i><i></i><i></i><i></i><span>Caut fructul…</span>`;
+el.stage.appendChild(seekEl);
+function showSeek(box) {
+  const m = box && mediaRect();
+  if (!m) { seekEl.hidden = true; return; }
+  const [x1, y1, x2, y2] = box;
+  seekEl.style.transform = `translate(${m.ox + x1 * m.dw}px, ${m.oy + y1 * m.dh}px)`;
+  seekEl.style.width = (x2 - x1) * m.dw + "px"; seekEl.style.height = (y2 - y1) * m.dh + "px";
+  seekEl.hidden = false;
 }
 
 const iou = (a, b) => {
@@ -684,15 +775,17 @@ async function findFruitBoxes(canvas) {
   }).filter(box => (box[2] - box[0]) * canvas.width >= 40 && (box[3] - box[1]) * canvas.height >= 40);
 }
 
-/** Regiunile analizate: puține și rapide în modul live, mai multe pentru o fotografie. */
-function regionsFor(src, photo) {
+/** Regiunile analizate: obiectul găsit pe ecran, centrul și cadrul întreg (în live), plus colțurile (la fotografii). */
+function regionsFor(src, photo, found) {
   const fast = local.backend?.device === "webgpu";
+  const obj = found ? [{ box: squareOf(src, found), tag: "obiect", min: CROP_MIN_SCORE, obj: true }] : [];
   if (!photo) {
-    // live: centrul cadrului (unde ține copilul fructul) și cadrul întreg; pe WASM, alternativ, câte unul pe cadru
     const r = [{ box: sq(src, .5, .5, .72), tag: "centru", min: CROP_MIN_SCORE }, { box: [0, 0, 1, 1], fit: "contain", tag: "tot", min: FULLFRAME_MIN_SCORE }];
-    return fast ? r : [r[local.tick++ % 2]];
+    // pe WASM (mai lent): obiectul găsit, iar dacă nu e niciunul, centrul și cadrul întreg, pe rând
+    return fast ? [...obj, ...r] : obj.length ? obj : [r[local.tick++ % 2]];
   }
   const r = [
+    ...obj,
     { box: [0, 0, 1, 1], fit: "contain", tag: "tot", min: FULLFRAME_MIN_SCORE },
     { box: sq(src, .5, .5, 1), tag: "pătrat", min: CROP_MIN_SCORE },
     { box: sq(src, .5, .5, .6), tag: "centru", min: CROP_MIN_SCORE }
@@ -701,24 +794,31 @@ function regionsFor(src, photo) {
   return r;
 }
 
-async function localAnalyze(src, { photo = false } = {}) {
+async function localAnalyze(src, { photo = false, found } = {}) {
   await loadLocal();
-  let regions = regionsFor(src, photo);
+  if (found === undefined) found = locate(src);
+  if (photo) showSeek(found || [0.08, 0.08, 0.92, 0.92]);
+  let regions = regionsFor(src, photo, found);
   if (photo && local.detOK) {
-    try { regions = [...(await findFruitBoxes(src)).map(box => ({ box, tag: "casetă", min: FRUIT_MIN_SCORE, det: true })), ...regions]; }
+    try { regions = [...(await findFruitBoxes(src)).map(box => ({ box, tag: "casetă", min: 0.35, det: true })), ...regions]; }
     catch (e) { console.warn("Detector:", e); }
   }
   const res = await classifyRegions(src, regions);
-  const fruits = res.filter(r => r.hit?.kind === "fruit" && r.score >= r.min).sort((a, b) => b.score - a.score);
+  const fruits = res.filter(r => r.hit?.kind === "fruit" && r.score >= r.min && r.raw >= RAW_MIN).sort((a, b) => b.score - a.score);
   if (fruits.length) {
     const p = fruits[0];
-    // alte fructe diferite (doar din casetele detectorului, care chiar sunt obiecte separate)
+    // același fruct văzut în mai multe regiuni = mai sigur
+    const agree = res.filter(r => r.hit?.kind === "fruit" && r.hit.id === p.hit.id && r.score >= 0.3).length;
+    const score = Math.min(0.99, p.score + (agree > 1 ? 0.08 * (agree - 1) : 0));
     const others = fruits.filter(f => f.det && f !== p && f.hit.id !== p.hit.id).map(f => ({ label: f.hit.id, box: f.box }));
-    const box = p.fit === "contain" ? [0.1, 0.1, 0.9, 0.9] : p.box;
-    return { kind: "fruit", label: p.hit.id, score: p.score, box, others };
+    const box = p.fit === "contain" ? (found || [0.1, 0.1, 0.9, 0.9]) : p.obj && found ? found : p.box;
+    return { kind: "fruit", label: p.hit.id, score, box, others };
   }
-  const nf = res.filter(r => r.hit?.kind === "notfruit").sort((a, b) => b.score - a.score)[0];
-  if (nf && nf.score >= NONFRUIT_FULL_MIN) return { kind: "notfruit", label: nf.hit.label, score: nf.score, box: nf.fit === "contain" ? null : nf.box };
+  // niciun fruct: un obiect real (o roșie, o cană); la fotografii, și ce e în fundal (o mână, o persoană)
+  const nf = res.filter(r => r.hit?.kind === "notfruit" && r.raw >= NONFRUIT_FULL_MIN).sort((a, b) => b.raw - a.raw)[0];
+  if (nf) return { kind: "notfruit", label: nf.hit.label, score: nf.raw, box: nf.fit === "contain" ? null : nf.box };
+  const bgr = photo && res.filter(r => r.bgTop && r.bg >= 0.6).sort((a, b) => b.bg - a.bg)[0];
+  if (bgr) return { kind: "notfruit", label: bgr.bgTop.hit.label, score: bgr.bg, box: null };
   return { kind: "none", score: Math.max(0, ...res.map(r => r.score)) };
 }
 
@@ -771,7 +871,7 @@ async function handleFile(file) {
     setStatus(explainError(e), "err");
     if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) disableAnalysis();
   } finally {
-    state.busy = false; el.scan.hidden = true;
+    state.busy = false; el.scan.hidden = true; showSeek(null);
     renderGuide();
   }
 }
@@ -839,7 +939,13 @@ function renderFlowMsg() {
 
 /** Primește fiecare rezultat brut din camera live și avansează fluxul. */
 function flowOnResult(r) {
-  const fruit = r.kind === "fruit";
+  let fruit = r.kind === "fruit";
+  // după ce fructul 3D a apărut, același fruct ținut în continuare în cadru nu repornește fluxul;
+  // repornește doar un fruct diferit, sau același fruct arătat din nou după ce a fost scos din cadru
+  if (flow.phase === "reveal") {
+    if (!fruit) { flow.gone = (flow.gone || 0) + 1; if (flow.gone >= 2) flow.cleared = true; }
+    else { flow.gone = 0; if (r.label === flow.id && !flow.cleared) fruit = false; }
+  }
   if (flow.phase === "scan" || flow.phase === "reveal") {
     // vot pe ultimele 3 rezultate: un cadru ratat (mișcare, reflexie) nu mai anulează recunoașterea
     flow.votes = [...(flow.votes || []), fruit ? r.label : null].slice(-3);
@@ -847,7 +953,9 @@ function flowOnResult(r) {
     if (fruit && r.label !== flow.cand) { flow.cand = r.label; flow.candNew = !collection.has(r.label); }
     flow.streak = count;
     const canLock = flow.phase === "scan" || (Date.now() - flow.t > REVEAL_MIN_MS && !revealBusy());
-    if (fruit && flow.streak >= LOCK_STREAK && canLock) {
+    // foarte sigur → acceptat din prima; altfel trebuie văzut în 2 din ultimele 3 cadre
+    if (fruit && (flow.streak >= LOCK_STREAK || r.score >= INSTANT_SCORE) && canLock) {
+      showSeek(null);
       hideReveal();
       flow.id = r.label; flow.isNew = flow.candNew; flow.miss = 0; flow.score = r.score;
       sound.pop();
@@ -863,7 +971,7 @@ function startReveal() {
   if (!flow.id) return;
   clearTimeout(state.discTimer);
   setFlow("reveal");
-  flow.cand = null; flow.streak = 0; flow.votes = [];
+  flow.cand = null; flow.streak = 0; flow.votes = []; flow.cleared = false; flow.gone = 0;
   setArTarget(null);
   showFruitCard(flow.id, { chipText: "Identificat", note: "fruct 3D" });
   setStatus(t("{name}, în 3D", { name: fruitName(flow.id) }), "ok");
@@ -944,9 +1052,13 @@ async function ambientLoop() {
       state.ambient.light = s.light; state.ambient.sharp = s.sharp;
       if (s.motion != null) state.ambient.motion = s.motion;
       renderAmbient();
+      // caută imediat obiectul pe ecran și arată rama „Caut fructul…” peste el
+      state.seek = locate(el.video);
+      showSeek(flow.phase === "scan" ? state.seek : null);
     }
-    await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, 200));
   }
+  showSeek(null);
 }
 
 async function liveLoop() {
@@ -962,7 +1074,7 @@ async function liveLoop() {
       } else {
         const c = canvasFrom(el.video, el.video.videoWidth, el.video.videoHeight, 640);
         try {
-          const r = await localAnalyze(c);
+          const r = await localAnalyze(c, { found: state.seek });
           state.lastModelRun = Date.now();
           if (!state.live) break;
           flowOnResult(r);
@@ -974,7 +1086,8 @@ async function liveLoop() {
         } catch (e) { console.error(e); setStatus("Eroare AI: " + String(e.message || e).slice(0, 80), "err"); }
       }
     }
-    const wait = CHECK_INTERVAL - (performance.now() - t0);
+    // pe WebGPU analiza durează puțin: verificăm mai des, ca fructul să fie găsit imediat
+    const wait = (local.backend?.device === "webgpu" ? 300 : 450) - (performance.now() - t0);
     if (wait > 0) await new Promise(r => setTimeout(r, wait));
   }
 }

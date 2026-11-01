@@ -1,40 +1,47 @@
 {
-  "description": "Etichete pentru obiecte care NU sunt fructe. Modelul AI le folosește ca să nu confunde o cană sau o mână cu un fruct.",
+  "description": "Etichete pentru obiecte care NU sunt fructe. Modelul AI le folosește ca să nu confunde o cană sau o mână cu un fruct. Cele cu „background”: true sunt fundal (oameni, mâini, mobilă, o carte, un ecran): pot apărea în jurul unui fruct, deci nu îl „acoperă” la recunoaștere.",
   "labels": [
     {
       "label": "person",
       "ro": "o persoană",
-      "en": "a person"
+      "en": "a person",
+      "background": true
     },
     {
       "label": "human face",
       "ro": "o față",
-      "en": "a human face"
+      "en": "a human face",
+      "background": true
     },
     {
       "label": "human hand",
       "ro": "o mână",
-      "en": "a human hand"
+      "en": "a human hand",
+      "background": true
     },
     {
       "label": "man",
       "ro": "un bărbat",
-      "en": "a man"
+      "en": "a man",
+      "background": true
     },
     {
       "label": "woman",
       "ro": "o femeie",
-      "en": "a woman"
+      "en": "a woman",
+      "background": true
     },
     {
       "label": "child",
       "ro": "un copil",
-      "en": "a child"
+      "en": "a child",
+      "background": true
     },
     {
       "label": "head and shoulders of a person",
       "ro": "o persoană",
-      "en": "a person"
+      "en": "a person",
+      "background": true
     },
     {
       "label": "cat",
@@ -49,7 +56,8 @@
     {
       "label": "mobile phone",
       "ro": "un telefon",
-      "en": "a mobile phone"
+      "en": "a mobile phone",
+      "background": true
     },
     {
       "label": "laptop computer",
@@ -64,7 +72,8 @@
     {
       "label": "computer monitor",
       "ro": "un monitor",
-      "en": "a computer monitor"
+      "en": "a computer monitor",
+      "background": true
     },
     {
       "label": "bottle",
@@ -89,17 +98,20 @@
     {
       "label": "plate",
       "ro": "o farfurie",
-      "en": "a plate"
+      "en": "a plate",
+      "background": true
     },
     {
       "label": "bowl",
       "ro": "un bol",
-      "en": "a bowl"
+      "en": "a bowl",
+      "background": true
     },
     {
       "label": "book",
       "ro": "o carte",
-      "en": "a book"
+      "en": "a book",
+      "background": true
     },
     {
       "label": "pen",
@@ -114,52 +126,62 @@
     {
       "label": "chair",
       "ro": "un scaun",
-      "en": "a chair"
+      "en": "a chair",
+      "background": true
     },
     {
       "label": "table",
       "ro": "o masă",
-      "en": "a table"
+      "en": "a table",
+      "background": true
     },
     {
       "label": "sofa",
       "ro": "o canapea",
-      "en": "a sofa"
+      "en": "a sofa",
+      "background": true
     },
     {
       "label": "bed",
       "ro": "un pat",
-      "en": "a bed"
+      "en": "a bed",
+      "background": true
     },
     {
       "label": "door",
       "ro": "o ușă",
-      "en": "a door"
+      "en": "a door",
+      "background": true
     },
     {
       "label": "window",
       "ro": "o fereastră",
-      "en": "a window"
+      "en": "a window",
+      "background": true
     },
     {
       "label": "wall",
       "ro": "un perete",
-      "en": "a wall"
+      "en": "a wall",
+      "background": true
     },
     {
       "label": "ceiling",
       "ro": "un tavan",
-      "en": "a ceiling"
+      "en": "a ceiling",
+      "background": true
     },
     {
       "label": "room",
       "ro": "o cameră",
-      "en": "a room"
+      "en": "a room",
+      "background": true
     },
     {
       "label": "curtain",
       "ro": "o perdea",
-      "en": "a curtain"
+      "en": "a curtain",
+      "background": true
     },
     {
       "label": "lamp",
@@ -169,7 +191,8 @@
     {
       "label": "poster",
       "ro": "un poster",
-      "en": "a poster"
+      "en": "a poster",
+      "background": true
     },
     {
       "label": "backpack",
@@ -179,12 +202,14 @@
     {
       "label": "clothes",
       "ro": "haine",
-      "en": "clothes"
+      "en": "clothes",
+      "background": true
     },
     {
       "label": "shirt",
       "ro": "o cămașă",
-      "en": "a shirt"
+      "en": "a shirt",
+      "background": true
     },
     {
       "label": "toy",
@@ -269,17 +294,20 @@
     {
       "label": "blurry image",
       "ro": "o imagine neclară",
-      "en": "a blurry image"
+      "en": "a blurry image",
+      "background": true
     },
     {
       "label": "dark image",
       "ro": "o imagine întunecată",
-      "en": "a dark image"
+      "en": "a dark image",
+      "background": true
     },
     {
       "label": "empty background",
       "ro": "fundal gol",
-      "en": "an empty background"
+      "en": "an empty background",
+      "background": true
     }
   ]
 }

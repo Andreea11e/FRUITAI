@@ -82,7 +82,7 @@ export class Catalog {
   resolveAiLabel(label) {
     const k = norm(label || "");
     if (this.aiToFruit.has(k)) return { kind: "fruit", id: this.aiToFruit.get(k) };
-    if (this.aiToNonFruit.has(k)) return { kind: "notfruit", label: k };
+    if (this.aiToNonFruit.has(k)) return { kind: "notfruit", label: k, bg: !!this.aiToNonFruit.get(k).background };
     return null;
   }
   nonFruitText(label, lang = "ro") { const n = this.aiToNonFruit.get(norm(label)); return (lang === "en" ? n?.en : n?.ro) || (lang === "en" ? "an object" : "un obiect"); }

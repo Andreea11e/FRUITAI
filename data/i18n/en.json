@@ -383,5 +383,6 @@
  "Prima pornire: se descarcă modelele AI (~{mb} MB, o singură dată)…": "First start: downloading the AI models (~{mb} MB, only once)…",
  "Se pornesc modelele AI salvate pe dispozitiv… {p}%": "Starting the AI models saved on this device… {p}%",
  "Prima pornire: se descarcă modelele AI (o singură dată)… {a} / {b} MB": "First start: downloading the AI models (only once)… {a} / {b} MB",
- "Învăț numele fructelor (o singură dată)… {p}%": "Learning the fruit names (only once)… {p}%"
+ "Învăț numele fructelor (o singură dată)… {p}%": "Learning the fruit names (only once)… {p}%",
+ "Caut fructul…": "Looking for the fruit…"
 }

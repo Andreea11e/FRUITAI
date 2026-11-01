@@ -69,7 +69,7 @@
         "blush": 0.32
       },
       "ai": {
-        "labels": ["apple"]
+        "labels": ["apple", "red apple", "green apple"]
       },
       "showcase": true
     },
@@ -103,7 +103,7 @@
         "features": ["bunch"]
       },
       "ai": {
-        "labels": ["banana"]
+        "labels": ["banana", "bunch of bananas"]
       },
       "showcase": true
     },
@@ -138,7 +138,7 @@
         "flesh": "#FFA62B"
       },
       "ai": {
-        "labels": ["orange"]
+        "labels": ["orange", "orange fruit"]
       },
       "showcase": true
     },
@@ -172,7 +172,7 @@
         "features": ["leaf"]
       },
       "ai": {
-        "labels": ["pear"]
+        "labels": ["pear", "green pear"]
       }
     },
     {
@@ -207,7 +207,7 @@
         "flesh": "#FFC478"
       },
       "ai": {
-        "labels": ["peach"]
+        "labels": ["peach", "peach fruit"]
       }
     },
     {
@@ -241,7 +241,7 @@
         "blush": 0.5
       },
       "ai": {
-        "labels": ["mango"]
+        "labels": ["mango", "mango fruit"]
       }
     },
     {
@@ -274,7 +274,7 @@
         "features": ["crown"]
       },
       "ai": {
-        "labels": ["pineapple"]
+        "labels": ["pineapple", "pineapple fruit"]
       }
     },
     {
@@ -306,7 +306,7 @@
         "features": ["seeds", "calyx"]
       },
       "ai": {
-        "labels": ["strawberry"]
+        "labels": ["strawberry", "strawberries"]
       },
       "showcase": true
     },
@@ -339,7 +339,7 @@
         "features": ["leaf"]
       },
       "ai": {
-        "labels": ["grape"]
+        "labels": ["grape", "bunch of grapes", "grapes"]
       }
     },
     {
@@ -375,7 +375,7 @@
         "rindInner": "#E8F5C8"
       },
       "ai": {
-        "labels": ["watermelon"]
+        "labels": ["watermelon", "slice of watermelon"]
       }
     },
     {
@@ -409,7 +409,7 @@
         "flesh": "#F7E36B"
       },
       "ai": {
-        "labels": ["lemon"]
+        "labels": ["lemon", "yellow lemon"]
       },
       "showcase": true
     },
@@ -442,7 +442,7 @@
         "flesh": "#B5D96A"
       },
       "ai": {
-        "labels": ["lime"]
+        "labels": ["lime", "green lime"]
       }
     },
     {
@@ -475,7 +475,7 @@
         "flesh": "#8CC63F"
       },
       "ai": {
-        "labels": ["kiwi"]
+        "labels": ["kiwi fruit", "sliced kiwi fruit"]
       },
       "showcase": true
     },
@@ -509,7 +509,7 @@
         "flesh": "#E9B84A"
       },
       "ai": {
-        "labels": ["plum"]
+        "labels": ["plum", "plums"]
       }
     },
     {
@@ -541,7 +541,7 @@
         "features": ["pair"]
       },
       "ai": {
-        "labels": ["cherry"]
+        "labels": ["cherry", "cherries"]
       }
     },
     {
@@ -574,7 +574,7 @@
         "flesh": "#F8F4E8"
       },
       "ai": {
-        "labels": ["coconut"]
+        "labels": ["coconut", "coconut shell"]
       }
     },
     {
@@ -641,7 +641,7 @@
         "flesh": "#C0102E"
       },
       "ai": {
-        "labels": ["pomegranate"]
+        "labels": ["pomegranate", "pomegranate seeds"]
       }
     },
     {
@@ -675,7 +675,7 @@
         "flesh": "#D9E58A"
       },
       "ai": {
-        "labels": ["avocado"]
+        "labels": ["avocado", "halved avocado"]
       }
     },
     {
@@ -709,7 +709,7 @@
         "flesh": "#FFB35A"
       },
       "ai": {
-        "labels": ["apricot"]
+        "labels": ["apricot", "apricots"]
       }
     },
     {
@@ -741,7 +741,7 @@
         "features": ["berries", "blossom"]
       },
       "ai": {
-        "labels": ["blueberry"]
+        "labels": ["blueberry", "blueberries"]
       }
     },
     {
@@ -771,7 +771,7 @@
         "texture": "smooth"
       },
       "ai": {
-        "labels": ["raspberry"]
+        "labels": ["raspberry", "raspberries"]
       }
     },
     {
@@ -802,7 +802,7 @@
         "features": ["calyx"]
       },
       "ai": {
-        "labels": ["blackberry"]
+        "labels": ["blackberry", "blackberries"]
       }
     },
     {
@@ -869,7 +869,7 @@
         "seedColor": "#F3D9A0"
       },
       "ai": {
-        "labels": ["fig"]
+        "labels": ["fig fruit", "sliced fig"]
       }
     },
     {
@@ -937,7 +937,7 @@
         "features": ["scales"]
       },
       "ai": {
-        "labels": ["dragon fruit"]
+        "labels": ["dragon fruit", "pitaya"]
       }
     },
     {
@@ -970,7 +970,7 @@
         "flesh": "#F2C14E"
       },
       "ai": {
-        "labels": ["passion fruit"]
+        "labels": ["passion fruit", "passion fruit halves"]
       }
     },
     {
@@ -1001,7 +1001,7 @@
         "features": ["stem"]
       },
       "ai": {
-        "labels": ["lychee"]
+        "labels": ["lychee", "lychees"]
       }
     },
     {
@@ -1067,7 +1067,7 @@
         "features": ["berries"]
       },
       "ai": {
-        "labels": ["cranberry"]
+        "labels": ["cranberry", "cranberries"]
       }
     },
     {
@@ -1101,7 +1101,7 @@
         "flesh": "#FF9B2F"
       },
       "ai": {
-        "labels": ["tangerine"]
+        "labels": ["tangerine", "mandarin orange"]
       }
     },
     {
@@ -1197,7 +1197,7 @@
         "texture": "wrinkled"
       },
       "ai": {
-        "labels": ["date"]
+        "labels": ["date fruit", "dried dates"]
       }
     },
     {
@@ -1290,7 +1290,7 @@
         "texture": "smooth"
       },
       "ai": {
-        "labels": ["starfruit"]
+        "labels": ["starfruit", "carambola"]
       }
     },
     {
@@ -1416,7 +1416,7 @@
         "aspect": 1.3
       },
       "ai": {
-        "labels": ["mulberry"]
+        "labels": ["mulberry", "mulberries"]
       }
     },
     {
@@ -1450,7 +1450,7 @@
         "stripeWidth": 0.12
       },
       "ai": {
-        "labels": ["gooseberry"]
+        "labels": ["gooseberry", "gooseberries"]
       }
     },
     {
@@ -1582,7 +1582,7 @@
         "rindInner": "#F5E7B8"
       },
       "ai": {
-        "labels": ["cantaloupe"]
+        "labels": ["cantaloupe", "cantaloupe melon"]
       }
     },
     {
@@ -1617,7 +1617,7 @@
         "rindInner": "#E8F5C8"
       },
       "ai": {
-        "labels": ["honeydew"]
+        "labels": ["honeydew", "honeydew melon"]
       }
     },
     {
@@ -1744,7 +1744,7 @@
         "features": ["berries", "stem"]
       },
       "ai": {
-        "labels": ["elderberry"]
+        "labels": ["elderberry", "elderberries"]
       }
     },
     {
@@ -1809,7 +1809,7 @@
         "features": ["berries", "stem"]
       },
       "ai": {
-        "labels": ["blackcurrant"]
+        "labels": ["blackcurrant", "blackcurrants"]
       }
     },
     {
@@ -1840,7 +1840,7 @@
         "features": ["berries", "stem"]
       },
       "ai": {
-        "labels": ["redcurrant"]
+        "labels": ["redcurrant", "red currants"]
       }
     },
     {
@@ -2035,7 +2035,7 @@
         "leafColor": "#7A9A6A"
       },
       "ai": {
-        "labels": ["olive"]
+        "labels": ["olive", "olives"]
       }
     }
   ]

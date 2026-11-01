@@ -46,7 +46,11 @@ Ai nevoie doar de Python 3, fără alte pachete.
 ### Recunoaștere (ca în versiunea 8)
 - **Totul rulează într-un Web Worker** (`js/ai-worker.js`): pagina, animațiile și camera rămân fluide cât timp lucrează AI-ul, inclusiv pe telefon.
 - **Clasificare:** CLIP (`Xenova/clip-vit-base-patch32`) alege dintre etichetele din catalog: 61 de fructe și 56 de obiecte care nu sunt fructe. CLIP e împărțit în modelul de text și cel de imagine: descrierile („a photo of a banana”, „a drawing of a banana”…) se calculează **o singură dată** și se păstrează în browser. La fiecare cadru rulează doar modelul de imagine, de aproximativ 15–20 de ori mai puțin calcul decât înainte, când toate descrierile erau recalculate la fiecare analiză.
-- **Live:** se analizează centrul cadrului și cadrul întreg (pe telefoanele fără WebGPU, câte unul pe rând). **Fotografii:** imaginea întreagă, centrul și colțurile.
+- **Găsirea imediată pe ecran:** de 5 ori pe secundă, fără AI (~1 ms), aplicația compară pixelii cu culoarea fundalului și încadrează cea mai mare zonă diferită (un fruct, o poză, o pagină de carte), cu rama „Caut fructul…”. Exact acea zonă e trimisă apoi lui CLIP.
+- **Live:** obiectul găsit, centrul cadrului și cadrul întreg (pe telefoanele fără WebGPU, doar obiectul găsit). O analiză la 0,3–0,45 s. **Fotografii:** obiectul găsit, imaginea întreagă, centrul și colțurile.
+- **Fundalul nu mai „acoperă” fructul:** mâinile, oamenii, masa, peretele, cartea sau ecranul (marcate `"background": true` în `data/non-fruits.json`) nu concurează cu fructul; scorul fructului e calculat față de celelalte obiecte.
+- **Mai multe descrieri pentru fiecare fruct:** mai multe etichete în catalog (ex. „kiwi fruit”, „bunch of bananas”, „red apple”) și mai multe formulări („a photo / close-up photo / drawing / illustration of a …”), cu media lor.
+- **Rapid:** un rezultat sigur (peste 60%) e acceptat din prima; altfel, când același fruct apare în 2 din ultimele 3 analize.
 - **Detecție:** OWL-ViT (`Xenova/owlvit-base-patch32`, foarte greu) se încarcă doar pe calculatoare cu WebGPU și e folosit doar la fotografii, pentru mai multe fructe în aceeași poză. Pe telefon nu se descarcă deloc.
 - Modelele rulează **în browser** prin transformers.js. Imaginile nu sunt trimise nicăieri.
 - **Pornire automată:** modelele încep să se încarce imediat ce deschizi pagina, în fundal. Dacă pui o imagine înainte să fie gata, ea așteaptă și e analizată automat.

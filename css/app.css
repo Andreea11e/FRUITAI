@@ -1141,3 +1141,19 @@ dialog.game h4 { margin: 22px 0 10px; font: 900 13px "Nunito", var(--f-sans); le
   }
   .hcard, .step, .ncard, .disc-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
+
+/* ---------------- Rama „Caut fructul…”: arată imediat unde e obiectul în cadru ---------------- */
+.seek-box { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; border-radius: 18px;
+  border: 2px dashed rgba(255, 226, 122, .7); background: radial-gradient(closest-side, rgba(255, 226, 122, .08), transparent);
+  transition: transform .18s ease-out, width .18s ease-out, height .18s ease-out; will-change: transform, width, height;
+  animation: seekPulse 1.1s ease-in-out infinite; }
+.seek-box[hidden] { display: none; }
+.seek-box i { position: absolute; width: 26px; height: 26px; border: 4px solid #FFE27A; filter: drop-shadow(0 0 8px rgba(255, 226, 122, .9)); }
+.seek-box i:nth-child(1) { left: -4px; top: -4px; border-right: 0; border-bottom: 0; border-top-left-radius: 14px; }
+.seek-box i:nth-child(2) { right: -4px; top: -4px; border-left: 0; border-bottom: 0; border-top-right-radius: 14px; }
+.seek-box i:nth-child(3) { left: -4px; bottom: -4px; border-right: 0; border-top: 0; border-bottom-left-radius: 14px; }
+.seek-box i:nth-child(4) { right: -4px; bottom: -4px; border-left: 0; border-top: 0; border-bottom-right-radius: 14px; }
+.seek-box span { position: absolute; left: 50%; top: -14px; transform: translate(-50%, -100%); white-space: nowrap;
+  font: 800 13px "Nunito", var(--f-sans); color: #1A1033; background: #FFE27A; padding: 5px 12px; border-radius: 999px; box-shadow: 0 6px 18px -6px rgba(0,0,0,.5); }
+@keyframes seekPulse { 50% { border-color: rgba(255, 226, 122, .25); } }
+@media (prefers-reduced-motion: reduce) { .seek-box { animation: none; transition: none; } }
