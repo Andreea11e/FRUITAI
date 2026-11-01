@@ -1,0 +1,63 @@
+✓ blueberry      → blueberry 0.85 · elderberry 0.06 · blackcurrant 0.04  (fundal 0)
+✓ gooseberry     → gooseberry 0.95 · honeydew 0.01 · quince 0.01  (fundal 0)
+✓ pineapple      → pineapple 0.98 · dragon-fruit 0.01 · durian 0  (fundal 0)
+✗ custard-apple  → medlar 0.48 · passion-fruit 0.1 · fig 0.07  (fundal 0)
+✗ avocado        → fig 0.63 · passion-fruit 0.12 · date 0.08  (fundal 0)
+✓ banana         → banana 0.86 · plantain 0.13 · date 0  (fundal 0)
+~ plantain       → banana 0.88 · plantain 0.11 · jackfruit 0  (fundal 0)
+✓ apricot        → apricot 0.6 · peach 0.2 · persimmon 0.07  (fundal 0)
+✓ starfruit      → starfruit 0.63 · jackfruit 0.13 · lime 0.06  (fundal 0)
+✓ strawberry     → strawberry 0.97 · raspberry 0.03 · blackberry 0  (fundal 0)
+~ cherimoya      → custard-apple 0.48 · fig 0.13 · cherimoya 0.05  (fundal 0)
+✓ cherry         → cherry 0.62 · apple 0.18 · cranberry 0.1  (fundal 0)
+~ clementine     → orange 0.51 · tangerine 0.16 · clementine 0.09  (fundal 0)
+✓ blackcurrant   → blackcurrant 0.97 · redcurrant 0.01 · grape 0.01  (fundal 0)
+~ redcurrant     → elderberry 0.48 · redcurrant 0.29 · blackcurrant 0.09  (fundal 0)
+✓ persimmon      → persimmon 0.79 · apricot 0.07 · peach 0.03  (fundal 0)
+✓ date           → date 0.93 · tamarind 0.02 · pomegranate 0.01  (fundal 0)
+✓ mulberry       → mulberry 0.25 · plum 0.1 · pear 0.08  (fundal 0.01)
+durian: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+✓ dragon-fruit   → dragon-fruit 0.99 · starfruit 0 · passion-fruit 0  (fundal 0)
+passion-fruit: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+~ grapefruit     → blood-orange 0.64 · grapefruit 0.19 · orange 0.08  (fundal 0)
+soursop: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+✓ guava          → guava 0.27 · passion-fruit 0.17 · grapefruit 0.14  (fundal 0)
+quince: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+jackfruit: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+kiwi: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+kumquat: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+lemon: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+lime: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+✓ lychee         → lychee 0.93 · date 0.04 · longan 0.01  (fundal 0)
+longan: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+tangerine: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+✓ mango          → mango 0.43 · peach 0.25 · apricot 0.12  (fundal 0)
+~ mangosteen     → medlar 0.78 · lychee 0.1 · mangosteen 0.04  (fundal 0)
+✓ apple          → apple 0.39 · nectarine 0.23 · peach 0.08  (fundal 0)
+✓ olive          → olive 0.99 · passion-fruit 0 · plum 0  (fundal 0)
+✓ cranberry      → cranberry 0.92 · elderberry 0.03 · redcurrant 0.01  (fundal 0)
+✓ medlar         → medlar 0.49 · fig 0.14 · date 0.08  (fundal 0)
+~ blackberry     → blackcurrant 0.7 · blackberry 0.27 · elderberry 0.01  (fundal 0)
+✗ nectarine      → lychee 0.18 · apricot 0.16 · mulberry 0.1  (fundal 0.01)
+✓ coconut        → coconut 0.97 · kiwi 0.01 · longan 0.01  (fundal 0.01)
+✓ papaya         → papaya 0.54 · pineapple 0.09 · soursop 0.07  (fundal 0)
+✓ pear           → pear 0.85 · mango 0.07 · fig 0.01  (fundal 0)
+✗ cantaloupe     → watermelon 0.83 · ~cucumber 0.08 · ~cabbage 0.03  (fundal 0)
+✓ honeydew       → honeydew 0.73 · fig 0.12 · papaya 0.03  (fundal 0)
+✓ watermelon     → watermelon 0.81 · cantaloupe 0.11 · honeydew 0.03  (fundal 0)
+✗ peach          → lychee 0.18 · apricot 0.16 · mulberry 0.1  (fundal 0.01)
+~ pomelo         → lemon 0.42 · pomelo 0.32 · starfruit 0.07  (fundal 0)
+✓ orange         → orange 0.66 · tangerine 0.15 · clementine 0.1  (fundal 0)
+blood-orange: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+plum: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+rambutan: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+greengage: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+✓ pomegranate    → pomegranate 0.96 · apple 0.01 · dragon-fruit 0.01  (fundal 0)
+prickly-pear: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+fig: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+elderberry: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+✓ grape          → grape 0.91 · blackcurrant 0.05 · blueberry 0.02  (fundal 0)
+✓ tamarind       → tamarind 0.72 · date 0.16 · banana 0.03  (fundal 0)
+raspberry: eroare Unexpected token 'Y', "You are ma"... is not valid JSON
+
+Test pe 42 fotografii reale (Wikipedia): corect din prima 29/42 (69%), în primele 3: 37/42 (88%). Model de imagine q8, 17 ms/imagine pe serverul GitHub.
