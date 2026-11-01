@@ -14,6 +14,7 @@ const setEmb = {};                    // set („photo” / „drawing”) → m
 let chain = Promise.resolve();
 function lock(fn) { const r = chain.then(fn); chain = r.catch(() => {}); return r; }
 let D = 512;
+let protos = null;                    // prototipurile fructelor (din fotografii reale), dacă există
 const post = m => self.postMessage(m);
 
 function progressCb(tag) {
@@ -139,8 +140,11 @@ async function loadPrecomputed() {
     if (!same) { console.warn("data/clip-text.json nu corespunde catalogului actual: vectorii se calculează în browser."); return false; }
     const buf = new Float32Array(await (await fetch(cfg.pre.bin, { cache: "no-cache" })).arrayBuffer());
     const N = cfg.labels.length; D = meta.dim;
-    if (buf.length !== cfg.sets.length * N * D) return false;
+    const T0 = cfg.sets.length * N * D, F = meta.protos?.fruits?.length || 0;
+    if (buf.length !== T0 && buf.length !== T0 + F * D) return false;
     cfg.sets.forEach((set, i) => { setEmb[set.name] = buf.subarray(i * N * D, (i + 1) * N * D); });
+    // „aspectul mediu” al fiecărui fruct, învățat din fotografii reale (vezi scripts/build-embeddings.mjs)
+    if (F && buf.length === T0 + F * D && meta.protos.alpha > 0) protos = { P: buf.subarray(T0), F, map: meta.protos.labelProto, alpha: meta.protos.alpha, beta: meta.protos.beta };
     return true;
   } catch (e) { console.warn("Vectorii precalculați nu s-au încărcat:", e); return false; }
 }
@@ -164,17 +168,25 @@ async function classify({ images }) {
   const n = raws.length, img = normalize(f32(image_embeds), n, D);
   const N = cfg.labels.length;
   // pentru fiecare imagine și fiecare set (fotografie, desen): probabilitățile (softmax peste toate etichetele)
-  return images.map((_, i) => cfg.sets.map(set => {
+  return images.map((_, i) => {
+    // asemănarea cu „aspectul mediu” al fiecărui fruct (aceeași formulă ca în scripts/build-embeddings.mjs)
+    const boost = protos ? Array.from({ length: protos.F }, (_, c) => {
+      let s = 0; for (let j = 0; j < D; j++) s += img[i * D + j] * protos.P[c * D + j];
+      return protos.alpha * Math.exp(-protos.beta * (1 - s));
+    }) : null;
+    return cfg.sets.map(set => {
     const E = setEmb[set.name] || setEmb[cfg.sets[0].name], logits = new Float32Array(N);
     let max = -Infinity;
     for (let k = 0; k < N; k++) {
       let s = 0; for (let j = 0; j < D; j++) s += img[i * D + j] * E[k * D + j];
-      logits[k] = 100 * s; if (logits[k] > max) max = logits[k];
+      logits[k] = 100 * s + (boost && protos.map[k] >= 0 ? boost[protos.map[k]] : 0);
+      if (logits[k] > max) max = logits[k];
     }
     let sum = 0; for (let k = 0; k < N; k++) { logits[k] = Math.exp(logits[k] - max); sum += logits[k]; }
     for (let k = 0; k < N; k++) logits[k] /= sum;
     return logits;
-  }));
+    });
+  });
 }
 
 async function loadDetector() {

@@ -28,7 +28,7 @@ jobs:
       - name: Instalează transformers.js
         run: npm install --no-save --no-package-lock @huggingface/transformers@3.0.2
       - name: Calculează vectorii și testează pe fotografii reale
-        run: HF_CACHE="$HOME/.cache/fruitai-hf" EVAL=1 node scripts/build-embeddings.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+        run: HF_CACHE="$HOME/.cache/fruitai-hf" node scripts/build-embeddings.mjs | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Salvează în proiect
         run: |
           git config user.name "github-actions[bot]"

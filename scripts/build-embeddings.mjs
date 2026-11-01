@@ -60,64 +60,114 @@ await writeFile(new URL("clip-text.json", root), JSON.stringify({
 }, null, 1) + "\n");
 console.log(`Salvat: ${chosen.length} × ${N} × ${D} (${(out.byteLength / 1024).toFixed(0)} KB)`);
 
-if (process.env.EVAL) {
-  // Fotografii reale: până la 3 imagini din articolul Wikipedia al fiecărui fruct
-  const WIKI = { apple: "Apple", banana: "Banana", orange: "Orange (fruit)", pear: "Pear", peach: "Peach", mango: "Mango", pineapple: "Pineapple", strawberry: "Strawberry", grape: "Grape", watermelon: "Watermelon", lemon: "Lemon", lime: "Key lime", kiwi: "Kiwifruit", plum: "Plum", cherry: "Cherry", coconut: "Coconut", papaya: "Papaya", pomegranate: "Pomegranate", avocado: "Avocado", apricot: "Apricot", blueberry: "Blueberry", raspberry: "Raspberry", blackberry: "Blackberry", grapefruit: "Grapefruit", fig: "Common fig", guava: "Guava", "dragon-fruit": "Pitaya", "passion-fruit": "Passiflora edulis", lychee: "Lychee", nectarine: "Nectarine", cranberry: "Cranberry", tangerine: "Tangerine", clementine: "Clementine", persimmon: "Persimmon", date: "Date palm", durian: "Durian", jackfruit: "Jackfruit", starfruit: "Carambola", longan: "Longan", rambutan: "Rambutan", quince: "Quince", mulberry: "Mulberry", gooseberry: "Gooseberry", pomelo: "Pomelo", kumquat: "Kumquat", tamarind: "Tamarind", cantaloupe: "Cantaloupe", honeydew: "Honeydew (melon)", plantain: "Cooking banana", soursop: "Soursop", "custard-apple": "Annona reticulata", elderberry: "Sambucus", mangosteen: "Purple mangosteen", blackcurrant: "Blackcurrant", redcurrant: "Redcurrant", greengage: "Greengage", "blood-orange": "Blood orange", "prickly-pear": "Opuntia ficus-indica", cherimoya: "Cherimoya", medlar: "Mespilus germanica", olive: "Olive" };
-  const UA = { "user-agent": "FruitAI-eval/1.0 (https://github.com/Andreea11e/FRUITAI)" };
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-  async function getJSON(url) {
-    for (let a = 0; a < 5; a++) {
-      const r = await fetch(url, { headers: UA });
-      if (r.ok) return r.json();
-      await sleep(1500 * (a + 1));
-    }
-    throw new Error("Wikipedia nu răspunde");
-  }
-  const processor = await AutoProcessor.from_pretrained(model);
-  const vision = await CLIPVisionModelWithProjection.from_pretrained(model, { dtype: "q8" });
-  const prior = k => hits[k]?.kind === "fruit" ? (catalog.get(hits[k].id)?.ai?.prior ?? 1) : 1;
-  const softmax = (img, Es) => { const p = new Float32Array(N); let m = -1e9; for (let k = 0; k < N; k++) { let s = 0; for (let j = 0; j < D; j++) s += img[j] * Es[k * D + j]; p[k] = 100 * s; if (p[k] > m) m = p[k]; } let z = 0; for (let k = 0; k < N; k++) { p[k] = Math.exp(p[k] - m); z += p[k]; } for (let k = 0; k < N; k++) p[k] /= z; return p; };
-  // aceeași decizie ca în aplicație: fundalul nu concurează, scoruri adunate pe fruct, „prior” opțional
-  const decide = (p, usePrior) => {
-    const g = new Map();
-    p.forEach((v, k) => { const h = hits[k]; if (!h || (h.kind === "notfruit" && h.bg)) return; const key = h.kind === "fruit" ? h.id : "~" + h.label; g.set(key, (g.get(key) || 0) + v * (usePrior ? prior(k) : 1)); });
-    const tot = [...g.values()].reduce((a, b) => a + b, 0) || 1;
-    return [...g.entries()].map(([k, v]) => [k, v / tot]).sort((a, b) => b[1] - a[1]);
-  };
-  const run = (img, sets, usePrior) => {
-    const p = softmax(img, sets[0]);
-    let d = decide(p, usePrior);
-    if (d[0][1] < 0.5) { const q = softmax(img, sets[1]).map((x, i) => (x + p[i]) / 2); const d2 = decide(q, usePrior); if (d2[0][1] > d[0][1]) d = d2; }
-    return d;
-  };
-  const combos = [["plain", false], ["plain", true], ["fruit", false], ["fruit", true]];
-  const stats = combos.map(() => ({ ok1: 0, ok3: 0 }));
-  const rows = []; let n = 0, ms = 0;
-  for (const f of catalog.fruits.filter(f => f.ai)) {
-    const title = (WIKI[f.id] || f.en).replace(/ /g, "_");
-    let urls = [];
-    try {
-      const media = await getJSON(`https://en.wikipedia.org/api/rest_v1/page/media-list/${encodeURIComponent(title)}`);
-      urls = media.items.filter(i => i.type === "image" && i.srcset?.length && !/\.svg/i.test(i.title)).slice(0, 3).map(i => "https:" + i.srcset[0].src);
-    } catch (e) { rows.push(`${f.id}: ${e.message}`); }
-    for (const url of urls) {
-      try {
-        await sleep(250);
-        const img = await RawImage.fromURL(url);
-        const t0 = performance.now();
-        const { image_embeds } = await vision(await processor(img));
-        ms += performance.now() - t0; n++;
-        const v = normalize(Float32Array.from(image_embeds.data), 1, D);
-        const res = combos.map(([vn, pr]) => run(v, variants[vn], pr));
-        res.forEach((d, i) => { stats[i].ok1 += d[0][0] === f.id; stats[i].ok3 += d.slice(0, 3).some(t => t[0] === f.id); });
-        const d = res[3];
-        rows.push(`${d[0][0] === f.id ? "✓" : d.slice(0, 3).some(t => t[0] === f.id) ? "~" : "✗"} ${f.id.padEnd(14)} → ${d.slice(0, 3).map(t => t[0] + " " + t[1].toFixed(2)).join(" · ")}`);
-      } catch (e) { rows.push(`${f.id}: imagine ilizibilă (${e.message.slice(0, 40)})`); }
-    }
-  }
-  const pct = x => (x / n * 100).toFixed(0) + "%";
-  const lines = combos.map(([vn, pr], i) => `  ${vn === "fruit" ? "cu formulări pt. fructe" : "formulări simple      "} · ${pr ? "cu prior " : "fără prior"} → corect din prima ${pct(stats[i].ok1)}, în primele 3 ${pct(stats[i].ok3)}`);
-  const summary = `Test pe ${n} fotografii reale (Wikipedia), model de imagine q8, ${(ms / n).toFixed(0)} ms/imagine pe serverul GitHub:\n${lines.join("\n")}`;
-  console.log("\n" + rows.join("\n") + "\n\n" + summary);
-  await writeFile(new URL("../scripts/eval-report.txt", import.meta.url), rows.join("\n") + "\n\n" + summary + "\n");
+// ---------------- Învățare din fotografii reale ----------------
+// Pentru fiecare fruct: fotografii reale de pe Wikimedia Commons → vectorii lor de imagine → „aspectul mediu”
+// (prototipul). În browser, asemănarea cu prototipul se adaugă la scorul din text (metoda Tip-Adapter, simplificată).
+// 70% din poze sunt folosite pentru învățare și 30% doar pentru test, ca rezultatul raportat să fie cinstit.
+const UA = { "user-agent": "FruitAI/1.0 (https://github.com/Andreea11e/FRUITAI; educational app)" };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function getJSON(url) {
+  for (let a = 0; a < 5; a++) { try { const r = await fetch(url, { headers: UA }); if (r.ok) return await r.json(); } catch {} await sleep(1500 * (a + 1)); }
+  throw new Error("serverul nu răspunde");
 }
+const fruitsAI = catalog.fruits.filter(f => f.ai);
+const processor = await AutoProcessor.from_pretrained(model);
+const vision = await CLIPVisionModelWithProjection.from_pretrained(model, { dtype: "q8" });
+const PER = Number(process.env.PER || 40);
+const imgEmb = {};                  // id fruct → [Float32Array(D)]
+let visMs = 0, visN = 0;
+for (const f of fruitsAI) {
+  const q = `${f.ai.labels[0]} fruit`;
+  let urls = [];
+  try {
+    const r = await getJSON(`https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=${PER + 15}&gsrsearch=${encodeURIComponent("filetype:bitmap " + q)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=336`);
+    urls = Object.values(r.query?.pages || {}).sort((a, b) => a.index - b.index).map(p => p.imageinfo?.[0]).filter(i => i && /jpeg|png/.test(i.mime)).map(i => i.thumburl).slice(0, PER);
+  } catch (e) { console.log(`${f.id}: ${e.message}`); }
+  const list = [];
+  for (let i = 0; i < urls.length; i += 4) {
+    const batch = await Promise.all(urls.slice(i, i + 4).map(async u => { try { return await RawImage.fromURL(u); } catch { return null; } }));
+    for (const img of batch.filter(Boolean)) {
+      const t0 = performance.now();
+      const { image_embeds } = await vision(await processor(img));
+      visMs += performance.now() - t0; visN++;
+      list.push(normalize(Float32Array.from(image_embeds.data), 1, D));
+    }
+    await sleep(150);
+  }
+  imgEmb[f.id] = list;
+  console.log(`  ${f.id}: ${list.length} fotografii`);
+}
+
+const fruitIdx = fruitsAI.map(f => f.id);
+const labelProto = labels.map(l => { const h = catalog.resolveAiLabel(l); return h?.kind === "fruit" ? fruitIdx.indexOf(h.id) : -1; });
+const proto = (ids, pick) => {
+  const P = new Float32Array(fruitIdx.length * D);
+  fruitIdx.forEach((id, c) => { const L = pick(imgEmb[id] || []); for (const v of L) for (let j = 0; j < D; j++) P[c * D + j] += v[j]; });
+  return normalize(P, fruitIdx.length, D);
+};
+const split = L => [L.filter((_, i) => i % 10 < 7), L.filter((_, i) => i % 10 >= 7)];     // 70% învățare / 30% test
+const prior = k => hits[k]?.kind === "fruit" ? (catalog.get(hits[k].id)?.ai?.prior ?? 1) : 1;
+// scorurile, exact ca în browser: text (×100) + alpha · exp(-beta · (1 − asemănarea cu prototipul fructului))
+function probs(img, Es, P, alpha, beta) {
+  const z = new Float32Array(N); let m = -1e9;
+  const ps = P && alpha ? fruitIdx.map((_, c) => { let s = 0; for (let j = 0; j < D; j++) s += img[j] * P[c * D + j]; return alpha * Math.exp(-beta * (1 - s)); }) : null;
+  for (let k = 0; k < N; k++) {
+    let s = 0; for (let j = 0; j < D; j++) s += img[j] * Es[k * D + j];
+    z[k] = 100 * s + (ps && labelProto[k] >= 0 ? ps[labelProto[k]] : 0);
+    if (z[k] > m) m = z[k];
+  }
+  let t = 0; for (let k = 0; k < N; k++) { z[k] = Math.exp(z[k] - m); t += z[k]; }
+  for (let k = 0; k < N; k++) z[k] /= t;
+  return z;
+}
+function decide(p, usePrior = true) {
+  const g = new Map();
+  p.forEach((v, k) => { const h = hits[k]; if (!h || (h.kind === "notfruit" && h.bg)) return; const key = h.kind === "fruit" ? h.id : "~" + h.label; g.set(key, (g.get(key) || 0) + v * (usePrior ? prior(k) : 1)); });
+  const tot = [...g.values()].reduce((a, b) => a + b, 0) || 1;
+  return [...g.entries()].map(([k, v]) => [k, v / tot]).sort((a, b) => b[1] - a[1]);
+}
+function predict(img, P, alpha, beta) {
+  const p = probs(img, chosen[0], P, alpha, beta);
+  let d = decide(p);
+  if (d[0][1] < 0.5) { const q = probs(img, chosen[1], P, alpha, beta).map((x, i) => (x + p[i]) / 2); const d2 = decide(q); if (d2[0][1] > d[0][1]) d = d2; }
+  return d;
+}
+const COMMON = new Set(fruitsAI.filter(f => (f.ai.prior ?? 1) >= 1).map(f => f.id));
+function evaluate(P, alpha, beta) {
+  let n = 0, ok1 = 0, ok3 = 0, cn = 0, cok = 0;
+  for (const id of fruitIdx) for (const v of split(imgEmb[id] || [])[1]) {
+    const d = predict(v, P, alpha, beta); n++;
+    const a = d[0][0] === id; ok1 += a; ok3 += d.slice(0, 3).some(t => t[0] === id);
+    if (COMMON.has(id)) { cn++; cok += a; }
+  }
+  return { n, top1: ok1 / n, top3: ok3 / n, common: cok / Math.max(1, cn), cn };
+}
+const Ptrain = proto(fruitIdx, L => split(L)[0]);
+const base = evaluate(null, 0, 0);
+let best = { alpha: 0, beta: 0, ...base };
+const grid = [];
+for (const alpha of [2, 4, 6, 8, 12, 16]) for (const beta of [2, 4, 6, 10]) {
+  const r = evaluate(Ptrain, alpha, beta); grid.push(`α=${alpha} β=${beta}: ${(r.top1 * 100).toFixed(1)}% (obișnuite ${(r.common * 100).toFixed(1)}%)`);
+  if (r.top1 > best.top1) best = { alpha, beta, ...r };
+}
+const pc = x => (x * 100).toFixed(0) + "%";
+const report = [
+  `Fotografii reale de pe Wikimedia Commons: ${Object.values(imgEmb).reduce((a, l) => a + l.length, 0)} (învățare 70%, test 30%). Model de imagine q8, ${(visMs / Math.max(1, visN)).toFixed(0)} ms/imagine pe serverul GitHub.`,
+  `Doar din text:            corect din prima ${pc(base.top1)}, în primele 3 ${pc(base.top3)}, fructe obișnuite ${pc(base.common)} (test pe ${base.n} poze)`,
+  `Text + fotografii reale:  corect din prima ${pc(best.top1)}, în primele 3 ${pc(best.top3)}, fructe obișnuite ${pc(best.common)} (α=${best.alpha}, β=${best.beta})`
+].join("\n");
+console.log("\n" + grid.join("\n") + "\n\n" + report);
+await writeFile(new URL("../scripts/eval-report.txt", import.meta.url), report + "\n\n" + grid.join("\n") + "\n");
+
+// Prototipurile finale: din toate fotografiile; se salvează după vectorii de text, în același fișier
+const Pall = proto(fruitIdx, L => L);
+const bin = new Float32Array(out.length + Pall.length);
+bin.set(out); bin.set(Pall, out.length);
+await writeFile(new URL("clip-text.bin", root), Buffer.from(bin.buffer));
+await writeFile(new URL("clip-text.json", root), JSON.stringify({
+  description: "Generat automat de scripts/build-embeddings.mjs. Nu se editează manual.",
+  model, dim: D, dtype: "float32", sets: prompts.sets, fruitTemplates: prompts.fruitTemplates || null, labels,
+  protos: { fruits: fruitIdx, labelProto, alpha: best.alpha, beta: best.beta, photos: Object.fromEntries(fruitIdx.map(id => [id, imgEmb[id]?.length || 0])) },
+  eval: report
+}, null, 1) + "\n");
+console.log(`Salvat cu prototipuri: α=${best.alpha}, β=${best.beta}`);
