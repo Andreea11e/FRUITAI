@@ -297,6 +297,12 @@
                 "type": "string"
               },
               "description": "Etichetele text (în engleză) date modelului CLIP. Rezultatul recunoașterii este mapat înapoi la „id” prin aceste etichete."
+            },
+            "prior": {
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 1,
+              "description": "Opțional (implicit 1). Cât de des e de așteptat fructul în fața camerei. Fructele exotice, rare la noi, primesc o valoare mai mică, ca să nu „fure” recunoașterea fructelor obișnuite care seamănă cu ele."
             }
           }
         }

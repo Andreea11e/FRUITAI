@@ -135,7 +135,7 @@ async function loadPrecomputed() {
   if (!cfg.pre) return false;
   try {
     const meta = await (await fetch(cfg.pre.meta, { cache: "no-cache" })).json();
-    const same = meta.model === cfg.clip && JSON.stringify(meta.labels) === JSON.stringify(cfg.labels) && JSON.stringify(meta.sets) === JSON.stringify(cfg.sets);
+    const same = meta.model === cfg.clip && JSON.stringify(meta.labels) === JSON.stringify(cfg.labels) && JSON.stringify(meta.sets) === JSON.stringify(cfg.sets) && JSON.stringify(meta.fruitTemplates || null) === JSON.stringify(cfg.fruitTemplates || null);
     if (!same) { console.warn("data/clip-text.json nu corespunde catalogului actual: vectorii se calculează în browser."); return false; }
     const buf = new Float32Array(await (await fetch(cfg.pre.bin, { cache: "no-cache" })).arrayBuffer());
     const N = cfg.labels.length; D = meta.dim;

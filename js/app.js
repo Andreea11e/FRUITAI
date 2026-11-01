@@ -595,7 +595,7 @@ function loadLocal() {
     };
     const prompts = await (await fetch(new URL("clip-prompts.json", DATA))).json();
     await call("init", {
-      url: TRANSFORMERS_URL, clip: CLIP_NAME, detector: DETECTOR_NAME, labels: local.labels, sets: prompts.sets,
+      url: TRANSFORMERS_URL, clip: CLIP_NAME, detector: DETECTOR_NAME, labels: local.labels, sets: prompts.sets, fruitTemplates: prompts.fruitTemplates || null,
       pre: { meta: new URL("clip-text.json", DATA).href, bin: new URL("clip-text.bin", DATA).href }
     });
     try { await navigator.storage?.persist?.(); } catch {}
@@ -654,9 +654,11 @@ function decide(probs) {
   const g = groupScores(probs);
   const isBg = x => x.hit.kind === "notfruit" && x.hit.bg;
   const bg = g.reduce((acc, x) => acc + (isBg(x) ? x.score : 0), 0);
-  const fg = g.filter(x => !isBg(x));
-  const top = fg[0], rest = Math.max(1e-6, 1 - bg);
-  return { top, bgTop: g.find(isBg), bg, score: top ? Math.min(1, top.score / rest) : 0, raw: top?.score || 0, list: g };
+  // fructele exotice (ai.prior < 1 în catalog) contează mai puțin, ca să nu „fure” fructele obișnuite care seamănă cu ele
+  const fg = g.filter(x => !isBg(x)).map(x => ({ ...x, w: x.score * (x.hit.kind === "fruit" ? (catalog.get(x.hit.id)?.ai?.prior ?? 1) : 1) })).sort((a, b) => b.w - a.w);
+  const tot = Math.max(1e-6, fg.reduce((s, x) => s + x.w, 0));
+  const top = fg[0];
+  return { top, bgTop: g.find(isBg), bg, score: top ? Math.min(1, top.w / tot) : 0, raw: top?.score || 0, list: g };
 }
 
 /** Clasifică mai multe regiuni într-un singur apel (doar modelul de imagine rulează). */
