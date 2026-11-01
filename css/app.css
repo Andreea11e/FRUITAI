@@ -1130,3 +1130,14 @@ dialog.game h4 { margin: 22px 0 10px; font: 900 13px "Nunito", var(--f-sans); le
 .confetti { position: fixed; z-index: 2147483001; width: 0; height: 0; pointer-events: none; }
 .confetti i { position: absolute; width: 10px; height: 14px; border-radius: 3px; background: var(--c); animation: conf 1s cubic-bezier(.2,.8,.3,1) forwards; transform: rotate(var(--a)) translateY(0); }
 @keyframes conf { to { transform: rotate(var(--a)) translateY(-120px) rotate(200deg); opacity: 0; } }
+
+/* ---------------- Telefon: efecte mai ușoare, ca pagina să nu se mai blocheze ----------------
+   Estomparea din spatele panourilor (backdrop-filter) se recalculează la fiecare cadru al camerei și la fiecare
+   derulare; pe telefon o păstrăm mică doar unde e peste cameră și o scoatem de pe cardurile din pagină. */
+@media (pointer: coarse) {
+  header.nav, .ar-card, .guide, .progress, .flow-msg, .rv-label, .rv-top, .rv-card, .disc-panel, .dbtn,
+  .hud .chip, .live-badge, #xrOverlay .xr-pill, .imm-exit, .imm-shot {
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  .hcard, .step, .ncard, .disc-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}

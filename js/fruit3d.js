@@ -31,9 +31,13 @@ function dotTexture() {
  * Creează scena 3D într-un <canvas>.
  * Întoarce un controller: zoom(±1), reset(), setAuto(bool), celebrate(), burst(color, dirX, dirY), screenInfo(), dispose().
  */
-export function createFruitScene(canvas, fruit, { reducedMotion = false, distance = 1, interactive = true, effects = true } = {}) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+// Pe telefon: rezoluție 3D mai mică (ecranele au 2–3× pixeli, iar diferența nu se vede), fără antialias pe ecrane dense
+const MOBILE = matchMedia("(pointer: coarse)").matches;
+const DPR = window.devicePixelRatio || 1;
+
+export function createFruitScene(canvas, fruit, { reducedMotion = false, distance = 1, interactive = true, effects = true, fps = 60 } = {}) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !(MOBILE && DPR >= 2), alpha: true, powerPreference: MOBILE ? "default" : "high-performance" });
+  renderer.setPixelRatio(Math.min(MOBILE ? 1.5 : 2, DPR));
   renderer.toneMapping = THREE.NeutralToneMapping;    // păstrează culorile vii ale fructelor
   renderer.toneMappingExposure = 1.05;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -163,9 +167,12 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
   // ---------- bucla de randare ----------
   const clock = new THREE.Clock();
   let raf = 0, running = true;
+  const minGap = 1000 / fps - 2;
+  let lastDraw = 0;
   function frame() {
     if (!running) return;
     raf = requestAnimationFrame(frame);
+    if (fps < 60 && !ptrs.size) { const n = performance.now(); if (n - lastDraw < minGap) return; lastDraw = n; }
     const dt = Math.min(0.05, clock.getDelta()), t = clock.elapsedTime, now = performance.now();
     if (!ptrs.size) {
       state.vYaw *= 0.94; state.vPitch *= 0.9;

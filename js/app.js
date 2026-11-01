@@ -508,22 +508,36 @@ async function claudeAnalyze(canvas) {
   return { kind: "none", score: 0 };
 }
 
-// ---------------- Motor 2: modele locale în browser (OWL-ViT + CLIP) ----------------
-const local = { T: null, clip: null, det: null, loading: null };
-// Fructele pot fi reale, fotografiate, tipărite într-o carte sau desenate: toate cele trei întrebări înseamnă „fruct”.
+// ---------------- Motor 2: modele locale (CLIP + OWL-ViT), într-un Web Worker ----------------
+// Totul rulează în js/ai-worker.js, deci pagina nu se mai blochează cât lucrează AI-ul.
+// CLIP: descrierile text se calculează o singură dată (apoi stau în cache); la fiecare cadru rulează doar
+// modelul de imagine, pe câteva decupaje pătrate ale cadrului. OWL-ViT (foarte greu) e folosit doar pentru
+// fotografii, pe calculatoare cu WebGPU; pe telefon, decupajele CLIP țin locul detectorului.
+const TEMPLATES = ["a photo of a {}", "a drawing of a {}"];
 const FRUIT_QUERIES = ["a photo of a fruit", "a drawing of a fruit"];
 const DET_QUERIES = [...FRUIT_QUERIES, "a photo of a person", "a photo of a human face", "a photo of a hand"];
+const IS_MOBILE = matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
+const CROP_MIN_SCORE = 0.40;     // un decupaj fără detector trebuie să fie mai sigur decât o casetă de detector
+const local = { worker: null, loading: null, ready: false, backend: null, seq: 0, pending: new Map(), labels: [], detOK: false, tick: 0 };
+const debugAI = /[?&]debug/.test(location.search);
 
-// Alegem varianta de model: fp16 pe WebGPU (dacă placa suportă shader-f16), altfel q8 pe WASM.
-// (fp32 însemna ~1,2 GB și putea depăși spațiul de cache al browserului, deci se descărca din nou la fiecare vizită.)
+function call(type, data = {}, transfer = []) {
+  return new Promise((res, rej) => {
+    const id = ++local.seq;
+    local.pending.set(id, { res, rej });
+    local.worker.postMessage({ id, type, ...data }, transfer);
+  });
+}
+
+// Varianta modelului: fp16 pe WebGPU (dacă placa suportă shader-f16), altfel q8 pe WASM (la fel ca în worker)
 async function pickBackend() {
   if (navigator.gpu) {
     try {
       const adapter = await navigator.gpu.requestAdapter();
-      if (adapter && adapter.features.has("shader-f16")) return { device: "webgpu", dtype: "fp16", suffix: "_fp16", mb: 611 };
+      if (adapter && adapter.features.has("shader-f16")) return { device: "webgpu", dtype: "fp16", suffix: "_fp16", mb: 303 };
     } catch {}
   }
-  return { device: "wasm", dtype: "q8", suffix: "_quantized", mb: 309 };
+  return { device: "wasm", dtype: "q8", suffix: "_quantized", mb: 154 };
 }
 
 // Sunt modelele deja salvate pe dispozitiv? (transformers.js le ține în Cache Storage, „transformers-cache”)
@@ -531,7 +545,7 @@ async function modelsCached(suffix) {
   try {
     if (!("caches" in window) || !(await caches.has("transformers-cache"))) return false;
     const keys = (await (await caches.open("transformers-cache")).keys()).map(r => r.url);
-    return [CLIP_NAME, DETECTOR_NAME].every(m => keys.some(u => u.includes(m) && u.endsWith(`/onnx/model${suffix}.onnx`)));
+    return ["text_model", "vision_model"].every(m => keys.some(u => u.includes(CLIP_NAME) && u.endsWith(`/onnx/${m}${suffix}.onnx`)));
   } catch { return false; }
 }
 
@@ -540,101 +554,103 @@ function loadLocal() {
   local.loading = (async () => {
     const backend = await pickBackend();
     const cached = await modelsCached(backend.suffix);
-    local.cached = cached;
     el.progress.hidden = false;
     el.progBar.style.width = "0%";
-    el.progText.textContent = cached ? "Se pornesc modelele AI salvate pe dispozitiv…" : `Prima pornire: se descarcă modelele AI (~${backend.mb} MB, o singură dată)…`;
+    el.progText.textContent = cached ? t("Se pornesc modelele AI salvate pe dispozitiv…") : t("Prima pornire: se descarcă modelele AI (~{mb} MB, o singură dată)…", { mb: backend.mb });
     setStatus(cached ? "Se pornesc modelele AI…" : "Prima pornire: se descarcă modelele…", "busy");
-    const T = await import(TRANSFORMERS_URL);
-    local.T = T;
-    T.env.allowLocalModels = false;
-    T.env.useBrowserCache = true;
-    const files = {};
-    const progress_callback = p => {
-      if (p.status === "progress" && p.total) {
-        files[p.file + p.name] = [p.loaded, p.total];
-        let a = 0, b = 0;
-        Object.values(files).forEach(([l, t]) => { a += l; b += t; });
-        const pct = Math.min(100, a / b * 100);
+    local.labels = catalog.aiAllLabels();
+    local.worker = new Worker(new URL("./ai-worker.js", import.meta.url), { type: "module" });
+    local.worker.onmessage = e => {
+      const m = e.data;
+      if (m.id) {
+        const p = local.pending.get(m.id);
+        if (p) { local.pending.delete(m.id); m.ok ? p.res(m.result) : p.rej(new Error(m.error)); }
+        return;
+      }
+      if (m.type === "backend") local.backend = m;
+      else if (m.type === "progress" && m.tag === "clip" && !local.ready) {
+        const pct = Math.min(100, m.loaded / m.total * 100);
         el.progBar.style.width = pct.toFixed(1) + "%";
         el.progText.textContent = cached
-          ? `Se pornesc modelele AI salvate pe dispozitiv… ${Math.round(pct)}%`
-          : `Prima pornire: se descarcă modelele AI (o singură dată)… ${(a / 1048576).toFixed(0)} / ${(b / 1048576).toFixed(0)} MB`;
+          ? t("Se pornesc modelele AI salvate pe dispozitiv… {p}%", { p: Math.round(pct) })
+          : t("Prima pornire: se descarcă modelele AI (o singură dată)… {a} / {b} MB", { a: (m.loaded / 1048576).toFixed(0), b: (m.total / 1048576).toFixed(0) });
+      } else if (m.type === "textProgress") {
+        const pct = Math.round(m.done / m.total * 100);
+        el.progBar.style.width = pct + "%";
+        el.progText.textContent = t("Învăț numele fructelor (o singură dată)… {p}%", { p: pct });
       }
     };
-    const make = async (task, name) => {
-      if (backend.device === "webgpu") {
-        try { return await T.pipeline(task, name, { device: "webgpu", dtype: backend.dtype, progress_callback }); }
-        catch (e) { console.warn("WebGPU indisponibil, trec pe WASM:", e); }
-      }
-      return T.pipeline(task, name, { device: "wasm", dtype: "q8", progress_callback });
+    local.worker.onerror = e => {
+      console.error("Worker AI:", e.message || e);
+      for (const p of local.pending.values()) p.rej(new Error(e.message || "worker"));
+      local.pending.clear();
     };
-    local.clip = await make("zero-shot-image-classification", CLIP_NAME);
-    local.det = await make("zero-shot-object-detection", DETECTOR_NAME);
-    // Cerem browserului să nu șteargă modelele din cache când are nevoie de spațiu
+    await call("init", { url: TRANSFORMERS_URL, clip: CLIP_NAME, detector: DETECTOR_NAME, labels: local.labels, templates: TEMPLATES });
     try { await navigator.storage?.persist?.(); } catch {}
-    // Încălzire: o analiză pe o imagine mică, ca prima imagine reală să fie procesată imediat
-    el.progText.textContent = "Se pregătește analiza…";
-    try {
-      const w = document.createElement("canvas"); w.width = w.height = 224;
-      const g = w.getContext("2d"); g.fillStyle = "#888"; g.fillRect(0, 0, 224, 224);
-      await findFruitBox(w); await classify(w);
-    } catch (e) { console.warn("Încălzirea modelelor a eșuat:", e); }
     el.progress.hidden = true;
     local.ready = true;
     setStatus("Gata: pune o imagine sau pornește camera", "ok");
     if (!state.frameShown && !state.live) el.emptyTitle.textContent = "Gata. Arată-mi un fruct";
+    // detectorul (pentru mai multe fructe într-o poză) doar pe calculator cu WebGPU, în fundal
+    if (!IS_MOBILE && local.backend?.device === "webgpu") call("loadDetector").then(() => { local.detOK = true; }).catch(e => console.warn("Detectorul nu s-a încărcat:", e));
   })().catch(e => {
     local.loading = null;
     el.progress.hidden = true;
+    try { local.worker?.terminate(); } catch {}
+    local.worker = null;
     throw e;
   });
   return local.loading;
 }
 
-async function rawFrom(canvas) { return local.T.RawImage.fromBlob(await toBlob(canvas, 0.92)); }
-
-/** Scorurile CLIP adunate pe fiecare fruct / obiect din catalog.
- *  Un fruct are adesea mai multe etichete (ex. „apple”, „red apple”): CLIP împarte probabilitatea între ele,
- *  așa că le adunăm, altfel un fruct bine recunoscut putea părea „nesigur” și era respins. */
-function groupScores(out) {
+/** Scorurile CLIP adunate pe fiecare fruct / obiect din catalog (un fruct poate avea mai multe etichete). */
+function groupScores(probs) {
   const by = new Map();
-  for (const o of out) {
-    const hit = catalog.resolveAiLabel(o.label);
+  for (let i = 0; i < probs.length; i++) {
+    const hit = catalog.resolveAiLabel(local.labels[i]);
     if (!hit) continue;
     const key = hit.kind === "fruit" ? "f:" + hit.id : "n:" + hit.label;
-    const g = by.get(key) || { hit, label: o.label, score: 0 };
-    g.score += o.score; by.set(key, g);
+    const g = by.get(key) || { hit, score: 0 };
+    g.score += probs[i]; by.set(key, g);
   }
   return [...by.values()].sort((a, b) => b.score - a.score);
 }
-const debugAI = /[?&]debug/.test(location.search);
 
-/** Clasifică mai multe imagini (casetele + cadrul întreg) într-un singur apel CLIP.
- *  transformers.js codifică toate cele ~120 de etichete text la fiecare apel, așa că un singur apel
- *  pentru toate imaginile e de câteva ori mai rapid decât câte un apel pentru fiecare. */
-async function classifyMany(canvases, { drawing = false } = {}) {
-  const imgs = await Promise.all(canvases.map(rawFrom)), labels = catalog.aiAllLabels();
-  const run = async tpl => { const o = await local.clip(imgs.length === 1 ? imgs[0] : imgs, labels, { hypothesis_template: tpl }); return imgs.length === 1 ? [o] : o; };
-  let best = (await run("a photo of a {}")).map(groupScores);
-  // Pentru o poză încărcată (poate fi un desen sau o pagină de carte), când nu e sigur,
-  // mai întrebăm „ca pentru un desen” și facem media celor două răspunsuri.
-  if (drawing && best.some(b => (b[0]?.score ?? 0) < 0.5)) {
-    const alt = (await run("a drawing of a {}")).map(groupScores);
-    best = best.map((b, i) => {
-      const m = new Map();
-      for (const g of [...b, ...alt[i]]) { const k = g.hit.kind + ":" + (g.hit.id ?? g.hit.label); const x = m.get(k) || { ...g, score: 0 }; x.score += g.score / 2; m.set(k, x); }
-      const mixed = [...m.values()].sort((x, y) => y.score - x.score);
-      return mixed[0] && mixed[0].score > (b[0]?.score ?? 0) ? mixed : b;
-    });
-  }
-  return best.map(b => {
-    if (debugAI) console.log("[FruitAI] CLIP:", b.slice(0, 4).map(g => `${g.hit.id ?? g.hit.label} ${(g.score * 100).toFixed(0)}`).join(" · "));
-    const top = b[0];
-    return top ? { label: top.label, score: top.score, hit: top.hit } : { label: "", score: 0, hit: null };
+// O regiune a imaginii → pătrat 224×224 (cât cere CLIP). „cover” umple pătratul, „contain” arată toată regiunea.
+const PREP = document.createElement("canvas"); PREP.width = PREP.height = 224;
+const PX = PREP.getContext("2d", { willReadFrequently: true });
+function prep(src, { box, fit = "cover" }) {
+  const W = src.videoWidth || src.width, H = src.videoHeight || src.height;
+  const [x1, y1, x2, y2] = box, sw = (x2 - x1) * W, sh = (y2 - y1) * H;
+  const s = 224 / (fit === "contain" ? Math.max(sw, sh) : Math.min(sw, sh)), dw = sw * s, dh = sh * s;
+  PX.fillStyle = "#7f7f7f"; PX.fillRect(0, 0, 224, 224);
+  PX.drawImage(src, x1 * W, y1 * H, sw, sh, (224 - dw) / 2, (224 - dh) / 2, dw, dh);
+  const d = PX.getImageData(0, 0, 224, 224);
+  return { data: d.data.buffer, width: 224, height: 224 };
+}
+/** Un pătrat centrat în (cx, cy), cu latura = frac × latura mică a imaginii, în coordonate 0–1. */
+function sq(src, cx, cy, frac) {
+  const W = src.videoWidth || src.width, H = src.videoHeight || src.height, side = frac * Math.min(W, H);
+  const hw = side / 2 / W, hh = side / 2 / H;
+  const x = Math.min(1 - hw, Math.max(hw, cx)), y = Math.min(1 - hh, Math.max(hh, cy));
+  return [x - hw, y - hh, x + hw, y + hh];
+}
+
+/** Clasifică mai multe regiuni într-un singur apel (doar modelul de imagine rulează). */
+async function classifyRegions(src, regions) {
+  const imgs = regions.map(r => prep(src, r));
+  const res = await call("classify", { images: imgs }, imgs.map(i => i.data));
+  return res.map(([photo, drawing], i) => {
+    let best = groupScores(photo);
+    // nesigur ca fotografie? poate e un desen sau o pagină de carte: facem media cu „a drawing of a …”
+    if ((best[0]?.score ?? 0) < 0.5) {
+      const mix = groupScores(photo.map((p, k) => (p + drawing[k]) / 2));
+      if (mix[0] && mix[0].score > (best[0]?.score ?? 0)) best = mix;
+    }
+    if (debugAI) console.log("[FruitAI] CLIP", regions[i].tag || "", best.slice(0, 4).map(g => `${g.hit.id ?? g.hit.label} ${(g.score * 100).toFixed(0)}`).join(" · "));
+    return { ...regions[i], hit: best[0]?.hit || null, score: best[0]?.score || 0 };
   });
 }
-const classify = async (canvas, opts) => (await classifyMany([canvas], opts))[0];
 
 const iou = (a, b) => {
   const x1 = Math.max(a.xmin, b.xmin), y1 = Math.max(a.ymin, b.ymin), x2 = Math.min(a.xmax, b.xmax), y2 = Math.min(a.ymax, b.ymax);
@@ -643,49 +659,67 @@ const iou = (a, b) => {
   return u > 0 ? inter / u : 0;
 };
 
-const MAX_FRUITS = 3;            // câte fructe pot primi etichetă AR în același cadru
+const MAX_FRUITS = 3;            // câte fructe pot primi etichetă într-o fotografie
 
-/** Casetele fructelor din cadru, cel mult MAX_FRUITS, fără suprapuneri (NMS). */
+/** Casetele fructelor din fotografie (OWL-ViT), cel mult MAX_FRUITS, fără suprapuneri. */
 async function findFruitBoxes(canvas) {
   const small = canvasFrom(canvas, canvas.width, canvas.height, 640);
-  const dets = await local.det(await rawFrom(small), DET_QUERIES, { threshold: DETECT_THRESHOLD, percentage: true });
-  const fruits = dets.filter(d => FRUIT_QUERIES.includes(d.label));
-  const others = dets.filter(d => !FRUIT_QUERIES.includes(d.label));
+  const d = small.getContext("2d").getImageData(0, 0, small.width, small.height);
+  const dets = await call("detect", { image: { data: d.data.buffer, width: small.width, height: small.height }, queries: DET_QUERIES, threshold: DETECT_THRESHOLD }, [d.data.buffer]);
+  const fruits = dets.filter(x => FRUIT_QUERIES.includes(x.label));
+  const others = dets.filter(x => !FRUIT_QUERIES.includes(x.label));
   // exclude casetele unde o persoană / mână / față are scor mai mare în același loc
   const valid = fruits.filter(f => !others.some(o => o.score >= f.score && iou(o.box, f.box) > 0.6)).sort((a, b) => b.score - a.score);
   const picked = [];
-  for (const d of valid) {
+  for (const x of valid) {
     if (picked.length >= MAX_FRUITS) break;
-    if (picked.some(p => iou(p.box, d.box) > 0.3)) continue;
-    picked.push(d);
+    if (picked.some(p => iou(p.box, x.box) > 0.3)) continue;
+    picked.push(x);
   }
-  return picked.map(d => {
-    let { xmin, ymin, xmax, ymax } = d.box;
+  return picked.map(x => {
+    let { xmin, ymin, xmax, ymax } = x.box;
     [xmin, ymin, xmax, ymax] = [xmin, ymin, xmax, ymax].map(v => Math.max(0, Math.min(1, v)));
     const mx = (xmax - xmin) * 0.12, my = (ymax - ymin) * 0.12;
     return [Math.max(0, xmin - mx), Math.max(0, ymin - my), Math.min(1, xmax + mx), Math.min(1, ymax + my)];
   }).filter(box => (box[2] - box[0]) * canvas.width >= 40 && (box[3] - box[1]) * canvas.height >= 40);
 }
-const findFruitBox = async canvas => (await findFruitBoxes(canvas))[0] || null;
 
-async function localAnalyze(canvas, { photo = false } = {}) {
-  await loadLocal();
-  const boxes = await findFruitBoxes(canvas);
-  if (debugAI) console.log("[FruitAI] casete:", boxes.length);
-  // casetele și cadrul întreg, într-un singur apel (fructul poate umple imaginea sau caseta poate fi greșită)
-  const res = await classifyMany([...boxes.map(b => cropCanvas(canvas, b)), canvas], { drawing: photo });
-  const found = boxes.map((box, i) => ({ ...res[i], box }));
-  const fruits = found.filter(f => f.hit?.kind === "fruit" && f.score >= FRUIT_MIN_SCORE);
-  if (fruits.length) {
-    const [p, ...rest] = fruits;
-    return { kind: "fruit", label: p.hit.id, score: p.score, box: p.box, others: rest.map(f => ({ label: f.hit.id, box: f.box })) };
+/** Regiunile analizate: puține și rapide în modul live, mai multe pentru o fotografie. */
+function regionsFor(src, photo) {
+  const fast = local.backend?.device === "webgpu";
+  if (!photo) {
+    // live: centrul cadrului (unde ține copilul fructul) și cadrul întreg; pe WASM, alternativ, câte unul pe cadru
+    const r = [{ box: sq(src, .5, .5, .72), tag: "centru", min: CROP_MIN_SCORE }, { box: [0, 0, 1, 1], fit: "contain", tag: "tot", min: FULLFRAME_MIN_SCORE }];
+    return fast ? r : [r[local.tick++ % 2]];
   }
-  const top = found[0] || null;
-  const { hit, score } = res[res.length - 1];
-  if (hit?.kind === "fruit" && score >= FULLFRAME_MIN_SCORE) return { kind: "fruit", label: hit.id, score, box: top?.box || [0, 0, 1, 1] };
-  if (top?.hit?.kind === "notfruit") return { kind: "notfruit", label: top.hit.label, score: top.score, box: top.box };
-  if (hit?.kind === "notfruit" && score >= NONFRUIT_FULL_MIN) return { kind: "notfruit", label: hit.label, score, box: null };
-  return { kind: "none", score: Math.max(score, top?.score ?? 0) };
+  const r = [
+    { box: [0, 0, 1, 1], fit: "contain", tag: "tot", min: FULLFRAME_MIN_SCORE },
+    { box: sq(src, .5, .5, 1), tag: "pătrat", min: CROP_MIN_SCORE },
+    { box: sq(src, .5, .5, .6), tag: "centru", min: CROP_MIN_SCORE }
+  ];
+  if (fast || !IS_MOBILE) for (const [cx, cy] of [[.3, .3], [.7, .3], [.3, .7], [.7, .7]]) r.push({ box: sq(src, cx, cy, .62), tag: "colț", min: CROP_MIN_SCORE });
+  return r;
+}
+
+async function localAnalyze(src, { photo = false } = {}) {
+  await loadLocal();
+  let regions = regionsFor(src, photo);
+  if (photo && local.detOK) {
+    try { regions = [...(await findFruitBoxes(src)).map(box => ({ box, tag: "casetă", min: FRUIT_MIN_SCORE, det: true })), ...regions]; }
+    catch (e) { console.warn("Detector:", e); }
+  }
+  const res = await classifyRegions(src, regions);
+  const fruits = res.filter(r => r.hit?.kind === "fruit" && r.score >= r.min).sort((a, b) => b.score - a.score);
+  if (fruits.length) {
+    const p = fruits[0];
+    // alte fructe diferite (doar din casetele detectorului, care chiar sunt obiecte separate)
+    const others = fruits.filter(f => f.det && f !== p && f.hit.id !== p.hit.id).map(f => ({ label: f.hit.id, box: f.box }));
+    const box = p.fit === "contain" ? [0.1, 0.1, 0.9, 0.9] : p.box;
+    return { kind: "fruit", label: p.hit.id, score: p.score, box, others };
+  }
+  const nf = res.filter(r => r.hit?.kind === "notfruit").sort((a, b) => b.score - a.score)[0];
+  if (nf && nf.score >= NONFRUIT_FULL_MIN) return { kind: "notfruit", label: nf.hit.label, score: nf.score, box: nf.fit === "contain" ? null : nf.box };
+  return { kind: "none", score: Math.max(0, ...res.map(r => r.score)) };
 }
 
 const analyze = c => state.engine === "claude" ? claudeAnalyze(c) : localAnalyze(c, { photo: true });
@@ -926,7 +960,7 @@ async function liveLoop() {
       if (still && fresh) {
         state.result.time = Date.now();
       } else {
-        const c = canvasFrom(el.video, el.video.videoWidth, el.video.videoHeight, 1280);
+        const c = canvasFrom(el.video, el.video.videoWidth, el.video.videoHeight, 640);
         try {
           const r = await localAnalyze(c);
           state.lastModelRun = Date.now();
@@ -1144,7 +1178,7 @@ function heroScene(f) {
   const start = async () => {
     try {
       const { createFruitScene } = await import("./fruit3d.js");
-      const sc = createFruitScene($("heroCanvas"), f, { reducedMotion: reduceMotion, interactive: false, distance: 1.3 });
+      const sc = createFruitScene($("heroCanvas"), f, { reducedMotion: reduceMotion, interactive: false, distance: 1.3, fps: IS_MOBILE ? 30 : 60 });
       sc.celebrate();
       scene3d.classList.add("has3d");
       new IntersectionObserver(([en]) => en.isIntersecting ? sc.resume() : sc.pause()).observe(scene3d);

@@ -18,6 +18,7 @@ function rng(seed) {
   for (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 16777619);
   return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 }
+const LITE = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;   // telefon: fără „sheen” (cel mai scump efect)
 function canvas(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return [c, c.getContext("2d")]; }
 function texture(c, srgb = true) {
   const t = new THREE.CanvasTexture(c);
@@ -170,7 +171,7 @@ function skinMaterial(v, R) {
   const s = skin(v, R);
   return new THREE.MeshPhysicalMaterial({
     map: s.map, bumpMap: s.bump, bumpScale: s.bumpScale, roughness: s.roughness, metalness: 0,
-    clearcoat: s.clearcoat, clearcoatRoughness: 0.25, sheen: s.sheen, sheenColor: C(light(v.color, .5)), sheenRoughness: 0.5
+    clearcoat: s.clearcoat, clearcoatRoughness: 0.25, sheen: LITE ? 0 : s.sheen, sheenColor: C(light(v.color, .5)), sheenRoughness: 0.5
   });
 }
 const plain = (color, o = {}) => new THREE.MeshPhysicalMaterial({ color: C(color), roughness: o.roughness ?? 0.4, clearcoat: o.clearcoat ?? 0.5, side: o.side ?? THREE.FrontSide });

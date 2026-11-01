@@ -24,7 +24,8 @@ Scanner de fructe cu realitate augmentată, care rulează direct în browser. Î
 | `data/i18n/en.json` | Traducerile în engleză (cheia = textul în română) |
 | `js/sound.js` | Efecte sonore sintetizate (fără fișiere audio) |
 | `js/fruit-art.js` | Imaginea fiecărui fruct (fotografie sau ilustrație generată) |
-| `js/app.js` | Scannerul, AI, AR în cameră, senzorii ambientali |
+| `js/app.js` | Scannerul, AR în cameră, senzorii ambientali |
+| `js/ai-worker.js` | Modelele AI (CLIP, OWL-ViT), rulate într-un Web Worker, ca pagina să rămână fluidă |
 | `js/xr.js` | AR spațial (WebXR) cu fructul 3D pe masă, încărcat doar la cerere |
 | `scripts/check-catalog.mjs` | Verifică datele și că niciun fruct nu e scris direct în cod |
 | `start-mac-linux.sh` | Pornește un server local și deschide site-ul (macOS / Linux) |
@@ -43,19 +44,20 @@ Ai nevoie doar de Python 3, fără alte pachete.
 ## Funcționalități
 
 ### Recunoaștere (ca în versiunea 8)
-- **Detecție:** OWL-ViT (`Xenova/owlvit-base-patch32`) găsește fructul în cadru și separă mâini, fețe, persoane.
-- **Clasificare:** CLIP (`Xenova/clip-vit-base-patch32`) alege dintre etichetele din catalog: 61 de fructe și 56 de obiecte care nu sunt fructe.
+- **Totul rulează într-un Web Worker** (`js/ai-worker.js`): pagina, animațiile și camera rămân fluide cât timp lucrează AI-ul, inclusiv pe telefon.
+- **Clasificare:** CLIP (`Xenova/clip-vit-base-patch32`) alege dintre etichetele din catalog: 61 de fructe și 56 de obiecte care nu sunt fructe. CLIP e împărțit în modelul de text și cel de imagine: descrierile („a photo of a banana”, „a drawing of a banana”…) se calculează **o singură dată** și se păstrează în browser. La fiecare cadru rulează doar modelul de imagine, de aproximativ 15–20 de ori mai puțin calcul decât înainte, când toate descrierile erau recalculate la fiecare analiză.
+- **Live:** se analizează centrul cadrului și cadrul întreg (pe telefoanele fără WebGPU, câte unul pe rând). **Fotografii:** imaginea întreagă, centrul și colțurile.
+- **Detecție:** OWL-ViT (`Xenova/owlvit-base-patch32`, foarte greu) se încarcă doar pe calculatoare cu WebGPU și e folosit doar la fotografii, pentru mai multe fructe în aceeași poză. Pe telefon nu se descarcă deloc.
 - Modelele rulează **în browser** prin transformers.js. Imaginile nu sunt trimise nicăieri.
-- **Pornire automată:** modelele încep să se încarce imediat ce deschizi pagina, în fundal. Când pui o imagine, analiza începe pe loc. Dacă o pui înainte să fie gata, imaginea așteaptă și e analizată automat.
-- **Descărcare o singură dată:** prima vizită descarcă modelele (~310 MB în varianta q8 pentru WASM, ~610 MB în varianta fp16 pentru WebGPU). După aceea pornesc din memoria browserului (Cache Storage), fără descărcare. Aplicația cere browserului stocare persistentă, ca să nu le șteargă.
-- Varianta e aleasă automat: fp16 pe WebGPU, dacă placa video suportă `shader-f16`, altfel q8 pe WASM. Versiunea 8 folosea fp32 pe WebGPU (~1,2 GB), care putea depăși spațiul de cache și se descărca din nou la fiecare vizită.
-- După încărcare, aplicația rulează o analiză de încălzire pe o imagine mică, ca prima analiză reală să fie rapidă.
+- **Pornire automată:** modelele încep să se încarce imediat ce deschizi pagina, în fundal. Dacă pui o imagine înainte să fie gata, ea așteaptă și e analizată automat.
+- **Descărcare o singură dată:** prima vizită descarcă ~154 MB (q8, WASM) sau ~303 MB (fp16, WebGPU). După aceea pornesc din memoria browserului (Cache Storage). Aplicația cere stocare persistentă, ca browserul să nu le șteargă. (Cine a folosit versiunea anterioară descarcă o singură dată fișierele noi, separate, ale lui CLIP.)
 - Modelele trebuie descărcate din nou doar dacă ștergi datele site-ului, folosești o fereastră privată sau alt browser.
+- **Pe telefon:** 3D la rezoluție redusă (1,5×), fructul decorativ din prima pagină la 30 de cadre/s, estompări mai mici în spatele panourilor.
 - **Fructe reale, poze, cărți și desene:** detectorul caută și „a drawing of a fruit” și „a picture of a fruit in a book”. Când CLIP nu e sigur pe o imagine, mai întreabă o dată ca pentru un desen și păstrează răspunsul mai sigur. Dacă niciun răspuns nu trece pragurile, aplicația spune că nu e sigură, nu inventează un fruct.
 - **Viteză:** toate casetele găsite și cadrul întreg sunt clasificate de CLIP într-un singur apel (transformers.js recodifică toate etichetele text la fiecare apel). Scorurile etichetelor care țin de același fruct se adună.
 - **Diagnostic:** deschide site-ul cu `?debug` la final (ex. `.../FRUITAI/?debug`) și în consola browserului (F12) apar primele răspunsuri ale modelului pentru fiecare imagine.
 - **Cât de sigur e:** după identificare apare un indicator cu trei trepte (Sigur / Destul de sigur / Nu foarte sigur), fără procente.
-- Pragurile sunt cele din `main.py`: detector 0,10, fruct 0,30, cadru întreg 0,60, o analiză la 0,8 s, iar un rezultat rămâne afișat 4 s.
+- Praguri: casetă de detector 0,30, decupaj 0,40, cadru întreg 0,50 (scoruri adunate pe fiecare fruct). O analiză la 0,8 s, iar un rezultat rămâne afișat 4 s.
 - Când pagina rulează ca artifact Claude, recunoașterea se face cu Claude (fotografii), ca înainte.
 
 ### Fluxul automat (camera)
