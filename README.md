@@ -44,6 +44,9 @@ Ai nevoie doar de Python 3, fără alte pachete.
 ## Funcționalități
 
 ### Recunoaștere (ca în versiunea 8)
+- **Fără model de text în browser:** vectorii de text ai lui CLIP (pentru toate etichetele și formulările din `data/clip-prompts.json`) sunt calculați o singură dată, în GitHub Actions (`scripts/build-embeddings.mjs`), și salvați în `data/clip-text.bin` (~750 KB). Browserul descarcă doar modelul de imagine (~89 MB pe telefon, o singură dată) și începe imediat să recunoască. Dacă se schimbă catalogul, GitHub Actions recalculează automat fișierul; până atunci, browserul îi calculează singur.
+- **Învățat și din fotografii reale:** același script adună fotografii reale de pe Wikimedia Commons pentru fiecare fruct și calculează „aspectul mediu” al fiecăruia. Asemănarea cu el se adaugă la scorul din text. Rezultatul testului, pe fotografii nefolosite la învățare, e în `scripts/eval-report.txt`.
+- **Fructe exotice:** `ai.prior` (în catalog) le scade puțin greutatea, ca să nu fie confundate cu fructele obișnuite care seamănă cu ele.
 - **Totul rulează într-un Web Worker** (`js/ai-worker.js`): pagina, animațiile și camera rămân fluide cât timp lucrează AI-ul, inclusiv pe telefon.
 - **Clasificare:** CLIP (`Xenova/clip-vit-base-patch32`) alege dintre etichetele din catalog: 61 de fructe și 56 de obiecte care nu sunt fructe. CLIP e împărțit în modelul de text și cel de imagine: descrierile („a photo of a banana”, „a drawing of a banana”…) se calculează **o singură dată** și se păstrează în browser. La fiecare cadru rulează doar modelul de imagine, de aproximativ 15–20 de ori mai puțin calcul decât înainte, când toate descrierile erau recalculate la fiecare analiză.
 - **Găsirea imediată pe ecran:** de 5 ori pe secundă, fără AI (~1 ms), aplicația compară pixelii cu culoarea fundalului și încadrează cea mai mare zonă diferită (un fruct, o poză, o pagină de carte), cu rama „Caut fructul…”. Exact acea zonă e trimisă apoi lui CLIP.

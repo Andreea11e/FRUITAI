@@ -556,6 +556,8 @@ async function modelsCached(suffix) {
 function loadLocal() {
   if (local.loading) return local.loading;
   local.loading = (async () => {
+    // cerem browserului, de la început, să păstreze modelele descărcate (să nu le șteargă când are nevoie de spațiu)
+    try { await navigator.storage?.persist?.(); } catch {}
     const backend = await pickBackend();
     const cached = await modelsCached(backend.suffix);
     el.progress.hidden = false;
@@ -572,6 +574,7 @@ function loadLocal() {
         return;
       }
       if (m.type === "backend") local.backend = m;
+      else if (m.type === "ready") { local.precomputed = m.precomputed; if (debugAI) console.log("[FruitAI] gata:", m.device, m.dtype, m.precomputed ? "vectori de text și prototipuri precalculate" : "vectori calculați în browser"); }
       else if (m.type === "progress" && m.tag === "clip" && !local.ready) {
         const pct = Math.min(100, m.loaded / m.total * 100);
         el.progBar.style.width = pct.toFixed(1) + "%";
