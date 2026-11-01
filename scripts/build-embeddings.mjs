@@ -77,12 +77,19 @@ const PER = Number(process.env.PER || 40);
 const imgEmb = {};                  // id fruct → [Float32Array(D)]
 let visMs = 0, visN = 0;
 for (const f of fruitsAI) {
-  const q = `${f.ai.labels[0]} fruit`;
-  let urls = [];
-  try {
-    const r = await getJSON(`https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=${PER + 15}&gsrsearch=${encodeURIComponent("filetype:bitmap " + q)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=336`);
-    urls = Object.values(r.query?.pages || {}).sort((a, b) => a.index - b.index).map(p => p.imageinfo?.[0]).filter(i => i && /jpeg|png/.test(i.mime)).map(i => i.thumburl).slice(0, PER);
-  } catch (e) { console.log(`${f.id}: ${e.message}`); }
+  // mai multe căutări pe fruct (numele englez + fiecare etichetă), fără dubluri
+  const queries = [...new Set([`${f.en} fruit`, ...f.ai.labels.map(l => `${l} fruit`), ...f.ai.labels])];
+  const seen = new Set(); let urls = [];
+  for (const q of queries) {
+    if (urls.length >= PER) break;
+    try {
+      const r = await getJSON(`https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=50&gsrsearch=${encodeURIComponent("filetype:bitmap " + q)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=336`);
+      for (const i of Object.values(r.query?.pages || {}).sort((a, b) => a.index - b.index).map(p => p.imageinfo?.[0]))
+        if (i && /jpeg|png/.test(i.mime) && !seen.has(i.thumburl)) { seen.add(i.thumburl); urls.push(i.thumburl); }
+    } catch (e) { console.log(`${f.id}: ${e.message}`); }
+    await sleep(200);
+  }
+  urls = urls.slice(0, PER);
   const list = [];
   for (let i = 0; i < urls.length; i += 4) {
     const batch = await Promise.all(urls.slice(i, i + 4).map(async u => { try { return await RawImage.fromURL(u); } catch { return null; } }));
@@ -146,7 +153,7 @@ const Ptrain = proto(fruitIdx, L => split(L)[0]);
 const base = evaluate(null, 0, 0);
 let best = { alpha: 0, beta: 0, ...base };
 const grid = [];
-for (const alpha of [2, 4, 6, 8, 12, 16]) for (const beta of [2, 4, 6, 10]) {
+for (const alpha of [4, 8, 12, 16, 24, 32, 48]) for (const beta of [2, 4, 6, 8, 12]) {
   const r = evaluate(Ptrain, alpha, beta); grid.push(`α=${alpha} β=${beta}: ${(r.top1 * 100).toFixed(1)}% (obișnuite ${(r.common * 100).toFixed(1)}%)`);
   if (r.top1 > best.top1) best = { alpha, beta, ...r };
 }
