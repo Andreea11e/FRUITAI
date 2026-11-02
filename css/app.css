@@ -1160,3 +1160,12 @@ dialog.game h4 { margin: 22px 0 10px; font: 900 13px "Nunito", var(--f-sans); le
 
 /* AR spațial: fără texte peste cameră, doar butonul de închidere (în dreapta) */
 #xrOverlay #xrClose { margin-left: auto; }
+
+/* Colecția: cardul „lacăt” pentru fructele încă nedescoperite */
+.fcard.locked { border-style: dashed; background: rgba(255,255,255,.03); align-items: center; text-align: center; justify-content: center; min-height: 170px; }
+.fcard.locked .lock { font-size: 40px; filter: grayscale(.2); animation: lockBob 2.4s ease-in-out infinite; }
+.fcard.locked b { white-space: normal; }
+.fcard.locked .en { white-space: normal; }
+@keyframes lockBob { 50% { transform: translateY(-4px) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .fcard.locked .lock { animation: none; } }
+.cat-tools [hidden], .cat-filters[hidden] { display: none !important; }
