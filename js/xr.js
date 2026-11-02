@@ -126,7 +126,7 @@ export async function startSession(fruit, nutrients, ui) {
   const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 });
   const lines = sprites.map(s => { const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), s.position.clone().multiplyScalar(0.92)]); const l = new THREE.Line(g, lineMat); orbit.add(l); return l; });
 
-  const st = { placed: false, scale: 1, targetScale: 1, yaw: 0, auto: true, appear: 0, picked: null, ignoreSelectUntil: 0 };
+  const st = { placed: false, guess: false, scale: 1, targetScale: 1, yaw: 0, auto: true, appear: 0, picked: null, ignoreSelectUntil: 0, t0: performance.now() };
   const setMsg = s => { if (ui.msg) ui.msg.textContent = t(s); };
   const setHint = s => { if (ui.hint) ui.hint.textContent = t(s); };
 
@@ -185,7 +185,7 @@ export async function startSession(fruit, nutrients, ui) {
   const noSelect = e => { if (e.target.closest("button, .xr-card")) e.preventDefault(); };
   ov.addEventListener("beforexrselect", noSelect);
 
-  if (ui.overlay) ui.overlay.hidden = false;
+  if (ui.overlay) { ui.overlay.hidden = false; ui.overlay.style.pointerEvents = "auto"; ui.overlay.style.touchAction = "none"; }
   if (ui.card) ui.card.hidden = true;
   let session;
   try {
@@ -195,6 +195,7 @@ export async function startSession(fruit, nutrients, ui) {
       domOverlay: { root: ui.overlay }
     });
   } catch (e) {
+    if (ui.overlay) { ui.overlay.style.pointerEvents = ""; ui.overlay.style.touchAction = ""; }
     renderer.dispose(); renderer.domElement.remove(); pmrem.dispose();
     throw e;
   }
@@ -223,12 +224,29 @@ export async function startSession(fruit, nutrients, ui) {
       }
     }
     // 2) altfel, prima atingere pune fructul pe suprafața găsită (după aceea se mută trăgându-l cu degetul)
-    if (!reticle.visible || st.placed) return;
-    holder.position.setFromMatrixPosition(reticle.matrix);
-    target.copy(holder.position);
-    st.placed = true; st.appear = 0; holder.visible = true;
+    if (st.placed) return;
+    if (reticle.visible) placeAt(pos.setFromMatrixPosition(reticle.matrix), false);
+    else placeGuess(ev.frame);
   });
+  function placeAt(p, guess) {
+    holder.position.copy(p); target.copy(p);
+    st.placed = true; st.guess = guess; st.appear = 0; holder.visible = true;
+  }
+  // masa nu a fost găsită încă (suprafață albă, lucioasă sau lumină slabă): punem fructul
+  // la ~60 cm în fața telefonului și ~35 cm mai jos, cât o masă; când telefonul găsește masa, fructul „aterizează” pe ea
+  const vpos = new THREE.Vector3(), vq = new THREE.Quaternion(), fwd = new THREE.Vector3();
+  function placeGuess(frame) {
+    const vp = frame.getViewerPose(renderer.xr.getReferenceSpace());
+    if (!vp) return;
+    m4.fromArray(vp.transform.matrix); m4.decompose(vpos, vq, sc);
+    fwd.set(0, 0, -1).applyQuaternion(vq); fwd.y = 0;
+    if (fwd.lengthSq() < 1e-4) fwd.set(0, 0, -1);
+    fwd.normalize();
+    placeAt(vpos.clone().addScaledVector(fwd, 0.6).add(new THREE.Vector3(0, -0.35, 0)), true);
+  }
+  const dragPlane = new THREE.Plane(), dragHit = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
 
+  if (/[?&]debug\b/.test(location.search)) window.__xrAR = { st, holder, target };
   const onClose = () => session.end().catch(() => {});
   ui.close?.addEventListener("click", onClose);
 
@@ -241,6 +259,12 @@ export async function startSession(fruit, nutrients, ui) {
       reticle.visible = !!p;
       if (p) reticle.matrix.fromArray(p.transform.matrix);
       reticle.visible = !!p && !st.placed;               // după plasare, cercul nu mai e necesar
+      if (!st.placed && !p && performance.now() - st.t0 > 3500) placeGuess(frame);
+      // fructul a fost pus „din estimare”, iar acum telefonul a găsit masa: îl așezăm pe ea
+      if (st.placed && st.guess && p && !st.dragging) {
+        const hp = new THREE.Vector3().setFromMatrixPosition(m4.fromArray(p.transform.matrix));
+        if (hp.distanceTo(target) < 1.2) { target.copy(hp); st.guess = false; }
+      }
       // mutare cu degetul: fructul merge spre punctul de pe masă / podea de sub deget
       if (st.placed && st.dragging) {
         let q = null;
@@ -249,8 +273,18 @@ export async function startSession(fruit, nutrients, ui) {
           const r0 = tr.find(r => r.results.length)?.results[0];
           q = r0 ? r0.getPose(renderer.xr.getReferenceSpace()) : null;
         }
-        q = q || p;
-        if (q) target.setFromMatrixPosition(m4.fromArray(q.transform.matrix));
+        if (q) { target.setFromMatrixPosition(m4.fromArray(q.transform.matrix)); st.guess = false; }
+        else {
+          // nicio suprafață sub deget: fructul alunecă pe planul orizontal pe care stă deja
+          const src = [...frame.session.inputSources].find(s => s.targetRayMode === "screen");
+          const rp = src && frame.getPose(src.targetRaySpace, renderer.xr.getReferenceSpace());
+          if (rp) {
+            m4.fromArray(rp.transform.matrix); m4.decompose(pos, quat, sc);
+            ray.set(pos, new THREE.Vector3(0, 0, -1).applyQuaternion(quat));
+            dragPlane.setFromNormalAndCoplanarPoint(up, target);
+            if (ray.ray.intersectPlane(dragPlane, dragHit) && dragHit.distanceTo(pos) < 4) target.copy(dragHit);
+          }
+        }
       }
     }
     pulse.scale.setScalar(1 + (tt % 1.2) / 1.2 * 0.6); pulse.material.opacity = 0.8 * (1 - (tt % 1.2) / 1.2);
@@ -283,7 +317,7 @@ export async function startSession(fruit, nutrients, ui) {
     disposeObject(scene);
     scene.environment?.dispose?.(); pmrem.dispose(); renderer.dispose();
     renderer.domElement.remove();
-    if (ui.overlay) ui.overlay.hidden = true;
+    if (ui.overlay) { ui.overlay.hidden = true; ui.overlay.style.pointerEvents = ""; ui.overlay.style.touchAction = ""; }
     ui.onEnd?.();
   });
   return session;
