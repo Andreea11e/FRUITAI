@@ -399,5 +399,15 @@
  "Încă un fruct ascuns": "1 fruit still hidden",
  "Încă {n} de fructe ascunse": "{n} fruits still hidden",
  "Ai descoperit {a} din {b} de fructe": "You have discovered {a} of {b} fruits",
- "Încă nu ai descoperit niciun fruct. Arată camerei unul și apare aici!": "You haven't discovered any fruit yet. Show one to the camera and it appears here!"
+ "Încă nu ai descoperit niciun fruct. Arată camerei unul și apare aici!": "You haven't discovered any fruit yet. Show one to the camera and it appears here!",
+ "instalări": "installs",
+ "Direct în browser": "Right in the browser",
+ "Se deschide pe telefon, tabletă sau calculator. Nu trebuie descărcată nicio aplicație.": "It opens on a phone, tablet or computer. No app to download.",
+ "limbi": "languages",
+ "Română și engleză": "Romanian and English",
+ "Copiii învață numele fiecărui fruct în ambele limbi, iar toată aplicația se schimbă dintr-un singur buton.": "Children learn every fruit's name in both languages, and the whole app switches with a single button.",
+ "insigne": "badges",
+ "Steluțe, insigne, provocări și quiz-uri care îi motivează pe copii să descopere fructe noi.": "Stars, badges, challenges and quizzes that motivate children to discover new fruits.",
+ "O colecție de descoperit": "A collection to discover",
+ "Fiecare fruct găsit intră în colecția copilului, cu fișa lui: vitamine, minerale și curiozități.": "Every fruit found goes into the child's collection, with its own card: vitamins, minerals and fun facts."
 }
