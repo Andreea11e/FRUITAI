@@ -56,6 +56,8 @@ const state = {
   ambient: { light: null, sharp: null, motion: null, area: null },
   lastModelRun: 0,
   xrSupported: false,
+  qlSupported: false,     // iPhone / iPad: fructul pe masă prin AR Quick Look
+  tableSupported: false,  // orice telefon cu cameră: fructul pe masă cu camera + giroscopul
   xrActive: false
 };
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1004,8 +1006,8 @@ function startReveal() {
   window.dispatchEvent(new CustomEvent("fruitai:reveal", { detail: { id: flow.id, isNew: flow.isNew } }));
   showReveal(el.stage, flow.id, {
     catalog, reduceMotion, source: flow.src, confidence: confidenceOf(flow.score),
-    canPlaceAR: () => state.xrSupported && !state.xrActive,
-    onPlaceAR: id => { showFromCatalog(id); startXR(); },
+    canPlaceAR: () => canPlace(),
+    onPlaceAR: id => placeOnTable(id),
     onNutrient: n => window.dispatchEvent(new CustomEvent("fruitai:nutrient", { detail: n.key })),
     onMore: id => openDiscovery(id, { source: "scan", isNew: flow.isNew }),
     onAgain: restartFlow
@@ -1191,14 +1193,75 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && el.stage.c
 document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && el.stage.classList.contains("immersive")) setImmersive(false); });
 
 // ---------------- AR spațial (WebXR), încărcat doar la cerere ----------------
+const canPlace = () => !state.xrActive && (state.xrSupported || state.qlSupported || state.tableSupported);
+/** Pune fructul pe masă: WebXR (Android cu ARCore), AR Quick Look (iPhone / iPad) sau,
+ *  pe orice alt telefon, camera + giroscopul (table-ar.js). Dacă primele două nu pornesc, trecem la a treia. */
+async function placeOnTable(id) {
+  if (state.xrActive) return;
+  if (id) showFromCatalog(id);
+  const f = catalog.get(id || state.shownFruit);
+  if (!f) return;
+  // iPhone cere voie pentru giroscop doar direct dintr-o atingere, deci întrebăm acum, înainte de orice await
+  const orientation = !state.xrSupported && !state.qlSupported ? askOrientation() : null;
+  if (state.xrSupported && await startXR()) return;
+  if (state.qlSupported && !state.xrSupported) {
+    stopCamera();
+    try {
+      setStatus("Se pregătește fructul pentru masă…", "busy");
+      const ql = await import("./quicklook.js");
+      await ql.openQuickLook(f);
+      setStatus("Fructul e gata de pus pe masă", "ok");
+      return;
+    } catch (e) { console.warn("AR Quick Look:", e); }
+  }
+  return startTable(f, orientation || Promise.resolve(true));
+}
+function askOrientation() {
+  try {
+    if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function")
+      return DeviceOrientationEvent.requestPermission().then(r => r === "granted").catch(() => false);
+  } catch {}
+  return Promise.resolve(true);
+}
+async function startTable(f, orientation) {
+  if (!state.tableSupported) { setStatus("Fructul nu a putut fi pus pe masă pe acest dispozitiv", "err"); return false; }
+  // camera pe tot ecranul folosește „fullscreen” pe scanner, care ar acoperi fructul de pe masă:
+  // o închidem și trecem toată pagina pe tot ecranul (încă suntem în atingerea copilului)
+  if (el.stage.classList.contains("immersive")) setImmersive(false);
+  const fs = document.documentElement.requestFullscreen?.({ navigationUI: "hide" });
+  fs?.catch?.(() => {});
+  stopCamera();
+  state.xrActive = true; updateXRButton();
+  const overlay = $("xrOverlay");
+  try {
+    setStatus("Se pune fructul pe masă…", "busy");
+    const mod = await import("./table-ar.js");
+    await mod.startTableAR(f, catalog.nutrientsFor(f.id), {
+      overlay, close: $("xrClose"), card: $("xrCard"), t, orientation,
+      onNutrient: n => window.dispatchEvent(new CustomEvent("fruitai:nutrient", { detail: n.key })),
+      onEnd: () => {
+        state.xrActive = false; updateXRButton(); setStatus("Gata: pune o imagine sau pornește camera", "ok");
+        if (document.fullscreenElement === document.documentElement) document.exitFullscreen().catch(() => {});
+      }
+    });
+    setStatus("Fructul e pe masă", "ok");
+    return true;
+  } catch (e) {
+    console.error(e);
+    state.xrActive = false; overlay.hidden = true; updateXRButton();
+    if (document.fullscreenElement === document.documentElement) document.exitFullscreen().catch(() => {});
+    setStatus("Camera nu a putut porni. Verifică permisiunea pentru cameră.", "err");
+    return false;
+  }
+}
 function updateXRButton() {
-  if (!state.xrSupported) return;
+  if (!state.xrSupported && !state.qlSupported && !state.tableSupported) return;
   const ready = !state.example && el.facts.hidden === false && catalog.has(state.shownFruit);
   el.btnXR.disabled = !ready || state.xrActive;
   el.btnXR.title = ready ? t("Pune fructul {name} pe o suprafață reală", { name: fruitName(state.shownFruit) }) : t("Identifică sau alege mai întâi un fruct");
 }
 async function startXR() {
-  if (el.btnXR.disabled || state.xrActive) return;
+  if (state.xrActive || !catalog.has(state.shownFruit)) return false;
   stopCamera();
   state.xrActive = true; updateXRButton();
   const f = catalog.get(state.shownFruit);
@@ -1212,13 +1275,14 @@ async function startXR() {
       onEnd: () => { state.xrActive = false; overlay.hidden = true; updateXRButton(); setStatus("Sesiunea AR spațial s-a încheiat", "ok"); }
     });
     setStatus("AR spațial activ", "ok");
+    return true;
   } catch (e) {
     console.error(e);
     state.xrActive = false; overlay.hidden = true; updateXRButton();
-    setStatus("AR spațial nu a putut porni pe acest dispozitiv", "err");
+    return false;   // trecem la varianta cu camera
   }
 }
-el.btnXR.addEventListener("click", startXR);
+el.btnXR.addEventListener("click", () => { if (!el.btnXR.disabled) placeOnTable(); });
 
 async function checkSupport() {
   const camOk = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
@@ -1228,10 +1292,16 @@ async function checkSupport() {
   let xrOk = false;
   try { xrOk = !!(navigator.xr && await navigator.xr.isSessionSupported("immersive-ar")); } catch {}
   state.xrSupported = xrOk && state.engine !== "claude";
+  if (!state.xrSupported && state.engine !== "claude") {
+    const ql = await import("./quicklook.js").catch(() => null);
+    state.qlSupported = !!ql?.quickLookSupported();
+  }
+  state.tableSupported = camOk && isSecureContext && state.engine !== "claude";
+  const canTable = state.xrSupported || state.qlSupported || state.tableSupported;
   const supXR = $("supXR");
-  supXR.className = "support " + (state.xrSupported ? "ok" : "no");
-  supXR.querySelector("span").textContent = state.xrSupported ? "Compatibil cu acest dispozitiv" : "Indisponibil pe acest dispozitiv sau browser";
-  el.btnXR.hidden = !state.xrSupported;
+  supXR.className = "support " + (canTable ? "ok" : "no");
+  supXR.querySelector("span").textContent = canTable ? "Compatibil cu acest dispozitiv" : "Indisponibil pe acest dispozitiv sau browser";
+  el.btnXR.hidden = !canTable;
   if (catalog) renderArHub();
   updateXRButton();
 }
@@ -1329,16 +1399,17 @@ function heroScene(f) {
 
 // Hub-ul AR: alegerea fructului pentru AR spațial, doar dacă dispozitivul îl suportă
 function renderArHub() {
-  $("hubXR").hidden = !state.xrSupported;
-  $("hubFallback").hidden = state.xrSupported || state.engine === "none";
-  if (!state.xrSupported) return;
+  const canTable = state.xrSupported || state.qlSupported || state.tableSupported;
+  $("hubXR").hidden = !canTable;
+  $("hubFallback").hidden = canTable || state.engine === "none";
+  if (!canTable) return;
   const picks = [...new Set([...catalog.fruits.filter(f => collection.has(f.id)).map(f => f.id), ...catalog.showcase().map(f => f.id)])].slice(0, 10);
   $("hubFruits").replaceChildren(...picks.map(id => {
     const f = catalog.get(id), b = document.createElement("button");
     b.type = "button"; b.className = "hub-fruit";
     b.innerHTML = `${f.emoji ? `<span class="e">${f.emoji}</span>` : fruitArt(f, { size: 36 })}<span></span>`;
     b.lastChild.textContent = f.ro;
-    b.onclick = () => { showFromCatalog(id); startXR(); };
+    b.onclick = () => placeOnTable(id);
     return b;
   }));
 }
@@ -1369,8 +1440,8 @@ async function boot() {
   window.addEventListener("fruitai:lang", () => { if (state.shownFruit && !el.facts.hidden) showFruitCard(state.shownFruit, { chipText: state.example ? "Exemplu" : "Identificat", note: state.example ? "așa arată un rezultat" : "" }); renderShowcase(true); });
   initDiscovery({
     catalog, reduceMotion,
-    canPlaceAR: () => state.xrSupported && !state.xrActive,
-    onPlaceAR: id => { showFromCatalog(id); startXR(); }
+    canPlaceAR: () => canPlace(),
+    onPlaceAR: id => placeOnTable(id)
   });
   mountCatalogUI(catalog, {
     onOpen: id => openDiscovery(id, { source: "catalog" }),

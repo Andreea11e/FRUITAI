@@ -14,7 +14,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const FONT = '"Nunito", system-ui, -apple-system, "Segoe UI", sans-serif';
 
 /** Panoul cu numele, deasupra fructului: română mare, engleză dedesubt. */
-function namePanel(THREE, fruit) {
+export function namePanel(THREE, fruit) {
   const W = 1024, H = 300, c = document.createElement("canvas"); c.width = W; c.height = H;
   const x = c.getContext("2d");
   const rr = (X, Y, w, h, r) => { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r); x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath(); };
@@ -32,7 +32,7 @@ function namePanel(THREE, fruit) {
 }
 
 /** Pictograma unui nutrient (sferă / cristal / frunză colorată, cu simbolul și numele). */
-function nutrientSprite(THREE, n) {
+export function nutrientSprite(THREE, n) {
   const S = 256, c = document.createElement("canvas"); c.width = S; c.height = S + 70;
   const x = c.getContext("2d"), cx = S / 2, cy = S / 2, r = S * 0.4;
   const g = x.createRadialGradient(cx - r * 0.35, cy - r * 0.4, r * 0.1, cx, cy, r);
@@ -58,7 +58,7 @@ function nutrientSprite(THREE, n) {
   return sp;
 }
 
-function softDisc(THREE, color, alpha) {
+export function softDisc(THREE, color, alpha) {
   const c = document.createElement("canvas"); c.width = c.height = 128;
   const x = c.getContext("2d"), g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
   g.addColorStop(0, `rgba(${color},${alpha})`); g.addColorStop(1, `rgba(${color},0)`);

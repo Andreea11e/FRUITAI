@@ -27,6 +27,8 @@ Scanner de fructe cu realitate augmentată, care rulează direct în browser. Î
 | `js/app.js` | Scannerul, AR în cameră, senzorii ambientali |
 | `js/ai-worker.js` | Modelele AI (CLIP, OWL-ViT), rulate într-un Web Worker, ca pagina să rămână fluidă |
 | `js/xr.js` | AR spațial (WebXR) cu fructul 3D pe masă, încărcat doar la cerere |
+| `js/quicklook.js` | Fructul pe masă pe iPhone / iPad, prin AR Quick Look (model USDZ generat pe loc) |
+| `js/table-ar.js` | Fructul pe masă pe orice alt telefon: camera + giroscopul, cu aceleași gesturi |
 | `scripts/check-catalog.mjs` | Verifică datele și că niciun fruct nu e scris direct în cod |
 | `start-mac-linux.sh` | Pornește un server local și deschide site-ul (macOS / Linux) |
 | `start-windows.bat` | Același lucru pe Windows |
@@ -86,6 +88,7 @@ Dacă fructul nu e scos din cadru în 6 secunde, apare și butonul „Arată-mi-
 - **AR pe tot ecranul:** camera și etichetele ocupă tot ecranul, cu buton de captură și de ieșire (Esc pe desktop).
 - **Salvează captura:** descarcă imaginea cu toate încadrările și etichetele, la rezoluția sursei.
 - **AR spațial (WebXR):** pe dispozitivele compatibile (ex. Chrome pe Android cu ARCore), telefonul găsește masa sau podeaua și pui acolo **modelul 3D al fructului**, cu numele în română și engleză deasupra și nutrienții pe orbită. Îl rotești cu un deget, îl scalezi cu două, îl muți atingând altă suprafață; atingi un nutrient și apare fișa bilingvă. Butoanele AR spațial apar doar dacă browserul suportă `immersive-ar`; altfel secțiunea AR recomandă Camera AR.
+- **Fructul pe masă pe orice telefon:** dacă dispozitivul nu are WebXR sau AR Quick Look (ori acestea nu pornesc), fructul 3D e pus pe masă peste imaginea camerei, cu umbră sub el; giroscopul ține fructul pe loc când miști telefonul. Un deget îl mută, două degete îl măresc și îl rotesc, o atingere pe o vitamină deschide fișa ei.
 
 ### Inteligență ambientală
 Calculată din pixelii reali ai cadrului (redus la 160×120), de ~4 ori pe secundă:

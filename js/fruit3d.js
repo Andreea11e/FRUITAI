@@ -68,7 +68,7 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
 
   // inel luminos sub fruct
   const ring = new THREE.Mesh(new THREE.TorusGeometry(1.35, 0.018, 12, 120), new THREE.MeshBasicMaterial({ color: new THREE.Color(fruit.visual.color).lerp(new THREE.Color(0xffffff), .3), transparent: true, opacity: 0.8 }));
-  ring.rotation.x = Math.PI / 2.15; ring.position.y = -1.32;
+  ring.rotation.x = Math.PI / 2.6; ring.position.y = -1.32;   // înclinat, ca să se vadă ca un cerc, nu ca o linie
   const ring2 = ring.clone(); ring2.scale.setScalar(1.35); ring2.material = ring.material.clone(); ring2.material.opacity = 0.35;
   world.add(ring, ring2);
   // umbra moale de sub fruct

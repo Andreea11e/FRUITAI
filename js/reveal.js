@@ -173,7 +173,10 @@ export async function showReveal(stage, id, opts) {
   nutrients.forEach((n, i) => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "rv-label nut " + n.kind;
-    b.innerHTML = `${nIcon(n)}<span><small>${esc(t(KIND[n.kind]))}</small><b>${esc(getLang() === "en" ? (n.title_en || n.title) : n.title)}</b></span>`;
+    let title = getLang() === "en" ? (n.title_en || n.title) : n.title;
+    // pe telefon (ecran îngust), nume scurte: „Vit. C”, „Fibre”, ca etichetele să nu încarce imaginea
+    if (portrait) title = title.replace(/\s*\(.*\)$/, "").replace(/^Vitamin(a)? /, "Vit. ").replace(/^Fibre alimentare$/, t("Fibre")).replace(/^Dietary fib(re|er)$/i, "Fiber");
+    b.innerHTML = `${nIcon(n)}<span><small>${esc(t(KIND[n.kind]))}</small><b>${esc(title)}</b></span>`;
     b.setAttribute("aria-label", `${n.title}: ${t("atinge ca să afli ce face")}`);
     b.addEventListener("click", () => openCard(n, b));
     add(b, cols[i % 2], n.color, T0 + 1.5 + i * 0.42);
@@ -186,7 +189,7 @@ export async function showReveal(stage, id, opts) {
   acts.style.setProperty("--d", end + "s");
   root.querySelector(".rv-tools").style.setProperty("--d", (T0 + 0.4) + "s");
   acts.innerHTML = `<button type="button" class="dbtn big primary" data-rv="more"><span aria-hidden="true">✨</span><span>${esc(t("Află mai multe"))}</span></button>
-    ${opts.canPlaceAR?.() ? `<button type="button" class="dbtn big ar" data-rv="space">${svgIcon("ar")}<span>${esc(t("Pune-l în spațiu"))}</span></button>` : ""}
+    ${opts.canPlaceAR?.() ? `<button type="button" class="dbtn big ar" data-rv="space">${svgIcon("ar")}<span>${esc(t(portrait ? "Pe masă" : "Pune-l pe masă"))}</span></button>` : ""}
     <button type="button" class="dbtn big" data-rv="again"><span>${esc(t(opts.source === "photo" ? "Altă poză" : "Alt fruct"))}</span></button>`;
   acts.querySelector('[data-rv="more"]').onclick = () => { sound.tick(); opts.onMore(id); };
   acts.querySelector('[data-rv="again"]').onclick = () => { sound.tick(); opts.onAgain(); };

@@ -125,7 +125,6 @@
  "Se verifică…": "Checking…",
  "Pornește Camera AR": "Start Camera AR",
  "AR spațial (WebXR)": "Spatial AR (WebXR)",
- "Telefonul găsește masa sau podeaua, iar tu pui acolo fructul 3D. Îl învârți, îl mărești, îl muți și te plimbi în jurul lui. Atinge vitaminele care orbitează ca să afli ce fac. Merge pe telefoanele Android cu Chrome și ARCore.": "Your phone finds the table or the floor and you place the 3D fruit there. Spin it, zoom it, move it and walk around it. Tap the orbiting vitamins to find out what they do. Works on Android phones with Chrome and ARCore.",
  "Alege fructul pe care îl pui pe masă:": "Choose the fruit to put on the table:",
  "Pe acest dispozitiv, AR spațial nu e disponibil. Folosește Camera AR: fructul 3D apare peste imaginea camerei și îl poți învârti și mări cu degetele.": "Spatial AR isn't available on this device. Use Camera AR: the 3D fruit appears over the camera image and you can spin and zoom it with your fingers.",
  "Utilă în bucătărie,": "Handy in the kitchen,",
@@ -443,5 +442,16 @@
  "Fructul tău, în 3D.": "Your fruit, in 3D.",
  "Chiar pe masa ta.": "Right on your table.",
  "Fructul 3D apare peste imaginea camerei și îl învârți și îl mărești cu degetele. Pe telefoanele compatibile îl poți pune chiar pe masă și te poți plimba în jurul lui.": "The 3D fruit appears over the camera image and you spin and zoom it with your fingers. On compatible phones you can even put it on the table and walk around it.",
- "Îl analizez…": "Analysing it…"
+ "Îl analizez…": "Analysing it…",
+ "Telefonul găsește masa sau podeaua, iar tu pui acolo fructul 3D. Îl învârți, îl mărești, îl muți și te plimbi în jurul lui. Atinge vitaminele care orbitează ca să afli ce fac. Merge pe telefoanele Android (Chrome) și pe iPhone sau iPad.": "Your phone finds the table or the floor and you place the 3D fruit there. Spin it, zoom it, move it and walk around it. Tap the orbiting vitamins to find out what they do. Works on Android phones (Chrome) and on iPhone or iPad.",
+ "Se pregătește fructul pentru masă…": "Getting the fruit ready for the table…",
+ "Fructul e gata de pus pe masă": "The fruit is ready to be placed on the table",
+ "Fructul nu a putut fi pus pe masă pe acest dispozitiv": "The fruit couldn't be placed on the table on this device",
+ "Fructul pe masă": "The fruit on your table",
+ "Pui fructul 3D pe masă sau pe podea și îl privești prin cameră. Îl muți cu un deget, îl mărești și îl rotești cu două degete. Atinge vitaminele care orbitează ca să afli ce fac. Merge pe orice telefon sau tabletă cu cameră.": "Put the 3D fruit on a table or on the floor and look at it through the camera. Move it with one finger, resize and turn it with two fingers. Tap the orbiting vitamins to find out what they do. Works on any phone or tablet with a camera.",
+ "Pune-l pe masă": "Put it on the table",
+ "Pe masă": "On the table",
+ "Se pune fructul pe masă…": "Putting the fruit on the table…",
+ "Fructul e pe masă": "The fruit is on the table",
+ "Camera nu a putut porni. Verifică permisiunea pentru cameră.": "The camera couldn't start. Check the camera permission."
 }

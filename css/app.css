@@ -1256,3 +1256,29 @@ footer.site-foot .foot-bottom { display: block; text-align: center; margin: 0; p
   .steps-cta .btn, .final .hero-cta .btn { width: 100%; justify-content: center; }
   .final { padding: 32px 20px; }
 }
+
+/* ---------- Telefon: etichetele fructului 3D, mai compacte și mai aerisite ---------- */
+.fruit-reveal.portrait .rv-top { padding: 6px 12px; gap: 6px; font-size: 12px; }
+.fruit-reveal.portrait .rv-top .rv-ok { width: 20px; height: 20px; font-size: 12px; }
+.fruit-reveal.portrait .rv-col { gap: 6px; }
+.fruit-reveal.portrait .rv-col.left { top: max(100px, calc(env(safe-area-inset-top) + 90px)); gap: 8px; }
+.fruit-reveal.portrait .rv-label { border-radius: 16px; }
+.fruit-reveal.portrait .rv-label.ro, .fruit-reveal.portrait .rv-label.en { padding: 7px 12px 8px; }
+.fruit-reveal.portrait .rv-label small { font-size: 9px; letter-spacing: .14em; margin-bottom: 4px; }
+.fruit-reveal.portrait .rv-label.ro b { font-size: clamp(20px, 6.4vw, 26px); gap: 6px; }
+.fruit-reveal.portrait .rv-label.en b { font-size: clamp(15px, 4.6vw, 18px); letter-spacing: .1em; }
+.fruit-reveal.portrait .rv-label.nut { padding: 4px 11px 4px 4px; gap: 6px; border-radius: 999px; }
+.fruit-reveal.portrait .rv-label.nut .nicon { width: 26px; height: 26px; }
+.fruit-reveal.portrait .rv-label.nut b { font-size: 13px; }
+.fruit-reveal.portrait .rv-col.right { left: 16px; right: 16px; bottom: 80px; max-width: 360px; margin: 0 auto; }
+.fruit-reveal.portrait .rv-line { stroke-width: 2; }
+.fruit-reveal.portrait .rv-glowline { stroke-width: 6; }
+.fruit-reveal.portrait .rv-dot { r: 3.5px; }
+.fruit-reveal.portrait .rv-tools { gap: 8px; right: 8px; }
+.fruit-reveal.portrait .rv-tools .dbtn.round { width: 40px; height: 40px; }
+.fruit-reveal.portrait .rv-tools .dbtn svg { width: 18px; height: 18px; }
+@media (pointer: coarse) {   /* pe ecranul tactil, mărirea și micșorarea se fac cu două degete */
+  .fruit-reveal.portrait .rv-tools [data-tool="zin"], .fruit-reveal.portrait .rv-tools [data-tool="zout"] { display: none; }
+}
+.fruit-reveal.portrait .rv-actions { gap: 8px; }
+.fruit-reveal.portrait .rv-actions .dbtn.big { min-height: 46px; font-size: 14px; padding: 0 12px; }
