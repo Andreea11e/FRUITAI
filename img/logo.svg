@@ -41,10 +41,10 @@
   <path d="M35 17 C38 10 46 10 48 12 C46 18 40 20 35 17 Z" fill="url(#leaf)"/>
   <path d="M36.5 16.5 C40 14.5 43.5 13.5 46.5 12.6" stroke="#1E8A72" stroke-width="1" fill="none" opacity=".7"/>
   <!-- fața (ca personajul Vita) -->
-  <ellipse class="eye" cx="26.5" cy="36" rx="2.1" ry="2.7" fill="#0D0926"/>
-  <ellipse class="eye" cx="37.5" cy="36" rx="2.1" ry="2.7" fill="#0D0926"/>
+  <ellipse class="eye" cx="26.5" cy="36" rx="2.1" ry="2.7" fill="#000"/>
+  <ellipse class="eye" cx="37.5" cy="36" rx="2.1" ry="2.7" fill="#000"/>
   <circle cx="27.2" cy="35" r=".8" fill="#fff"/><circle cx="38.2" cy="35" r=".8" fill="#fff"/>
-  <path d="M28 41.5 Q32 45 36 41.5" stroke="#0D0926" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M28 41.5 Q32 45 36 41.5" stroke="#000" stroke-width="2" stroke-linecap="round" fill="none"/>
   <ellipse cx="22.5" cy="40.5" rx="2.5" ry="1.5" fill="#FF5F7E" opacity=".55"/>
   <ellipse cx="41.5" cy="40.5" rx="2.5" ry="1.5" fill="#FF5F7E" opacity=".55"/>
   <!-- steluța (citrice) -->

@@ -34,12 +34,12 @@ export const MASCOT = `<svg viewBox="0 0 120 130" aria-hidden="true">
   <ellipse cx="60" cy="78" rx="40" ry="44" fill="url(#vitaBody)"/>
   <ellipse cx="46" cy="58" rx="10" ry="6" fill="#fff" opacity=".45" transform="rotate(-25 46 58)"/>
   <g class="v-eyes">
-    <ellipse cx="46" cy="74" rx="8.5" ry="10" fill="#1B2A12"/><ellipse cx="74" cy="74" rx="8.5" ry="10" fill="#1B2A12"/>
+    <ellipse cx="46" cy="74" rx="8.5" ry="10" fill="#000"/><ellipse cx="74" cy="74" rx="8.5" ry="10" fill="#000"/>
     <circle cx="49" cy="70" r="3.2" fill="#fff"/><circle cx="77" cy="70" r="3.2" fill="#fff"/>
     <circle cx="44" cy="78" r="1.4" fill="#fff" opacity=".8"/><circle cx="72" cy="78" r="1.4" fill="#fff" opacity=".8"/>
   </g>
   <ellipse cx="34" cy="90" rx="7" ry="4" fill="#FF8FA3" opacity=".55"/><ellipse cx="86" cy="90" rx="7" ry="4" fill="#FF8FA3" opacity=".55"/>
-  <path d="M50 92 Q60 102 70 92" stroke="#1B2A12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M50 92 Q60 102 70 92" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
   <ellipse cx="45" cy="121" rx="10" ry="5" fill="#6FB52C"/><ellipse cx="75" cy="121" rx="10" ry="5" fill="#6FB52C"/>
 </svg>`;
 
