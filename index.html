@@ -1,24 +1,27 @@
 <!doctype html>
-<html lang="ro">
+<html lang="ro" style="color-scheme: dark only; background: #0D0926">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FruitAI — descoperă fructele în 3D</title>
-<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=20261102c">
+<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=20261102d">
 <meta name="description" content="Îndreaptă camera spre un fruct. FruitAI îl recunoaște direct în browser și îi ancorează în imagine numele în română și engleză, împreună cu vitaminele lui.">
-<meta name="theme-color" content="#06080A">
+<meta name="theme-color" content="#0D0926">
+<!-- site-ul e deja întunecat: browserele (Chrome, Samsung Internet) nu trebuie să-l „întunece” singure, ar face negrul gri -->
+<meta name="color-scheme" content="dark only">
+<meta name="supported-color-schemes" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&family=Nunito:wght@700;800;900&display=swap">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<link rel="stylesheet" href="css/app.css?v=20261102c">
+<link rel="stylesheet" href="css/app.css?v=20261102d">
 </head>
 <body>
 <div class="aurora" aria-hidden="true"></div>
 
 <header class="nav">
   <div class="container nav-in">
-    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><img class="logo" src="img/logo.svg?v=20261102c" alt="" width="40" height="40"><span>Fruit<b>AI</b></span></a>
+    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><img class="logo" src="img/logo.svg?v=20261102d" alt="" width="40" height="40"><span>Fruit<b>AI</b></span></a>
     <nav class="nav-links" aria-label="Secțiuni">
       <a href="#scanner">Scanează</a>
       <a href="#catalog">Colecția mea</a>
@@ -406,6 +409,6 @@
   <div class="xr-card" id="xrCard" hidden></div>
 </div>
 
-<script type="module" src="js/app.js?v=20261102c"></script>
+<script type="module" src="js/app.js?v=20261102d"></script>
 </body>
 </html>

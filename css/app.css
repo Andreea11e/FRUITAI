@@ -25,7 +25,7 @@
   --f-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --f-serif: "Instrument Serif", Georgia, serif;
   --ease: cubic-bezier(.2,.8,.2,1);
-  color-scheme: dark;
+  color-scheme: dark only;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
