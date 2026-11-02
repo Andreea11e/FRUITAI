@@ -1,45 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Emblema FruitAI (desen original): un fruct vesel, în colțurile unui scanner AR, cu o steluță care sclipește -->
+  <!-- Emblema FruitAI (desen original), în culorile site-ului: sticlă închisă, lime, mentă și citrice -->
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#8B5CFF"/><stop offset=".55" stop-color="#5B7BFF"/><stop offset="1" stop-color="#22C3E6"/>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#231A57"/><stop offset="1" stop-color="#0D0926"/>
     </linearGradient>
-    <radialGradient id="fruit" cx="38%" cy="32%" r="72%">
-      <stop offset="0" stop-color="#FFB3B3"/><stop offset=".45" stop-color="#FF4D6D"/><stop offset="1" stop-color="#C8102E"/>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C9F25C"/><stop offset=".55" stop-color="#5BE3C4"/><stop offset="1" stop-color="#C9F25C" stop-opacity=".35"/>
+    </linearGradient>
+    <radialGradient id="fruit" cx="36%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#F4FFC9"/><stop offset=".42" stop-color="#C9F25C"/><stop offset="1" stop-color="#3FBF8F"/>
     </radialGradient>
     <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#9BF08A"/><stop offset="1" stop-color="#22B573"/>
+      <stop offset="0" stop-color="#8BF5DC"/><stop offset="1" stop-color="#2BB596"/>
     </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="58%" r="50%">
+      <stop offset="0" stop-color="#C9F25C" stop-opacity=".35"/><stop offset="1" stop-color="#C9F25C" stop-opacity="0"/>
+    </radialGradient>
     <style>
       .star { transform-origin: 50px 13px; animation: tw 2.4s ease-in-out infinite; }
       .eye { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
-      @keyframes tw { 0%, 100% { transform: scale(.75) rotate(0deg); opacity: .8; } 50% { transform: scale(1.15) rotate(20deg); opacity: 1; } }
+      @keyframes tw { 0%, 100% { transform: scale(.75) rotate(0deg); opacity: .85; } 50% { transform: scale(1.15) rotate(20deg); opacity: 1; } }
       @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
       @media (prefers-reduced-motion: reduce) { .star, .eye { animation: none; } }
     </style>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="18" fill="url(#bg)"/>
-  <rect x="2" y="2" width="60" height="30" rx="18" fill="#fff" opacity=".10"/>
-  <!-- colțurile scannerului AR -->
-  <g fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity=".9">
-    <path d="M10 19 V12 a2 2 0 0 1 2-2 H19"/><path d="M45 10 H52 a2 2 0 0 1 2 2 V19" opacity="0"/>
-    <path d="M10 45 V52 a2 2 0 0 0 2 2 H19"/><path d="M54 45 V52 a2 2 0 0 1-2 2 H45"/>
+  <!-- placa de „sticlă”, ca în cardurile site-ului -->
+  <rect x="2" y="2" width="60" height="60" rx="18" fill="url(#tile)"/>
+  <rect x="2.9" y="2.9" width="58.2" height="58.2" rx="17.2" fill="none" stroke="url(#rim)" stroke-width="1.8"/>
+  <circle cx="32" cy="37" r="24" fill="url(#glow)"/>
+  <!-- colțurile scannerului -->
+  <g fill="none" stroke="#C9F25C" stroke-width="3" stroke-linecap="round">
+    <path d="M10 19 V12.5 a2.5 2.5 0 0 1 2.5-2.5 H19"/>
+    <path d="M10 45 V51.5 a2.5 2.5 0 0 0 2.5 2.5 H19"/>
+    <path d="M54 45 V51.5 a2.5 2.5 0 0 1-2.5 2.5 H45"/>
   </g>
   <!-- fructul -->
-  <ellipse cx="32" cy="53" rx="13" ry="2.6" fill="#1B1240" opacity=".25"/>
   <path d="M32 22 C26 18 15 20 15 33 C15 44 22 52 28 52 C30 52 31 51 32 51 C33 51 34 52 36 52 C42 52 49 44 49 33 C49 20 38 18 32 22 Z" fill="url(#fruit)"/>
-  <ellipse cx="23.5" cy="29" rx="4" ry="6" fill="#fff" opacity=".45" transform="rotate(-25 23.5 29)"/>
-  <!-- codița și frunza -->
-  <path d="M32 23 C32 19 33 16 35 14" stroke="#7A4A2A" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+  <ellipse cx="23.5" cy="29" rx="3.6" ry="5.6" fill="#fff" opacity=".5" transform="rotate(-25 23.5 29)"/>
+  <path d="M32 23 C32 19 33 16 35 14" stroke="#5B3A1E" stroke-width="2.6" stroke-linecap="round" fill="none"/>
   <path d="M35 17 C38 10 46 10 48 12 C46 18 40 20 35 17 Z" fill="url(#leaf)"/>
-  <path d="M36.5 16.5 C40 14.5 43.5 13.5 46.5 12.6" stroke="#1E8A55" stroke-width="1" fill="none" opacity=".7"/>
-  <!-- fața -->
-  <ellipse class="eye" cx="26.5" cy="36" rx="2.1" ry="2.7" fill="#2A0E2E"/>
-  <ellipse class="eye" cx="37.5" cy="36" rx="2.1" ry="2.7" fill="#2A0E2E"/>
+  <path d="M36.5 16.5 C40 14.5 43.5 13.5 46.5 12.6" stroke="#1E8A72" stroke-width="1" fill="none" opacity=".7"/>
+  <!-- fața (ca personajul Vita) -->
+  <ellipse class="eye" cx="26.5" cy="36" rx="2.1" ry="2.7" fill="#0D0926"/>
+  <ellipse class="eye" cx="37.5" cy="36" rx="2.1" ry="2.7" fill="#0D0926"/>
   <circle cx="27.2" cy="35" r=".8" fill="#fff"/><circle cx="38.2" cy="35" r=".8" fill="#fff"/>
-  <path d="M28 41.5 Q32 45 36 41.5" stroke="#2A0E2E" stroke-width="2" stroke-linecap="round" fill="none"/>
-  <ellipse cx="22.5" cy="40.5" rx="2.6" ry="1.6" fill="#FF9FB5" opacity=".8"/>
-  <ellipse cx="41.5" cy="40.5" rx="2.6" ry="1.6" fill="#FF9FB5" opacity=".8"/>
-  <!-- steluța care sclipește -->
-  <path class="star" d="M50 6 L52 11 L57 13 L52 15 L50 20 L48 15 L43 13 L48 11 Z" fill="#FFE27A" stroke="#fff" stroke-width=".8" stroke-linejoin="round"/>
+  <path d="M28 41.5 Q32 45 36 41.5" stroke="#0D0926" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <ellipse cx="22.5" cy="40.5" rx="2.5" ry="1.5" fill="#FF5F7E" opacity=".55"/>
+  <ellipse cx="41.5" cy="40.5" rx="2.5" ry="1.5" fill="#FF5F7E" opacity=".55"/>
+  <!-- steluța (citrice) -->
+  <path class="star" d="M50 6 L52 11 L57 13 L52 15 L50 20 L48 15 L43 13 L48 11 Z" fill="#FFA94D" stroke="#FFE27A" stroke-width=".9" stroke-linejoin="round"/>
 </svg>
