@@ -521,7 +521,9 @@ const DET_QUERIES = [...FRUIT_QUERIES, "a photo of a person", "a photo of a huma
 const IS_MOBILE = matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 const CROP_MIN_SCORE = 0.45;     // scor relativ (fără fundal) pentru un decupaj
 const RAW_MIN = 0.10;            // un fruct trebuie să aibă și un scor brut minim (altfel cadrul e doar fundal)
-const INSTANT_SCORE = 0.60;      // peste acest scor fructul e acceptat din prima, fără să mai aștepte alt cadru
+const INSTANT_SCORE = 0.60;
+const MIN_SCAN_MS = 1800;        // cât „se gândește” aplicația înainte să spună ce fruct e (să pară natural)
+const MIN_PHOTO_MS = 1600;       // la fel, pentru o poză încărcată      // peste acest scor fructul e acceptat din prima, fără să mai aștepte alt cadru
 const local = { worker: null, loading: null, ready: false, backend: null, seq: 0, pending: new Map(), labels: [], detOK: false, tick: 0 };
 const debugAI = /[?&]debug/.test(location.search);
 
@@ -740,6 +742,7 @@ const seekEl = document.createElement("div");
 seekEl.className = "seek-box"; seekEl.hidden = true;
 seekEl.innerHTML = `<i></i><i></i><i></i><i></i><span>Caut fructul…</span>`;
 el.stage.appendChild(seekEl);
+function seekLabel(text) { const sp = seekEl.querySelector("span"); if (sp.dataset.k !== text) { sp.dataset.k = text; sp.textContent = t(text); } }
 function showSeek(box) {
   const m = box && mediaRect();
   if (!m) { seekEl.hidden = true; return; }
@@ -803,7 +806,7 @@ function regionsFor(src, photo, found) {
 async function localAnalyze(src, { photo = false, found } = {}) {
   await loadLocal();
   if (found === undefined) found = locate(src);
-  if (photo) showSeek(found || [0.08, 0.08, 0.92, 0.92]);
+  if (photo) { seekLabel("Îl analizez…"); showSeek(found || [0.08, 0.08, 0.92, 0.92]); }
   let regions = regionsFor(src, photo, found);
   if (photo && local.detOK) {
     try { regions = [...(await findFruitBoxes(src)).map(box => ({ box, tag: "casetă", min: 0.35, det: true })), ...regions]; }
@@ -869,7 +872,10 @@ async function handleFile(file) {
   el.btnCapture.disabled = el.btnImm.disabled = false;
   setStatus(state.engine === "claude" ? "Analizez fotografia…" : (local.ready ? "Caut un fruct…" : "Imaginea se analizează imediat ce modelele sunt gata…"), "busy");
   try {
+    const t0 = performance.now();
     const r = await analyze(c);
+    const wait = MIN_PHOTO_MS - (performance.now() - t0);
+    if (wait > 0) await new Promise(res => setTimeout(res, wait));
     state.busy = false;
     applyResult({ ...r, time: Date.now() }, thumbOf(c, r.box));
   } catch (e) {
@@ -960,7 +966,11 @@ function flowOnResult(r) {
     flow.streak = count;
     const canLock = flow.phase === "scan" || (Date.now() - flow.t > REVEAL_MIN_MS && !revealBusy());
     // foarte sigur → acceptat din prima; altfel trebuie văzut în 2 din ultimele 3 cadre
-    if (fruit && (flow.streak >= LOCK_STREAK || r.score >= INSTANT_SCORE) && canLock) {
+    // un mic „timp de gândire”, ca recunoașterea să pară naturală: fructul trebuie urmărit ~1,8 s
+    if (fruit && !flow.seenAt) flow.seenAt = Date.now();
+    if (!fruit && !(flow.votes || []).some(Boolean)) flow.seenAt = 0;
+    const thought = flow.seenAt && Date.now() - flow.seenAt >= MIN_SCAN_MS;
+    if (fruit && (flow.streak >= LOCK_STREAK || r.score >= INSTANT_SCORE) && canLock && thought) {
       showSeek(null);
       hideReveal();
       flow.id = r.label; flow.isNew = flow.candNew; flow.miss = 0; flow.score = r.score;
@@ -977,7 +987,7 @@ function startReveal() {
   if (!flow.id) return;
   clearTimeout(state.discTimer);
   setFlow("reveal");
-  flow.cand = null; flow.streak = 0; flow.votes = []; flow.cleared = false; flow.gone = 0;
+  flow.cand = null; flow.streak = 0; flow.votes = []; flow.cleared = false; flow.gone = 0; flow.seenAt = 0;
   setArTarget(null);
   showFruitCard(flow.id, { chipText: "Identificat", note: "fruct 3D" });
   setStatus(t("{name}, în 3D", { name: fruitName(flow.id) }), "ok");
@@ -1060,6 +1070,7 @@ async function ambientLoop() {
       renderAmbient();
       // caută imediat obiectul pe ecran și arată rama „Caut fructul…” peste el
       state.seek = locate(el.video);
+      seekLabel(flow.seenAt ? "Îl analizez…" : "Caut fructul…");
       showSeek(flow.phase === "scan" ? state.seek : null);
     }
     await new Promise(r => setTimeout(r, 200));
