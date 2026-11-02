@@ -111,10 +111,12 @@ export function mountCatalogUI(catalog, opts) {
     const list = catalog.filter(state).filter(f => ctx.isDiscovered(f.id));
     const left = catalog.recognizable.filter(f => !ctx.isDiscovered(f.id)).length;
     const filtered = state.q || state.category || state.vitamin;
-    grid.replaceChildren(...list.map(card), ...(left && !filtered ? [lockedCard(left, mine.length === 0)] : []));
+    // la început nu apare nimic; cardul cu lacăt apare doar după primul fruct descoperit
+    grid.replaceChildren(...list.map(card), ...(left && !filtered && mine.length ? [lockedCard(left, false)] : []));
     empty.hidden = !(filtered && list.length === 0);
     const total = catalog.recognizable.length;
-    meta.textContent = t(useDe(total) ? "Ai descoperit {a} din {b} de fructe" : "Ai descoperit {a} din {b} fructe", { a: mine.length, b: total });
+    meta.textContent = mine.length ? t(useDe(total) ? "Ai descoperit {a} din {b} de fructe" : "Ai descoperit {a} din {b} fructe", { a: mine.length, b: total })
+      : t("Încă nu ai descoperit niciun fruct. Arată camerei unul și apare aici!");
   }
   sync();
   // colecția crește când descoperi un fruct nou (cu camera sau dintr-o poză)

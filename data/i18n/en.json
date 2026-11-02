@@ -398,5 +398,6 @@
  "Niciun fruct din colecția ta nu se potrivește.": "No fruit in your collection matches.",
  "Încă un fruct ascuns": "1 fruit still hidden",
  "Încă {n} de fructe ascunse": "{n} fruits still hidden",
- "Ai descoperit {a} din {b} de fructe": "You have discovered {a} of {b} fruits"
+ "Ai descoperit {a} din {b} de fructe": "You have discovered {a} of {b} fruits",
+ "Încă nu ai descoperit niciun fruct. Arată camerei unul și apare aici!": "You haven't discovered any fruit yet. Show one to the camera and it appears here!"
 }

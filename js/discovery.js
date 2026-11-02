@@ -12,15 +12,14 @@ const bname = b => getLang() === "en" ? (b.en || b.ro) : b.ro;
 
 const KEY = "fruitai.discovered";
 /** Colecția fructelor descoperite cu scannerul (păstrată doar în acest browser). */
+// Colecția începe goală la fiecare deschidere a paginii și se umple doar cu fructele descoperite acum
+// (ținută în memorie; ștergem și colecțiile salvate de versiunile anterioare).
+try { localStorage.removeItem(KEY); } catch {}
+const found = new Set();
 export const collection = {
-  all() { try { return new Set(JSON.parse(localStorage.getItem(KEY) || "[]")); } catch { return new Set(); } },
-  has(id) { return this.all().has(id); },
-  add(id) {
-    const s = this.all(), isNew = !s.has(id);
-    s.add(id);
-    try { localStorage.setItem(KEY, JSON.stringify([...s])); } catch {}
-    return isNew;
-  }
+  all() { return new Set(found); },
+  has(id) { return found.has(id); },
+  add(id) { const isNew = !found.has(id); found.add(id); return isNew; }
 };
 
 // Personajul Vita: un mugure prietenos (desen original, SVG)
