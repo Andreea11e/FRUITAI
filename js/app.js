@@ -38,7 +38,7 @@ const el = {
   rTop:$("rTop"), roName:$("roName"), enName:$("enName"), msg:$("msg"),
   recent:$("recent"), recentEmpty:$("recentEmpty"),
   recentCount:$("recentCount"), facts:$("facts"), btnSheet:$("btnSheet"), rArt:$("rArt"), vitList:$("vitList"), minList:$("minList"), desc:$("desc"), fact:$("fact"),
-  engineNote:$("engineNote"), ar:$("ar"), btnImm:$("btnImm"), btnExitImm:$("btnExitImm"), btnImmShot:$("btnImmShot"),
+  ar:$("ar"), btnImm:$("btnImm"), btnExitImm:$("btnExitImm"), btnImmShot:$("btnImmShot"),
   hud:$("hud"), hudLight:$("hudLight"), hudLightDot:$("hudLightDot"), hudSharp:$("hudSharp"), hudSharpDot:$("hudSharpDot"),
   hudDistChip:$("hudDistChip"), hudDist:$("hudDist"), hudDistDot:$("hudDistDot"), guide:$("guide")
 };
@@ -1369,7 +1369,6 @@ async function boot() {
       state.sample = sample; state.engine = "claude";
       $("btnPhoto").classList.add("primary");
       el.fileUp.accept = el.fileCam.accept = caps.images.mediaTypes.join(",");
-      el.engineNote.textContent = "FruitAI 9 · recunoaștere cu Claude";
       el.hint.textContent = "Fotografia este analizată de Claude. Prima dată ți se cere permisiunea. Cel mai bine merge un singur fruct, bine luminat.";
       setStatus("Pregătit: fă o fotografie unui fruct", "ok");
       checkSupport();
@@ -1382,7 +1381,6 @@ async function boot() {
   }
   // Site găzduit normal: modele locale în browser + cameră AR live
   state.engine = "local";
-  el.engineNote.textContent = "FruitAI 9 · OWL-ViT + CLIP rulează local în browser";
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     el.btnCamera.hidden = false;
     el.emptyText.textContent = "Pornește camera AR și arată un fruct oriunde în cadru, sau încarcă o fotografie.";

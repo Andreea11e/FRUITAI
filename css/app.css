@@ -1169,3 +1169,19 @@ dialog.game h4 { margin: 22px 0 10px; font: 900 13px "Nunito", var(--f-sans); le
 @keyframes lockBob { 50% { transform: translateY(-4px) rotate(-4deg); } }
 @media (prefers-reduced-motion: reduce) { .fcard.locked .lock { animation: none; } }
 .cat-tools [hidden], .cat-filters[hidden] { display: none !important; }
+
+/* ---------------- Subsol ---------------- */
+footer.site-foot { border-top: 1px solid var(--stroke); padding: 48px 0 28px; color: var(--muted); font-size: 14.5px;
+  background: linear-gradient(180deg, transparent, rgba(201,242,92,.04)); }
+footer.site-foot .foot-in { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 32px; align-items: start; }
+footer.site-foot .foot-brand p { margin: 12px 0 18px; max-width: 380px; line-height: 1.55; }
+footer.site-foot h4 { margin: 4px 0 12px; font: 800 13px "Nunito", var(--f-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+footer.site-foot .foot-col { display: flex; flex-direction: column; gap: 9px; }
+footer.site-foot .foot-col a, footer.site-foot .foot-col button { color: var(--muted); text-decoration: none; background: none; border: 0; padding: 0; font: inherit; text-align: left; cursor: pointer; width: fit-content; }
+footer.site-foot .foot-col a:hover, footer.site-foot .foot-col button:hover { color: var(--lime); }
+footer.site-foot .foot-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--stroke); font-size: 13px; color: var(--dim); }
+@media (max-width: 720px) {
+  footer.site-foot .foot-in { grid-template-columns: 1fr 1fr; }
+  footer.site-foot .foot-brand { grid-column: 1 / -1; }
+}
+footer.site-foot .brand { color: var(--ink); }
