@@ -520,6 +520,7 @@ const FRUIT_QUERIES = ["a photo of a fruit", "a drawing of a fruit"];
 const DET_QUERIES = [...FRUIT_QUERIES, "a photo of a person", "a photo of a human face", "a photo of a hand"];
 const IS_MOBILE = matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 const CROP_MIN_SCORE = 0.50;     // scor relativ (fără fundal) pentru un decupaj
+const LIVE_MIN_SCORE = 0.60;     // în camera live (multe cadre pe secundă) pragul e mai sus, ca să nu apară fructe închipuite
 const RAW_MIN = 0.20;            // un fruct trebuie să aibă și un scor brut minim (altfel cadrul e doar fundal)
 const INSTANT_SCORE = 0.60;
 const MIN_SCAN_MS = 1800;        // cât „se gândește” aplicația înainte să spună ce fruct e (să pară natural)
@@ -661,7 +662,8 @@ function decide(probs) {
   const bg = g.reduce((acc, x) => acc + (isBg(x) ? x.score : 0), 0);
   // fructele exotice (ai.prior < 1 în catalog) contează mai puțin, ca să nu „fure” fructele obișnuite care seamănă cu ele
   const fg = g.filter(x => !isBg(x)).map(x => ({ ...x, w: x.score * (x.hit.kind === "fruit" ? (catalog.get(x.hit.id)?.ai?.prior ?? 1) : 1) })).sort((a, b) => b.w - a.w);
-  const tot = Math.max(1e-6, fg.reduce((s, x) => s + x.w, 0));
+  // împărțim la totalul NEPONDERAT: „prior”-ul poate doar scădea fructele exotice, nu umflă scorul celorlalte
+  const tot = Math.max(1e-6, fg.reduce((s, x) => s + x.score, 0));
   const top = fg[0];
   return { top, bgTop: g.find(isBg), bg, score: top ? Math.min(1, top.w / tot) : 0, raw: top?.score || 0, list: g };
 }
@@ -789,9 +791,11 @@ function regionsFor(src, photo, found) {
   const fast = local.backend?.device === "webgpu";
   const obj = found ? [{ box: squareOf(src, found), tag: "obiect", min: CROP_MIN_SCORE, obj: true }] : [];
   if (!photo) {
-    const r = [{ box: sq(src, .5, .5, .72), tag: "centru", min: CROP_MIN_SCORE }, { box: [0, 0, 1, 1], fit: "contain", tag: "tot", min: FULLFRAME_MIN_SCORE }];
-    // pe WASM (mai lent): obiectul găsit, iar dacă nu e niciunul, centrul și cadrul întreg, pe rând
-    return fast ? [...obj, ...r] : obj.length ? obj : [r[local.tick++ % 2]];
+    // live: doar unde chiar e un obiect (camera întreagă, cu mobilă și oameni, dădea „fructe” care nu existau);
+    // fără niciun obiect distinct, doar centrul, și numai dacă e foarte sigur (fructul ține tot cadrul)
+    if (!obj.length) return [{ box: sq(src, .5, .5, .72), tag: "centru", min: 0.75 }];
+    const live = obj.map(o => ({ ...o, min: LIVE_MIN_SCORE }));
+    return fast ? [...live, { box: sq(src, .5, .5, .72), tag: "centru", min: LIVE_MIN_SCORE }] : live;
   }
   const r = [
     ...obj,
@@ -902,7 +906,7 @@ window.addEventListener("paste", e => {
 // reveal:  fructul nu mai e în cadru → apare fructul 3D, apoi liniuțele către RO, EN și vitamine
 // prepare: (doar pentru poze încărcate) scurtă pauză înainte de 3D
 const flow = { phase: "idle", cand: null, candNew: false, streak: 0, miss: 0, id: null, isNew: false, t: 0, src: "camera" };
-const LOCK_STREAK = 2;        // de câte ori la rând trebuie văzut același fruct ca să fie „sigur”
+const LOCK_STREAK = 3;        // de câte ori la rând trebuie văzut același fruct ca să fie „sigur”
 const REMOVE_MISS = 2;        // de câte ori la rând nu trebuie să mai fie văzut ca să considerăm că a fost scos
 const REMOVE_MIN_MS = 1400;   // cât rămâne mesajul „scoate fructul” cel puțin
 const REVEAL_MIN_MS = 7000;   // după cât timp un fruct nou arătat camerei poate porni un flux nou
@@ -960,7 +964,7 @@ function flowOnResult(r) {
   }
   if (flow.phase === "scan" || flow.phase === "reveal") {
     // vot pe ultimele 3 rezultate: un cadru ratat (mișcare, reflexie) nu mai anulează recunoașterea
-    flow.votes = [...(flow.votes || []), fruit ? r.label : null].slice(-3);
+    flow.votes = [...(flow.votes || []), fruit ? r.label : null].slice(-4);
     const count = fruit ? flow.votes.filter(v => v === r.label).length : 0;
     if (fruit && r.label !== flow.cand) { flow.cand = r.label; flow.candNew = !collection.has(r.label); }
     flow.streak = count;
@@ -970,7 +974,8 @@ function flowOnResult(r) {
     if (fruit && !flow.seenAt) flow.seenAt = Date.now();
     if (!fruit && !(flow.votes || []).some(Boolean)) flow.seenAt = 0;
     const thought = flow.seenAt && Date.now() - flow.seenAt >= MIN_SCAN_MS;
-    if (fruit && (flow.streak >= LOCK_STREAK || r.score >= INSTANT_SCORE) && canLock && thought) {
+    // același fruct în cel puțin 3 din ultimele 4 analize (un rezultat izolat nu mai e acceptat)
+    if (fruit && flow.streak >= LOCK_STREAK && canLock && thought) {
       showSeek(null);
       hideReveal();
       flow.id = r.label; flow.isNew = flow.candNew; flow.miss = 0; flow.score = r.score;

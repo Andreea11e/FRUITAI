@@ -176,7 +176,9 @@ async function classify({ images }) {
       let s = 0; for (let j = 0; j < D; j++) s += img[i * D + j] * protos.P[c * D + j];
       return protos.alpha * Math.exp(-protos.beta * (1 - s));
     }) : null;
-    if (boost) { const mean = boost.reduce((a, b) => a + b, 0) / boost.length; boost = boost.map(b => b - mean); }
+    // scădem MAXIMUL (nu media): bonusul poate doar coborî fructele care nu seamănă, niciodată nu ridică un fruct
+    // peste obiectele și fundalul din imagine — deci nu poate „inventa” un fruct acolo unde nu e niciunul
+    if (boost) { const max = Math.max(...boost); boost = boost.map(b => b - max); }
     return cfg.sets.map(set => {
     const E = setEmb[set.name] || setEmb[cfg.sets[0].name], logits = new Float32Array(N);
     let max = -Infinity;

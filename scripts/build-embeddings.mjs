@@ -131,7 +131,7 @@ const prior = k => hits[k]?.kind === "fruit" ? (catalog.get(hits[k].id)?.ai?.pri
 function probs(img, Es, P, alpha, beta) {
   const z = new Float32Array(N); let m = -1e9;
   let ps = P && alpha ? fruitIdx.map((_, c) => { let s = 0; for (let j = 0; j < D; j++) s += img[j] * P[c * D + j]; return alpha * Math.exp(-beta * (1 - s)); }) : null;
-  if (ps) { const mean = ps.reduce((a, b) => a + b, 0) / ps.length; ps = ps.map(b => b - mean); }      // centrat, ca în browser
+  if (ps) { const max = Math.max(...ps); ps = ps.map(b => b - max); }      // doar coboară fructele nepotrivite, ca în browser
   for (let k = 0; k < N; k++) {
     let s = 0; for (let j = 0; j < D; j++) s += img[j] * Es[k * D + j];
     z[k] = 100 * s + (ps && labelProto[k] >= 0 ? ps[labelProto[k]] : 0);
@@ -145,7 +145,7 @@ function decide(p, usePrior = true) {
   const g = new Map();
   const raw = new Map();
   p.forEach((v, k) => { const h = hits[k]; if (!h || (h.kind === "notfruit" && h.bg)) return; const key = h.kind === "fruit" ? h.id : "~" + h.label; g.set(key, (g.get(key) || 0) + v * (usePrior ? prior(k) : 1)); raw.set(key, (raw.get(key) || 0) + v); });
-  const tot = [...g.values()].reduce((a, b) => a + b, 0) || 1;
+  const tot = [...raw.values()].reduce((a, b) => a + b, 0) || 1;       // total neponderat, ca în aplicație
   return [...g.entries()].map(([k, v]) => [k, v / tot, raw.get(k)]).sort((a, b) => b[1] - a[1]);
 }
 function predict(img, P, alpha, beta) {
