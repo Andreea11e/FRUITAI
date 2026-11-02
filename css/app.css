@@ -1196,3 +1196,63 @@ footer.site-foot .brand { color: var(--ink); }
 footer.site-foot { padding: 28px 0 32px; background: none; }
 footer.site-foot .foot-bottom { display: block; text-align: center; margin: 0; padding: 0; border: 0; font-size: 13.5px; color: var(--dim); }
 @media (prefers-reduced-motion: reduce) { .logo { transition: none; } }
+
+/* =====================================================================
+   TELEFON — aranjare dedicată ecranelor înguste (≤ 560px)
+   ===================================================================== */
+@media (max-width: 560px) {
+  section.block { padding: 52px 0; }
+  .nav-in { height: 58px; gap: 10px; }
+  .logo { width: 36px; height: 36px; }
+  .brand { font-size: 19px; gap: 9px; }
+
+  /* prima pagină */
+  .kicker { font-size: 10.5px; letter-spacing: .03em; padding: 7px 12px; line-height: 1.35; }
+  .hero-cta { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .hero-cta .btn { width: 100%; justify-content: center; }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 24px; font-size: 12px; line-height: 1.3; }
+  .facts b { font-size: 20px; margin-bottom: 2px; }
+  .scene3d { max-width: 350px; margin-top: 4px; }
+  .hcard { min-width: 0; max-width: 48%; }
+  .hcard.c1 { right: 6px; top: 3%; transform: none; }
+  .hcard .hv span { font-size: 10px; padding: 4px 6px; }
+
+  /* scannerul: provocarea sus, pe toată lățimea, fără să acopere textul */
+  .challenge-chip { left: 10px; right: 10px; top: 10px; bottom: auto; transform: none; max-width: none; font-size: 12.5px; padding: 5px 6px 5px 12px; gap: 8px; }
+  .challenge-chip .nicon { width: 28px; height: 28px; flex: none; }
+
+  /* „Cum te joci”: carduri compacte, pe orizontală */
+  .step { display: grid; grid-template-columns: 50px minmax(0, 1fr); column-gap: 14px; align-items: center; padding: 16px; border-radius: 20px; }
+  .step .si { grid-row: span 2; font-size: 38px; margin: 0; }
+  .step h3 { font-size: 17px; padding-right: 30px; margin-bottom: 4px; }
+  .step p { grid-column: 2; font-size: 14px; }
+  .step .sn { top: 12px; right: 12px; width: 26px; height: 26px; font-size: 13px; }
+
+  /* „Cum funcționează”: carduri compacte */
+  #cum .grid-3 { gap: 10px; }
+  #cum .grid-3 .card { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 14px; align-items: start; padding: 16px; }
+  #cum .grid-3 .card .ico { grid-row: span 2; margin: 0; width: 44px; height: 44px; }
+  #cum .grid-3 .card h3 { margin: 2px 0 4px; font-size: 16px; }
+  #cum .grid-3 .card p { grid-column: 2; margin: 0; font-size: 14px; }
+
+  /* „Camera isteață”: 2 × 2, doar indicatorii */
+  #ambient .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  #ambient .amb { padding: 14px; }
+  #ambient .amb p { display: none; }
+  #ambient .amb .ico { width: 34px; height: 34px; margin-bottom: 8px; }
+  #ambient .amb h3 { font-size: 14px; margin: 0; }
+  #ambient .amb .val { font-size: 15px; margin: 8px 0; gap: 7px; }
+  #ambient .amb .meter { margin-bottom: 0; }
+
+  /* „De ce FruitAI”: 2 × 2 */
+  #beneficii .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  #beneficii .benefit { padding: 16px 14px; }
+  #beneficii .benefit .num { font-size: 26px; margin-bottom: 6px; }
+  #beneficii .benefit h3 { font-size: 15px; margin: 0 0 6px; }
+  #beneficii .benefit p { font-size: 13px; line-height: 1.45; margin: 0; }
+}
+@media (max-width: 560px) {
+  .steps-cta, .final .hero-cta { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .steps-cta .btn, .final .hero-cta .btn { width: 100%; justify-content: center; }
+  .final { padding: 32px 20px; }
+}
