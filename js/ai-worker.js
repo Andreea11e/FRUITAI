@@ -170,10 +170,13 @@ async function classify({ images }) {
   // pentru fiecare imagine și fiecare set (fotografie, desen): probabilitățile (softmax peste toate etichetele)
   return images.map((_, i) => {
     // asemănarea cu „aspectul mediu” al fiecărui fruct (aceeași formulă ca în scripts/build-embeddings.mjs)
-    const boost = protos ? Array.from({ length: protos.F }, (_, c) => {
+    // bonusul din fotografii ajută doar la alegerea ÎNTRE fructe: îl centrăm (media 0), ca să nu facă
+    // din orice imagine (o cameră, o față, un obiect) „un fruct”
+    let boost = protos ? Array.from({ length: protos.F }, (_, c) => {
       let s = 0; for (let j = 0; j < D; j++) s += img[i * D + j] * protos.P[c * D + j];
       return protos.alpha * Math.exp(-protos.beta * (1 - s));
     }) : null;
+    if (boost) { const mean = boost.reduce((a, b) => a + b, 0) / boost.length; boost = boost.map(b => b - mean); }
     return cfg.sets.map(set => {
     const E = setEmb[set.name] || setEmb[cfg.sets[0].name], logits = new Float32Array(N);
     let max = -Infinity;

@@ -292,6 +292,115 @@
       "en": "a pizza"
     },
     {
+      "label": "floor",
+      "ro": "podeaua",
+      "en": "the floor",
+      "background": true
+    },
+    {
+      "label": "carpet",
+      "ro": "un covor",
+      "en": "a carpet",
+      "background": true
+    },
+    {
+      "label": "desk",
+      "ro": "un birou",
+      "en": "a desk",
+      "background": true
+    },
+    {
+      "label": "shelf",
+      "ro": "un raft",
+      "en": "a shelf",
+      "background": true
+    },
+    {
+      "label": "kitchen",
+      "ro": "o bucătărie",
+      "en": "a kitchen",
+      "background": true
+    },
+    {
+      "label": "paper",
+      "ro": "o foaie de hârtie",
+      "en": "a sheet of paper",
+      "background": true
+    },
+    {
+      "label": "finger",
+      "ro": "un deget",
+      "en": "a finger",
+      "background": true
+    },
+    {
+      "label": "hair",
+      "ro": "păr",
+      "en": "hair",
+      "background": true
+    },
+    {
+      "label": "pillow",
+      "ro": "o pernă",
+      "en": "a pillow",
+      "background": true
+    },
+    {
+      "label": "television",
+      "ro": "un televizor",
+      "en": "a television"
+    },
+    {
+      "label": "cardboard box",
+      "ro": "o cutie",
+      "en": "a box"
+    },
+    {
+      "label": "keys",
+      "ro": "niște chei",
+      "en": "some keys"
+    },
+    {
+      "label": "shoe",
+      "ro": "un pantof",
+      "en": "a shoe"
+    },
+    {
+      "label": "stuffed toy",
+      "ro": "o jucărie de pluș",
+      "en": "a stuffed toy"
+    },
+    {
+      "label": "candy",
+      "ro": "o bomboană",
+      "en": "a sweet"
+    },
+    {
+      "label": "glass of juice",
+      "ro": "un pahar cu suc",
+      "en": "a glass of juice"
+    },
+    {
+      "label": "ice cream",
+      "ro": "o înghețată",
+      "en": "an ice cream"
+    },
+    {
+      "label": "cookie",
+      "ro": "un biscuit",
+      "en": "a biscuit"
+    },
+    {
+      "label": "chocolate",
+      "ro": "o ciocolată",
+      "en": "a chocolate bar"
+    },
+    {
+      "label": "water bottle",
+      "ro": "o sticlă de apă",
+      "en": "a water bottle"
+    },
+    {
       "label": "blurry image",
       "ro": "o imagine neclară",
       "en": "a blurry image",
