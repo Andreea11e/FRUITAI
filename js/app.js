@@ -523,8 +523,8 @@ const CROP_MIN_SCORE = 0.50;     // scor relativ (fără fundal) pentru un decup
 const LIVE_MIN_SCORE = 0.60;     // în camera live (multe cadre pe secundă) pragul e mai sus, ca să nu apară fructe închipuite
 const RAW_MIN = 0.20;            // un fruct trebuie să aibă și un scor brut minim (altfel cadrul e doar fundal)
 const INSTANT_SCORE = 0.60;
-const MIN_SCAN_MS = 1800;        // cât „se gândește” aplicația înainte să spună ce fruct e (să pară natural)
-const MIN_PHOTO_MS = 1600;       // la fel, pentru o poză încărcată      // peste acest scor fructul e acceptat din prima, fără să mai aștepte alt cadru
+const MIN_SCAN_MS = 1000;        // cât „se gândește” aplicația înainte să spună ce fruct e (să pară natural)
+const MIN_PHOTO_MS = 1000;       // la fel, pentru o poză încărcată      // peste acest scor fructul e acceptat din prima, fără să mai aștepte alt cadru
 const local = { worker: null, loading: null, ready: false, backend: null, seq: 0, pending: new Map(), labels: [], detOK: false, tick: 0 };
 const debugAI = /[?&]debug/.test(location.search);
 
@@ -825,7 +825,7 @@ async function localAnalyze(src, { photo = false, found } = {}) {
     const score = Math.min(0.99, p.score + (agree > 1 ? 0.08 * (agree - 1) : 0));
     const others = fruits.filter(f => f.det && f !== p && f.hit.id !== p.hit.id).map(f => ({ label: f.hit.id, box: f.box }));
     const box = p.fit === "contain" ? (found || [0.1, 0.1, 0.9, 0.9]) : p.obj && found ? found : p.box;
-    return { kind: "fruit", label: p.hit.id, score, box, others };
+    return { kind: "fruit", label: p.hit.id, score, raw: p.raw, box, others };
   }
   // niciun fruct: un obiect real (o roșie, o cană); la fotografii, și ce e în fundal (o mână, o persoană)
   const nf = res.filter(r => r.hit?.kind === "notfruit" && r.raw >= NONFRUIT_FULL_MIN).sort((a, b) => b.raw - a.raw)[0];
@@ -906,7 +906,9 @@ window.addEventListener("paste", e => {
 // reveal:  fructul nu mai e în cadru → apare fructul 3D, apoi liniuțele către RO, EN și vitamine
 // prepare: (doar pentru poze încărcate) scurtă pauză înainte de 3D
 const flow = { phase: "idle", cand: null, candNew: false, streak: 0, miss: 0, id: null, isNew: false, t: 0, src: "camera" };
-const LOCK_STREAK = 3;        // de câte ori la rând trebuie văzut același fruct ca să fie „sigur”
+const LOCK_STREAK = 3;
+const CLEAR_SCORE = 0.85;     // „fruct clar”: scor relativ foarte mare…
+const CLEAR_RAW = 0.35;       // …și scor brut mare (nu doar „cel mai bun dintr-un fundal”)        // de câte ori la rând trebuie văzut același fruct ca să fie „sigur”
 const REMOVE_MISS = 2;        // de câte ori la rând nu trebuie să mai fie văzut ca să considerăm că a fost scos
 const REMOVE_MIN_MS = 1400;   // cât rămâne mesajul „scoate fructul” cel puțin
 const REVEAL_MIN_MS = 7000;   // după cât timp un fruct nou arătat camerei poate porni un flux nou
@@ -974,8 +976,11 @@ function flowOnResult(r) {
     if (fruit && !flow.seenAt) flow.seenAt = Date.now();
     if (!fruit && !(flow.votes || []).some(Boolean)) flow.seenAt = 0;
     const thought = flow.seenAt && Date.now() - flow.seenAt >= MIN_SCAN_MS;
-    // același fruct în cel puțin 3 din ultimele 4 analize (un rezultat izolat nu mai e acceptat)
-    if (fruit && flow.streak >= LOCK_STREAK && canLock && thought) {
+    // un fruct clar (foarte sigur, cu scor brut mare) e acceptat după 2 analize la rând; altfel trebuie
+    // să apară în 3 din ultimele 4 — așa e rapid pentru fructele reale și strict când imaginea e neclară
+    const clear = fruit && r.score >= CLEAR_SCORE && (r.raw ?? 0) >= CLEAR_RAW;
+    const twoInRow = clear && flow.votes.slice(-2).every(v => v === r.label);
+    if (fruit && (flow.streak >= LOCK_STREAK || twoInRow) && canLock && thought) {
       showSeek(null);
       hideReveal();
       flow.id = r.label; flow.isNew = flow.candNew; flow.miss = 0; flow.score = r.score;
@@ -1109,7 +1114,7 @@ async function liveLoop() {
       }
     }
     // pe WebGPU analiza durează puțin: verificăm mai des, ca fructul să fie găsit imediat
-    const wait = (local.backend?.device === "webgpu" ? 300 : 450) - (performance.now() - t0);
+    const wait = (local.backend?.device === "webgpu" ? 120 : 150) - (performance.now() - t0);
     if (wait > 0) await new Promise(r => setTimeout(r, wait));
   }
 }
