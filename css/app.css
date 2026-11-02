@@ -1185,3 +1185,14 @@ footer.site-foot .foot-bottom { display: flex; flex-wrap: wrap; justify-content:
   footer.site-foot .foot-brand { grid-column: 1 / -1; }
 }
 footer.site-foot .brand { color: var(--ink); }
+
+/* ---------------- Emblema și subsolul (versiunea finală) ---------------- */
+.logo { width: 40px; height: 40px; border-radius: 12px; background: none; box-shadow: none; display: block;
+  filter: drop-shadow(0 6px 14px rgba(123, 92, 255, .45)); transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.logo::after { content: none; }
+.brand:hover .logo { transform: rotate(-8deg) scale(1.08); }
+.brand { gap: 11px; font-size: 21px; }
+.brand b { background: linear-gradient(90deg, #FF6FA8, #FFB547 55%, #FFE27A); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 900; }
+footer.site-foot { padding: 28px 0 32px; background: none; }
+footer.site-foot .foot-bottom { display: block; text-align: center; margin: 0; padding: 0; border: 0; font-size: 13.5px; color: var(--dim); }
+@media (prefers-reduced-motion: reduce) { .logo { transition: none; } }

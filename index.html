@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>FruitAI — nutriție în realitate augmentată</title>
+<title>FruitAI — descoperă fructele în 3D</title>
+<link rel="icon" type="image/svg+xml" href="img/logo.svg">
 <meta name="description" content="Îndreaptă camera spre un fruct. FruitAI îl recunoaște direct în browser și îi ancorează în imagine numele în română și engleză, împreună cu vitaminele lui.">
 <meta name="theme-color" content="#06080A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,14 +18,13 @@
 
 <header class="nav">
   <div class="container nav-in">
-    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><span class="logo" aria-hidden="true"></span><span>Fruit<b>AI</b></span></a>
+    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><img class="logo" src="img/logo.svg" alt="" width="40" height="40"><span>Fruit<b>AI</b></span></a>
     <nav class="nav-links" aria-label="Secțiuni">
-      <a href="#scanner">Scanner</a>
-      <a href="#catalog">Catalog</a>
-      <a href="#cum">Tehnologie</a>
-      <a href="#ambient">Ambient</a>
-      <a href="#ar-sec">AR</a>
-      <a href="#beneficii">Beneficii</a>
+      <a href="#scanner">Scanează</a>
+      <a href="#catalog">Colecția mea</a>
+      <a href="#ar-sec">Lumea 3D</a>
+      <a href="#cum">Cum funcționează</a>
+      <a href="#beneficii">De ce FruitAI</a>
     </nav>
     <div class="nav-right">
       <button type="button" class="star-pill" id="starPill" aria-label="Steluțele și colecția mea"><span aria-hidden="true">⭐</span><b>0</b></button>
@@ -107,7 +107,7 @@
   <section class="block" id="scanner">
     <div class="container">
       <div class="sec-head reveal">
-        <div class="eyebrow">Scanner AR</div>
+        <div class="eyebrow">Scanează un fruct</div>
         <h2>Arată-i un fruct. <em>Restul apare peste imagine.</em></h2>
         <p>Pornește camera pentru modul AR live sau încarcă o fotografie. Eticheta urmărește fructul în cadru, iar senzorii ambientali îți spun ce să ajustezi ca rezultatul să fie bun.</p>
       </div>
@@ -209,7 +209,7 @@
   <section class="block" id="catalog">
     <div class="container">
       <div class="sec-head reveal">
-        <div class="eyebrow">Colecția ta</div>
+        <div class="eyebrow">Colecția mea</div>
         <h2>Fructele tale, <em>pe măsură ce le descoperi.</em></h2>
         <p>Fiecare fruct pe care îl găsești cu camera apare aici, cu fișa lui: vitamine, minerale și o curiozitate. Restul sunt încă ascunse. Câte poți găsi?</p>
       </div>
@@ -230,14 +230,14 @@
     <div class="container">
       <div class="sec-head reveal">
         <div class="eyebrow">Cum funcționează</div>
-        <h2>De la un cadru de cameră la <em>o etichetă ancorată</em>, în sub o secundă.</h2>
-        <p>Două modele de vedere artificială rulează în browserul tău prin transformers.js, cu WebGPU acolo unde există și WebAssembly în rest. Le descarci o singură dată, apoi rămân în cache.</p>
+        <h2>Arăți fructul, <em>FruitAI îl recunoaște</em> în câteva clipe.</h2>
+        <p>Inteligența artificială se uită la imagine, găsește fructul, îl recunoaște dintre zeci de fructe și îl transformă într-un fruct 3D cu vitaminele lui.</p>
       </div>
       <div class="pipe reveal">
-        <div class="node"><span class="n">01</span><b>Cadrul</b><small>La fiecare 0,8 s, un cadru din cameră sau fotografia ta.</small></div>
-        <div class="node"><span class="n">02</span><b>Detectare</b><small>OWL-ViT localizează fructul și separă mâini, fețe, persoane.</small></div>
-        <div class="node"><span class="n">03</span><b>Identificare</b><small>CLIP alege dintre <span data-count="scannable">—</span> de fructe și <span data-count="nonfruits">—</span> de obiecte care nu sunt fructe.</small></div>
-        <div class="node"><span class="n">04</span><b>Ancorare AR</b><small>Numele și vitaminele se prind de fiecare fruct și îl urmăresc în cadru.</small></div>
+        <div class="node"><span class="n">01</span><b>Găsește</b><small>O ramă galbenă arată imediat unde e fructul pe ecran.</small></div>
+        <div class="node"><span class="n">02</span><b>Recunoaște</b><small>Alege fructul potrivit dintre <span data-count="scannable">—</span> de fructe.</small></div>
+        <div class="node"><span class="n">03</span><b>Prinde viață</b><small>Fructul apare în 3D și îl poți învârti cu degetul.</small></div>
+        <div class="node"><span class="n">04</span><b>Te învață</b><small>Numele în română și engleză și vitaminele lui.</small></div>
       </div>
       <div class="grid-3">
         <div class="card reveal">
@@ -247,26 +247,25 @@
         </div>
         <div class="card reveal">
           <div class="ico m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="5"/></svg></div>
-          <h3>Rezultat stabil</h3>
-          <p>Un rezultat rămâne afișat 4 secunde, iar eticheta se mută lin după fruct, fără să sară de la un cadru la altul.</p>
+          <h3>Rapid și precis</h3>
+          <p>Găsește fructul pe loc, chiar și când e ținut în mână, și îl recunoaște în câteva clipe.</p>
         </div>
         <div class="card reveal">
           <div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M7 15V9M12 15V5M17 15v-3"/></svg></div>
-          <h3>Mai multe fructe deodată</h3>
-          <p>Până la trei fructe din același cadru primesc fiecare eticheta lui, cu numele în română și engleză și vitaminele.</p>
+          <h3>Fructe reale, poze și desene</h3>
+          <p>Merge cu un fruct adevărat, cu o fotografie, cu o imagine dintr-o carte sau cu un desen.</p>
         </div>
       </div>
-      <p class="tech-note">Modele: Xenova/owlvit-base-patch32 · Xenova/clip-vit-base-patch32 · se descarcă o singură dată, apoi pornesc din memoria browserului</p>
     </div>
   </section>
 
-  <!-- ================= INTELIGENȚĂ AMBIENTALĂ ================= -->
+  <!-- ================= CAMERA ISTEAȚĂ ================= -->
   <section class="block" id="ambient">
     <div class="container">
       <div class="sec-head reveal">
-        <div class="eyebrow">Inteligență ambientală</div>
-        <h2>Aplicația <em>citește mediul</em> înainte să citească fructul.</h2>
-        <p>Odată cu fiecare cadru, FruitAI măsoară lumina, claritatea, mișcarea și distanța față de fruct. Folosește aceste semnale ca să te ghideze, ca să ajusteze contrastul etichetei și ca să nu ruleze modelele degeaba. Valorile de mai jos sunt cele măsurate acum, de la camera ta.</p>
+        <div class="eyebrow">Camera isteață</div>
+        <h2>Te ajută <em>să arăți fructul perfect.</em></h2>
+        <p>FruitAI verifică lumina, claritatea, mișcarea și distanța și îți spune pe loc ce să faci: să te apropii, să ții camera nemișcată sau să cauți mai multă lumină.</p>
       </div>
       <div class="grid-4">
         <div class="card amb reveal">
@@ -305,9 +304,9 @@
   <section class="block" id="ar-sec">
     <div class="container">
       <div class="sec-head reveal">
-        <div class="eyebrow">Realitate augmentată</div>
-        <h2>Două moduri AR, <em>amândouă funcționale.</em></h2>
-        <p>Modul din cameră merge în orice browser modern cu cameră. Modul spațial folosește WebXR și apare doar pe dispozitivele care îl suportă. Starea de mai jos e verificată pe dispozitivul tău.</p>
+        <div class="eyebrow">Lumea 3D</div>
+        <h2>Fructul tău, în 3D. <em>Chiar pe masa ta.</em></h2>
+        <p>Fructul 3D apare peste imaginea camerei și îl învârți și îl mărești cu degetele. Pe telefoanele compatibile îl poți pune chiar pe masă și te poți plimba în jurul lui.</p>
       </div>
       <div class="grid-2">
         <div class="card reveal">
@@ -344,7 +343,7 @@
   <section class="block" id="beneficii">
     <div class="container">
       <div class="sec-head reveal">
-        <div class="eyebrow">Beneficii</div>
+        <div class="eyebrow">De ce FruitAI</div>
         <h2>Utilă în bucătărie, <em>la piață</em> și la cumpărături.</h2>
       </div>
       <div class="grid-4">
@@ -389,29 +388,7 @@
 </main>
 
 <footer class="site-foot">
-  <div class="container foot-in">
-    <div class="foot-brand">
-      <a class="brand" href="#top"><span class="logo" aria-hidden="true"></span><span>Fruit<b>AI</b></span></a>
-      <p>Fructele prind viață: copiii le descoperă cu camera, le învârt în 3D și află ce vitamine ascund, în română și engleză.</p>
-      <button class="btn primary sm" type="button" data-start><span>Încearcă acum</span></button>
-    </div>
-    <nav class="foot-col" aria-label="Explorează">
-      <h4>Explorează</h4>
-      <a href="#scanner">Scanner</a>
-      <a href="#catalog">Colecția ta</a>
-      <a href="#ar-sec">Realitate augmentată</a>
-    </nav>
-    <nav class="foot-col" aria-label="Învață">
-      <h4>Învață</h4>
-      <a href="#pasi">Cum te joci</a>
-      <a href="#beneficii">Beneficii</a>
-      <button type="button" data-quiz>Joacă un quiz</button>
-    </nav>
-  </div>
-  <div class="container foot-bottom">
-    <span>© 2026 FruitAI. Toate drepturile rezervate.</span>
-    <span>Făcut cu 🍓 pentru copiii curioși</span>
-  </div>
+  <div class="container foot-bottom">© 2026 FruitAI. Toate drepturile rezervate.</div>
 </footer>
 
 <div id="xrOverlay" hidden>
