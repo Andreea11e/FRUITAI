@@ -453,5 +453,8 @@
  "Pe masă": "On the table",
  "Se pune fructul pe masă…": "Putting the fruit on the table…",
  "Fructul e pe masă": "The fruit is on the table",
- "Camera nu a putut porni. Verifică permisiunea pentru cameră.": "The camera couldn't start. Check the camera permission."
+ "Camera nu a putut porni. Verifică permisiunea pentru cameră.": "The camera couldn't start. Check the camera permission.",
+ "Pornește camera": "Start the camera",
+ "Scanează primul fruct": "Scan your first fruit",
+ "Fructul 3D apare peste imaginea camerei. Îl învârți și îl mărești cu degetele, apoi îl poți pune pe masă sau pe podea.": "The 3D fruit appears over the camera image. Spin it and zoom it with your fingers, then put it on the table or on the floor."
 }

@@ -350,7 +350,7 @@ function renderAmbient() {
     $("a" + key + "Dot").className = info ? info[1] : "";
     $("a" + key + "Bar").style.width = info ? clamp(value / max * 100, 2, 100) + "%" : "0%";
   };
-  const idle = state.live ? "Se măsoară…" : (state.frameShown ? "—" : "Camera oprită");
+  const idle = state.live ? "Se măsoară…" : (state.frameShown ? "—" : "Pornește camera");
   card("Light", L, a.light, 1, idle);
   card("Sharp", S, Math.sqrt(a.sharp || 0), Math.sqrt(0.02), idle);
   card("Motion", M, a.motion || 0, 0.12, state.live ? "Se măsoară…" : "Doar în modul live");
@@ -1480,7 +1480,7 @@ async function boot() {
     // fără cameră live, fotografia devine acțiunea principală
     $("btnPhoto").classList.add("primary");
   }
-  el.hint.textContent = "Modelele AI pornesc singure la deschiderea paginii. Prima dată se descarcă, apoi rămân salvate în browser. Imaginile nu pleacă nicăieri.";
+  el.hint.textContent = "Cel mai bine merge cu un singur fruct, bine luminat, pe un fundal simplu.";
   checkSupport();
   if (state.pendingStart && !el.btnCamera.hidden && !state.live) startCamera();
   // Pornim modelele imediat, în fundal: când pui o imagine, analiza începe pe loc

@@ -117,6 +117,8 @@ export function mountCatalogUI(catalog, opts) {
     const total = catalog.recognizable.length;
     meta.textContent = mine.length ? t(useDe(total) ? "Ai descoperit {a} din {b} de fructe" : "Ai descoperit {a} din {b} fructe", { a: mine.length, b: total })
       : t("Încă nu ai descoperit niciun fruct. Arată camerei unul și apare aici!");
+    meta.classList.toggle("cat-start", !mine.length);
+    const cta = document.getElementById("catCta"); if (cta) cta.hidden = !!mine.length;
   }
   sync();
   // colecția crește când descoperi un fruct nou (cu camera sau dintr-o poză)

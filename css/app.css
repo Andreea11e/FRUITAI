@@ -1282,3 +1282,51 @@ footer.site-foot .foot-bottom { display: block; text-align: center; margin: 0; p
 }
 .fruit-reveal.portrait .rv-actions { gap: 8px; }
 .fruit-reveal.portrait .rv-actions .dbtn.big { min-height: 46px; font-size: 14px; padding: 0 12px; }
+
+/* ================= Finisaj profesional ================= */
+/* un singur font pentru interfață (fără font de mașină de scris pentru etichete), cifre aliniate */
+:root { --f-mono: var(--f-sans); }
+body { font-feature-settings: "tnum" 0; }
+.cat-meta, .support, .panel h4 small, .nrow .v, .nrow .dv, .dvh, .portion output { font-variant-numeric: tabular-nums; }
+
+/* titlurile secțiunilor: o singură culoare, fără cuvinte-curcubeu; gradientul rămâne doar în titlul principal */
+.sec-head h2 em, .final h2 em { background: none; -webkit-text-fill-color: currentColor; color: inherit; font-style: normal; }
+.sec-head h2 { color: #F5F3FF; }
+.sec-head p { color: #B4AED3; }
+
+/* eticheta de deasupra titlului: text normal, nu majuscule spațiate */
+.sec-head .eyebrow { font: 700 15px/1.2 "Nunito", var(--f-sans); letter-spacing: 0; text-transform: none; color: var(--lime); display: inline-flex; align-items: center; gap: 8px; }
+.sec-head .eyebrow::before { content: ""; width: 18px; height: 3px; border-radius: 3px; background: currentColor; }
+.kicker { font: 600 13.5px/1.2 var(--f-sans); letter-spacing: 0; }
+.r-top, .r-block h3, .hcard .k, .ar-card .k, .sh-hero .k { text-transform: none; letter-spacing: 0; font-family: var(--f-sans); }
+.r-block h3 { font-size: 13px; font-weight: 600; }
+.hcard .k, .ar-card .k { font-size: 12px; font-weight: 600; }
+.r-top { font-size: 13px; }
+.live-badge { font-family: var(--f-sans); letter-spacing: .04em; }
+.benefit .num em { font-family: "Nunito", var(--f-sans); font-weight: 800; font-style: normal; color: var(--lime); }
+.benefit .num { font-family: "Nunito", var(--f-sans); font-weight: 900; }
+
+/* bara de sus: mai aerisită, butonul pe un singur rând */
+.nav-right .nav-cta { white-space: nowrap; }
+header.nav { border-bottom: 1px solid rgba(255,255,255,.06); }
+
+/* scanner: starea modelelor sub cameră, fără butoane gri dezactivate */
+.scan-foot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.scan-foot .hint { margin: 0; }
+.scan-foot .status span { max-width: none; white-space: normal; }
+.controls .btn:disabled { display: none; }
+.lower:has(#recentEmpty:not([hidden])) { display: none; }
+
+/* camera isteață: valoarea live mai discretă */
+.amb .val { font: 700 16px/1.2 "Nunito", var(--f-sans); letter-spacing: 0; color: var(--muted); }
+.amb .val:has(i.ok), .amb .val:has(i.warn), .amb .val:has(i.bad) { color: var(--ink); }
+
+/* colecția goală: un loc care te invită să începi */
+.cat-meta.cat-start { margin: 0; padding: 40px 24px 18px; text-align: center; font: 700 17px/1.4 "Nunito", var(--f-sans); color: var(--ink);
+  border: 1.5px dashed rgba(255,255,255,.16); border-bottom: 0; border-radius: 24px 24px 0 0; background: rgba(255,255,255,.025); }
+.cat-meta.cat-start::before { content: "🍎  🍌  🍊  🥝  🍇"; display: block; font-size: 30px; letter-spacing: 4px; margin-bottom: 14px; filter: grayscale(1) brightness(.75); opacity: .55; }
+.cat-cta { display: flex; margin: 0 auto; }
+.cat-meta.cat-start + .cat-cta { width: 100%; max-width: none; justify-content: center; border-radius: 0 0 24px 24px; margin: 0; min-height: 0; padding: 0 0 36px;
+  background: rgba(255,255,255,.025); border: 1.5px dashed rgba(255,255,255,.16); border-top: 0; box-shadow: none; color: var(--lime); }
+.cat-meta.cat-start + .cat-cta:hover { background: rgba(255,255,255,.04); transform: none; }
+.cat-cta[hidden] { display: none; }
