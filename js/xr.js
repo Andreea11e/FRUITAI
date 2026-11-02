@@ -143,44 +143,47 @@ export async function startSession(fruit, nutrients, ui) {
     ui.onNutrient?.(n);
   }
 
-  // ---------- gesturi pe overlay: un deget = rotire, două degete = mărire / micșorare ----------
-  let touch0 = null, pinch0 = 0, scale0 = 1, moved = 0;
+  // ---------- gesturi, fără butoane ----------
+  // un deget: trage fructul pe masă / podea (îl urmează sub deget)
+  // două degete: apropie / depărtează = mărește / micșorează; răsucește = întoarce fructul
+  let pinch0 = 0, scale0 = 1, ang0 = 0, yaw0 = 0, moved = 0, start = null;
   const ov = ui.overlay;
+  const two = e => {
+    const [a, b] = e.touches;
+    return { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), ang: Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) };
+  };
   const onStart = e => {
     if (e.target.closest("button, .xr-card")) return;
     moved = 0;
-    if (e.touches.length === 2) { pinch0 = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); scale0 = st.targetScale; }
-    else touch0 = { x: e.touches[0].clientX };
+    if (e.touches.length >= 2) {
+      const g = two(e); pinch0 = g.d; ang0 = g.ang; scale0 = st.targetScale; yaw0 = st.yaw; st.dragging = false;
+    } else { start = { x: e.touches[0].clientX, y: e.touches[0].clientY }; st.dragging = false; }
   };
   const onMove = e => {
     if (!st.placed) return;
-    if (e.touches.length === 2 && pinch0) {
-      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      st.targetScale = THREE.MathUtils.clamp(scale0 * d / pinch0, 0.4, 3); moved += 20;
-    } else if (touch0) {
-      const dx = e.touches[0].clientX - touch0.x; touch0.x = e.touches[0].clientX;
-      st.yaw += dx * 0.012; moved += Math.abs(dx); st.auto = false;
+    if (e.touches.length >= 2 && pinch0) {
+      const g = two(e);
+      st.targetScale = THREE.MathUtils.clamp(scale0 * g.d / pinch0, 0.4, 3);
+      let da = g.ang - ang0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+      st.yaw = yaw0 - da; st.auto = false; moved += 20;
+    } else if (start && e.touches.length === 1) {
+      const dist = Math.hypot(e.touches[0].clientX - start.x, e.touches[0].clientY - start.y);
+      if (dist > 10) { st.dragging = true; st.auto = false; }
+      moved = Math.max(moved, dist);
     }
     if (moved > 12) st.ignoreSelectUntil = performance.now() + 400;   // a fost un gest, nu o atingere
   };
-  const onEnd = e => { if (e.touches.length < 2) pinch0 = 0; if (!e.touches.length) touch0 = null; };
+  const onEnd = e => {
+    if (e.touches.length < 2) pinch0 = 0;
+    if (!e.touches.length) { start = null; st.dragging = false; }
+  };
   ov.addEventListener("touchstart", onStart, { passive: true });
   ov.addEventListener("touchmove", onMove, { passive: true });
   ov.addEventListener("touchend", onEnd, { passive: true });
-  // atingerile pe butoane nu trebuie să plaseze fructul
+  ov.addEventListener("touchcancel", onEnd, { passive: true });
+  // atingerile pe butonul de închidere sau pe fișă nu trebuie să plaseze fructul
   const noSelect = e => { if (e.target.closest("button, .xr-card")) e.preventDefault(); };
   ov.addEventListener("beforexrselect", noSelect);
-  const onTool = e => {
-    const b = e.target.closest("[data-xr]"); if (!b) return;
-    const k = b.dataset.xr;
-    if (k === "left") { st.yaw -= Math.PI / 6; st.auto = false; }
-    else if (k === "right") { st.yaw += Math.PI / 6; st.auto = false; }
-    else if (k === "bigger") st.targetScale = Math.min(3, st.targetScale * 1.25);
-    else if (k === "smaller") st.targetScale = Math.max(0.4, st.targetScale / 1.25);
-    else if (k === "auto") { st.auto = !st.auto; b.setAttribute("aria-pressed", String(st.auto)); }
-    else if (k === "reset") { st.targetScale = 1; st.yaw = 0; st.auto = true; }
-  };
-  ui.tools?.addEventListener("click", onTool);
 
   if (ui.overlay) ui.overlay.hidden = false;
   if (ui.card) ui.card.hidden = true;
@@ -198,6 +201,10 @@ export async function startSession(fruit, nutrients, ui) {
   await renderer.xr.setSession(session);
   const viewerSpace = await session.requestReferenceSpace("viewer");
   const hitSource = await session.requestHitTestSource({ space: viewerSpace });
+  // punctul de sub deget (pentru mutarea fructului cu degetul); dacă browserul nu-l oferă, folosim centrul ecranului
+  let touchSource = null;
+  try { touchSource = await session.requestHitTestSourceForTransientInput({ profile: "generic-touchscreen" }); } catch {}
+  const target = new THREE.Vector3();
   setMsg("Mișcă încet telefonul ca să găsesc masa sau podeaua");
   setHint("Când apare cercul, atinge ecranul ca să pui fructul acolo");
 
@@ -215,12 +222,11 @@ export async function startSession(fruit, nutrients, ui) {
         if (hit) { showCard(hit.object.userData.nutrient); return; }
       }
     }
-    // 2) altfel: pune / mută fructul pe suprafața găsită
-    if (!reticle.visible) return;
+    // 2) altfel, prima atingere pune fructul pe suprafața găsită (după aceea se mută trăgându-l cu degetul)
+    if (!reticle.visible || st.placed) return;
     holder.position.setFromMatrixPosition(reticle.matrix);
-    if (!st.placed) { st.placed = true; st.appear = 0; holder.visible = true; ui.tools && (ui.tools.hidden = false); }
-    else st.appear = 0.5;
-    setHint("Trage cu un deget ca să-l rotești · două degete ca să-l mărești · atinge altă suprafață ca să-l muți · atinge o vitamină");
+    target.copy(holder.position);
+    st.placed = true; st.appear = 0; holder.visible = true;
   });
 
   const onClose = () => session.end().catch(() => {});
@@ -234,11 +240,22 @@ export async function startSession(fruit, nutrients, ui) {
       const p = hits.length ? hits[0].getPose(renderer.xr.getReferenceSpace()) : null;
       reticle.visible = !!p;
       if (p) reticle.matrix.fromArray(p.transform.matrix);
-      if (!st.placed) setMsg(p ? "Am găsit o suprafață! Atinge ecranul" : "Caut masa sau podeaua…");
-      else setMsg(fruit.ro + " · " + fruit.en);
+      reticle.visible = !!p && !st.placed;               // după plasare, cercul nu mai e necesar
+      // mutare cu degetul: fructul merge spre punctul de pe masă / podea de sub deget
+      if (st.placed && st.dragging) {
+        let q = null;
+        if (touchSource) {
+          const tr = frame.getHitTestResultsForTransientInput(touchSource);
+          const r0 = tr.find(r => r.results.length)?.results[0];
+          q = r0 ? r0.getPose(renderer.xr.getReferenceSpace()) : null;
+        }
+        q = q || p;
+        if (q) target.setFromMatrixPosition(m4.fromArray(q.transform.matrix));
+      }
     }
     pulse.scale.setScalar(1 + (tt % 1.2) / 1.2 * 0.6); pulse.material.opacity = 0.8 * (1 - (tt % 1.2) / 1.2);
     if (st.placed) {
+      holder.position.lerp(target, 0.25);
       st.appear = Math.min(1, st.appear + dt / 0.9);
       const e = st.appear, elastic = e >= 1 ? 1 : 1 - Math.pow(2, -10 * e) * Math.cos(e * Math.PI * 4.2);
       st.scale += (st.targetScale - st.scale) * 0.15;
@@ -259,9 +276,9 @@ export async function startSession(fruit, nutrients, ui) {
   session.addEventListener("end", () => {
     renderer.setAnimationLoop(null);
     try { hitSource.cancel(); } catch {}
+    try { touchSource?.cancel(); } catch {}
     ui.close?.removeEventListener("click", onClose);
-    ui.tools?.removeEventListener("click", onTool);
-    ov.removeEventListener("touchstart", onStart); ov.removeEventListener("touchmove", onMove); ov.removeEventListener("touchend", onEnd);
+    ov.removeEventListener("touchstart", onStart); ov.removeEventListener("touchmove", onMove); ov.removeEventListener("touchend", onEnd); ov.removeEventListener("touchcancel", onEnd);
     ov.removeEventListener("beforexrselect", noSelect);
     disposeObject(scene);
     scene.environment?.dispose?.(); pmrem.dispose(); renderer.dispose();

@@ -740,9 +740,9 @@ function squareOf(src, box) {
 // Rama „Caut fructul…” arată imediat unde a găsit aplicația obiectul
 const seekEl = document.createElement("div");
 seekEl.className = "seek-box"; seekEl.hidden = true;
-seekEl.innerHTML = `<i></i><i></i><i></i><i></i><span>Caut fructul…</span>`;
+seekEl.innerHTML = `<i></i><i></i><i></i><i></i>`;
 el.stage.appendChild(seekEl);
-function seekLabel(text) { const sp = seekEl.querySelector("span"); if (sp.dataset.k !== text) { sp.dataset.k = text; sp.textContent = t(text); } }
+function seekLabel() { /* rama nu mai are text */ }
 function showSeek(box) {
   const m = box && mediaRect();
   if (!m) { seekEl.hidden = true; return; }
@@ -1197,7 +1197,7 @@ async function startXR() {
     setStatus("Se pornește AR spațial…", "busy");
     const xr = await import("./xr.js");   // relativ la js/app.js
     await xr.startSession(f, catalog.nutrientsFor(f.id), {
-      overlay, msg: null, hint: null, close: $("xrClose"), tools: $("xrTools"), card: $("xrCard"), t,
+      overlay, msg: null, hint: null, close: $("xrClose"), tools: null, card: $("xrCard"), t,
       onNutrient: n => window.dispatchEvent(new CustomEvent("fruitai:nutrient", { detail: n.key })),
       onEnd: () => { state.xrActive = false; overlay.hidden = true; updateXRButton(); setStatus("Sesiunea AR spațial s-a încheiat", "ok"); }
     });
