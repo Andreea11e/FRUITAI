@@ -1,0 +1,30 @@
+name: Candidați modele 3D după nume (Objaverse)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [scripts/find-objaverse-names.py, .github/workflows/objaverse-names.yml]
+permissions:
+  contents: write
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install objaverse==0.1.7
+      - name: Caută și convertește
+        run: python scripts/find-objaverse-names.py | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Publică pe ramura candidates2
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan candidates2
+          git rm -rq --cached .
+          git add candidates
+          git commit -qm "Candidați Objaverse (după nume)"
+          git push -f origin candidates2
