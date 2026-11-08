@@ -1,6 +1,6 @@
 // FruitAI — jocul: provocări (fiecare reușită = o stea), insigne și quiz-uri.
 // Toate întrebările sunt generate din datele verificate ale catalogului (fructe, vitamine, beneficii),
-// deci nu se inventează nimic. Progresul începe de la zero la fiecare deschidere a paginii, ca și colecția.
+// deci nu se inventează nimic. Progresul se păstrează pe telefon; „Începe de la zero” îl șterge.
 
 import { sound } from "./sound.js";
 import { collection, nIcon } from "./discovery.js";
@@ -23,9 +23,9 @@ const BADGES = [
 ];
 
 let catalog = null, s = null, ui = {};
-// progresul ține cât e deschisă pagina (ca și colecția de fructe): fără date păstrate în browser
-function load() { try { localStorage.removeItem(KEY); } catch {} return null; }
-function save() {}
+// progresul (stele, insigne, provocarea curentă) se păstrează pe acest telefon, ca și colecția de fructe
+function load() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch { return null; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} }
 const kidFruits = () => { const k = catalog.fruits.filter(f => f.emoji && catalog.hasNutrition(f.id)); return k.length >= 6 ? k : catalog.fruits; };
 // fructele descoperite cu camera (cu fișă nutrițională): quiz-ul pune întrebări DOAR despre ele
 const foundFruits = () => catalog.fruits.filter(f => collection.has(f.id) && catalog.hasNutrition(f.id));
@@ -52,7 +52,7 @@ function progress(n, why, icon = "✨") {
 }
 /** Stelele vin DOAR din provocări: fiecare provocare reușită = o stea. */
 function addStar() {
-  s.stars++; paintStars();
+  s.stars++; save(); paintStars();
   ui.pill?.classList.remove("bump"); void ui.pill?.offsetWidth; ui.pill?.classList.add("bump");
 }
 function paintStars() {
@@ -200,7 +200,8 @@ function openCollection() {
     <h4>${esc(t("Fructele descoperite"))}</h4>
     ${found.length ? `<div class="gc-fruits">${found.map(f => `<button type="button" class="gf" data-id="${esc(f.id)}">${f.emoji ? `<span class="qe">${esc(f.emoji)}</span>` : fruitArt(f, { size: 48 })}<span>${esc(names(f)[0])}</span></button>`).join("")}</div>`
       : `<p class="gc-empty">${esc(t("Încă nu ai descoperit niciun fruct cu camera. Scanează unul ca să-l adaugi aici!"))}</p>`}
-    <div class="gc-btns"><button type="button" class="dbtn big primary" data-g="quiz">🎯 ${esc(t("Joacă un quiz"))}</button></div>`;
+    <div class="gc-btns"><button type="button" class="dbtn big primary" data-g="quiz">🎯 ${esc(t("Joacă un quiz"))}</button>
+      <button type="button" class="dbtn big gc-reset" data-g="reset">↺ ${esc(t("Începe de la zero"))}</button></div>`;
   ui.body.querySelectorAll(".gf").forEach(b => b.onclick = () => { ui.dlg.close(); ui.openFruit(b.dataset.id); });
 }
 
@@ -223,6 +224,11 @@ export function initGame(cat, opts) {
     sound.tick();
     const k = b.dataset.g;
     if (k === "close") ui.dlg.close(); else if (k === "next") nextQuestion(); else if (k === "quiz") openQuiz(); else if (k === "collection") openCollection();
+    else if (k === "reset") {
+      // două atingeri, ca să nu se șteargă din greșeală
+      if (!b.dataset.sure) { b.dataset.sure = "1"; b.innerHTML = `↺ ${esc(t("Sigur? Apasă din nou"))}`; setTimeout(() => { if (b.isConnected) { delete b.dataset.sure; b.innerHTML = `↺ ${esc(t("Începe de la zero"))}`; } }, 3000); return; }
+      collection.reset();
+    }
     else if (k === "scan") { ui.dlg.close(); document.querySelector(".hero [data-start]")?.click(); }
   });
   document.querySelectorAll("[data-quiz]").forEach(b => b.addEventListener("click", () => { sound.tick(); openQuiz(); }));

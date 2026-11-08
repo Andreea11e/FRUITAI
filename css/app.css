@@ -1384,3 +1384,7 @@ header.nav { border-bottom: 1px solid rgba(255,255,255,.06); }
 @keyframes tblGlow { 50%, 80% { opacity: 1; } 0%, 20%, 100% { opacity: .35; } }
 @media (prefers-reduced-motion: reduce) { .tbl-phone, .tbl-surface { animation: none; } }
 .challenge-chip .cc-star { flex: none; font: 800 12px "Nunito", var(--f-sans); color: #1A1033; background: #FFE27A; padding: 3px 8px; border-radius: 999px; }
+
+.cat-reset-row { display: flex; justify-content: center; margin-top: 18px; }
+.cat-reset, .gc-reset { opacity: .8; }
+.cat-reset[hidden] { display: none; }

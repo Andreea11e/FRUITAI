@@ -11,15 +11,20 @@ const nkid = n => getLang() === "en" ? (n.kid_en || n.kid) : n.kid;
 const bname = b => getLang() === "en" ? (b.en || b.ro) : b.ro;
 
 const KEY = "fruitai.discovered";
-/** Colecția fructelor descoperite cu scannerul (păstrată doar în acest browser). */
-// Colecția începe goală la fiecare deschidere a paginii și se umple doar cu fructele descoperite acum
-// (ținută în memorie; ștergem și colecțiile salvate de versiunile anterioare).
-try { localStorage.removeItem(KEY); } catch {}
-const found = new Set();
+/** Colecția fructelor descoperite cu camera. Se păstrează pe acest telefon (în browser, nu pe internet);
+ *  butonul „Începe de la zero” din „Colecția mea” o golește. */
+const found = new Set((() => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } })());
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify([...found])); } catch {} };
 export const collection = {
   all() { return new Set(found); },
   has(id) { return found.has(id); },
-  add(id) { const isNew = !found.has(id); found.add(id); return isNew; }
+  add(id) { const isNew = !found.has(id); found.add(id); if (isNew) persist(); return isNew; },
+  /** Șterge tot progresul (colecția, stelele, insignele) și pornește pagina din nou. */
+  reset() {
+    found.clear();
+    try { ["fruitai.discovered", "fruitai.game"].forEach(k => localStorage.removeItem(k)); } catch {}
+    location.reload();
+  }
 };
 
 // Personajul Vita: un mugure prietenos (desen original, SVG)

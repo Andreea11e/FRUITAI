@@ -4,6 +4,7 @@
 
 import { fruitArt } from "./fruit-art.js";
 import { t, getLang } from "./i18n.js";
+import { collection } from "./discovery.js";
 
 const $ = id => document.getElementById(id);
 const fmt = v => {
@@ -119,10 +120,17 @@ export function mountCatalogUI(catalog, opts) {
       : t("Încă nu ai descoperit niciun fruct. Arată camerei unul și apare aici!");
     meta.classList.toggle("cat-start", !mine.length);
     const cta = document.getElementById("catCta"); if (cta) cta.hidden = !!mine.length;
+    const rs = document.getElementById("catReset"); if (rs) rs.hidden = !mine.length;
   }
   sync();
   // colecția crește când descoperi un fruct nou (cu camera sau dintr-o poză)
   window.addEventListener("fruitai:discovered", () => { paintPlaceholder(); paintFilters(); sync(); });
+  // „Începe de la zero”: două atingeri, ca să nu se șteargă colecția din greșeală
+  const rs = document.getElementById("catReset");
+  rs?.addEventListener("click", () => {
+    if (!rs.dataset.sure) { rs.dataset.sure = "1"; rs.textContent = "↺ " + t("Sigur? Apasă din nou"); setTimeout(() => { delete rs.dataset.sure; rs.textContent = "↺ " + t("Începe de la zero"); }, 3000); return; }
+    collection.reset();
+  });
   window.addEventListener("fruitai:lang", () => { paintPlaceholder(); paintFilters(); sync(); });
 }
 
