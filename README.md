@@ -88,7 +88,8 @@ Dacă fructul nu e scos din cadru în 6 secunde, apare și butonul „Arată-mi-
 - **AR pe tot ecranul:** camera și etichetele ocupă tot ecranul, cu buton de captură și de ieșire (Esc pe desktop).
 - **Salvează captura:** descarcă imaginea cu toate încadrările și etichetele, la rezoluția sursei.
 - **AR spațial (WebXR):** pe dispozitivele compatibile (ex. Chrome pe Android cu ARCore), telefonul găsește masa sau podeaua și pui acolo **modelul 3D al fructului**, cu numele în română și engleză deasupra și nutrienții pe orbită. Îl rotești cu un deget, îl scalezi cu două, îl muți atingând altă suprafață; atingi un nutrient și apare fișa bilingvă. Butoanele AR spațial apar doar dacă browserul suportă `immersive-ar`; altfel secțiunea AR recomandă Camera AR.
-- **Fructul pe masă pe Android (Samsung etc.):** se deschide aplicația de AR a Google (Scene Viewer) cu modelul fructului din `data/ar/<fruct>.glb`; ea găsește masa, pune fructul pe ea și permite mutarea, mărirea și rotirea cu degetele. Modelele se regenerează cu `scripts/export-ar.py` (vezi comentariul din script).
+- **Fructul pe masă pe Android (Samsung etc.):** prin `<model-viewer>` de la Google (`js/ar-android.js`): AR în pagină (WebXR) în Chrome sau aplicația Google de AR în Samsung Internet; telefonul găsește masa, iar fructul se mută, se mărește și se rotește cu degetele. Fără AR pe telefon, fructul apare peste imaginea camerei.
+- **Fructe scanate după fructe reale:** măr, banană, pară, lămâie, lime, kiwi, rodie, avocado (Poly Haven, CC0), descărcate de `scripts/fetch-real-models.mjs` în `data/models/`; restul fructelor sunt modele generate.
 - **Fructul pe masă pe orice telefon:** dacă dispozitivul nu are WebXR sau AR Quick Look (ori acestea nu pornesc), fructul 3D e pus pe masă peste imaginea camerei, cu umbră sub el; giroscopul ține fructul pe loc când miști telefonul. Un deget îl mută, două degete îl măresc și îl rotesc, o atingere pe o vitamină deschide fișa ei.
 
 ### Inteligență ambientală

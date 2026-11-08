@@ -16,6 +16,8 @@ try {
   if (r.ok) REAL = (await r.json()).models || {};
 } catch {}
 export const hasRealModel = id => !!REAL[id];
+/** Adresa modelului scanat (mărime reală, în metri) sau null. */
+export const realModelURL = id => REAL[id] ? new URL(`../data/models/${REAL[id].file}`, import.meta.url).href : null;
 const gltf = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const realCache = new Map();
 /** Descarcă (o singură dată) și pregătește modelul real: centrat, încadrat într-un cub de latură 2, ca cel procedural. */
