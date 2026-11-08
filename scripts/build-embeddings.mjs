@@ -192,7 +192,21 @@ for (const RAW of [0.1, 0.2, 0.3]) for (const REL of [0.45, 0.55, 0.65]) {
   for (const v of negEmb) { const d = predict(v, Ptrain, best.alpha, best.beta); if (isFruit(d) && d[0][1] >= REL && d[0][2] >= RAW) fp++; }
   thr.push(`brut ≥ ${RAW}, relativ ≥ ${REL}: fructe recunoscute corect ${pc(ok / n)} · alarme false ${(fp / Math.max(1, negEmb.length) * 100).toFixed(0)}% (${fp}/${negEmb.length} poze fără fruct)`);
 }
-const report2 = report + "\n\nPraguri (cu fotografii):\n" + thr.join("\n");
+// pe fiecare fruct: cât de des e recunoscut din prima (pe toate fotografiile lui) și cu ce e confundat
+const perFruit = fruitIdx.map(id => {
+  const L = imgEmb[id] || []; if (!L.length) return null;
+  let ok = 0, okText = 0; const conf = new Map();
+  for (const v of L) {
+    const d = predict(v, Ptrain, best.alpha, best.beta), dt = predict(v, null, 0, 0);
+    if (d[0][0] === id) ok++; else conf.set(d[0][0], (conf.get(d[0][0]) || 0) + 1);
+    if (dt[0][0] === id) okText++;
+  }
+  const top = [...conf.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, n]) => `${k}×${n}`).join(", ");
+  return { id, n: L.length, ok: ok / L.length, okText: okText / L.length, top };
+}).filter(Boolean).sort((a, b) => a.ok - b.ok);
+const report3 = "Pe fiecare fruct (toate fotografiile; corect cu prototipuri / doar text; confundat cu):\n" +
+  perFruit.map(r => `${r.id.padEnd(15)} ${String(r.n).padStart(3)} poze  ${pc(r.ok).padStart(4)} / ${pc(r.okText).padStart(4)}  ${r.top}`).join("\n");
+const report2 = report + "\n\nPraguri (cu fotografii):\n" + thr.join("\n") + "\n\n" + report3;
 console.log("\n" + grid.join("\n") + "\n\n" + report2);
 await writeFile(new URL("../scripts/eval-report.txt", import.meta.url), report2 + "\n\n" + grid.join("\n") + "\n");
 
