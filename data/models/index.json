@@ -2,9 +2,51 @@
  "models": {
   "avocado": {
    "file": "avocado.glb",
-   "source": "Khronos glTF Sample Assets – Avocado (test)",
+   "source": "Poly Haven – Food Avocado 01",
    "license": "CC0 1.0",
-   "url": ""
+   "url": "https://polyhaven.com/a/food_avocado_01"
+  },
+  "apple": {
+   "file": "apple.glb",
+   "source": "Poly Haven – Food Apple 01",
+   "license": "CC0 1.0",
+   "url": "https://polyhaven.com/a/food_apple_01"
+  },
+  "banana": {
+   "file": "banana.glb",
+   "source": "Poly Haven – Bananas",
+   "license": "CC0 1.0",
+   "url": "https://polyhaven.com/a/bananas"
+  },
+  "pear": {
+   "file": "pear.glb",
+   "source": "Poly Haven – Pears Asian 01",
+   "license": "CC0 1.0",
+   "url": "https://polyhaven.com/a/food_pears_asian_01"
+  },
+  "lemon": {
+   "file": "lemon.glb",
+   "source": "Poly Haven – Lemon",
+   "license": "CC0 1.0",
+   "url": "https://polyhaven.com/a/lemon"
+  },
+  "lime": {
+   "file": "lime.glb",
+   "source": "Poly Haven – Food Lime 01",
+   "license": "CC0 1.0",
+   "url": "https://polyhaven.com/a/food_lime_01"
+  },
+  "kiwi": {
+   "file": "kiwi.glb",
+   "source": "Poly Haven – Food Kiwi 01",
+   "license": "CC0 1.0",
+   "url": "https://polyhaven.com/a/food_kiwi_01"
+  },
+  "pomegranate": {
+   "file": "pomegranate.glb",
+   "source": "Poly Haven – Food Pomegranate 01",
+   "license": "CC0 1.0",
+   "url": "https://polyhaven.com/a/food_pomegranate_01"
   }
  },
  "note": "Modele 3D scanate, folosite în locul celor procedurale. Vezi licența fiecărei surse."

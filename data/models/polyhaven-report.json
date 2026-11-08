@@ -1,0 +1,386 @@
+{
+ "food": [
+  {
+   "id": "bananas",
+   "name": "Bananas",
+   "categories": [
+    "food",
+    "collection: project_lighthouse",
+    "nature"
+   ],
+   "tags": [
+    "banana bunch",
+    "yellow",
+    "single banana",
+    "ripe",
+    "fruit"
+   ]
+  },
+  {
+   "id": "carrot_cake",
+   "name": "Carrot Cake",
+   "categories": [
+    "food",
+    "props"
+   ],
+   "tags": [
+    "baked goods",
+    "cake",
+    "carrot",
+    "food",
+    "bakery",
+    "dish",
+    "cooking",
+    "dessert"
+   ]
+  },
+  {
+   "id": "croissant",
+   "name": "Croissant",
+   "categories": [
+    "props",
+    "food"
+   ],
+   "tags": [
+    "food",
+    "pastry",
+    "baked goods",
+    "french",
+    "breakfast",
+    "bakery",
+    "savory"
+   ]
+  },
+  {
+   "id": "food_apple_01",
+   "name": "Food Apple 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "food",
+    "fruit",
+    "apple",
+    "fruitbowl",
+    "red",
+    "ripe",
+    "fresh",
+    "organic",
+    "stem",
+    "ripe apple"
+   ]
+  },
+  {
+   "id": "food_avocado_01",
+   "name": "Food Avocado 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "fruit",
+    "food",
+    "fruitbowl",
+    "avo",
+    "dark",
+    "ripe"
+   ]
+  },
+  {
+   "id": "food_ginger_01",
+   "name": "Food Ginger 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "food",
+    "cooking",
+    "ginger",
+    "chef",
+    "resturant",
+    "organic",
+    "root",
+    "herbal",
+    "botanical",
+    "rhizome"
+   ]
+  },
+  {
+   "id": "food_kiwi_01",
+   "name": "Food Kiwi 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "food",
+    "fruitbowl",
+    "fruit",
+    "kiwi",
+    "exotic",
+    "tropical"
+   ]
+  },
+  {
+   "id": "food_lime_01",
+   "name": "Food Lime 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "fruit",
+    "fruitbowl",
+    "food",
+    "lemon",
+    "lime",
+    "citrus",
+    "green",
+    "fresh"
+   ]
+  },
+  {
+   "id": "food_lychee_01",
+   "name": "Food Lychee 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "fruitbowl",
+    "fruit",
+    "food",
+    "lychee",
+    "fresh",
+    "lychee skin ",
+    "spikey",
+    "tropical",
+    "organic"
+   ]
+  },
+  {
+   "id": "food_pears_asian_01",
+   "name": "Pears Asian 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "fruit",
+    "fruitbowl",
+    "tropical",
+    "food",
+    "pears",
+    "organic",
+    "asian pears",
+    "produce",
+    "fresh fruit",
+    "greenhouse",
+    "ripe",
+    "stem",
+    "raw"
+   ]
+  },
+  {
+   "id": "food_pomegranate_01",
+   "name": "Food Pomegranate 01",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "fruit",
+    "fruitbowl",
+    "food",
+    "red",
+    "pomegranite",
+    "produce",
+    "fresh fruit",
+    "ripe",
+    "calyx",
+    "raw"
+   ]
+  },
+  {
+   "id": "hamburger_buns",
+   "name": "Hamburger Buns",
+   "categories": [
+    "props",
+    "food",
+    "collection: project_lighthouse"
+   ],
+   "tags": [
+    "baked goods",
+    "bread",
+    "bakery",
+    "bread rolls",
+    "buns"
+   ]
+  },
+  {
+   "id": "lemon",
+   "name": "Lemon",
+   "categories": [
+    "props",
+    "food"
+   ],
+   "tags": [
+    "culinary",
+    "cooking",
+    "vegetable",
+    "vegetables",
+    "organic",
+    "ingredients",
+    "produce"
+   ]
+  },
+  {
+   "id": "long_life_food",
+   "name": "Long Life Food",
+   "categories": [
+    "collection: project_lighthouse",
+    "food",
+    "containers",
+    "props"
+   ],
+   "tags": [
+    "groceries",
+    "canned beans",
+    "carton milk",
+    "tinned food",
+    "canned tomatoes",
+    "sardines"
+   ]
+  },
+  {
+   "id": "russian_food_cans_01",
+   "name": "Russian Food Cans 01",
+   "categories": [
+    "containers",
+    "props",
+    "food"
+   ],
+   "tags": [
+    "russian",
+    "food",
+    "culinary",
+    "cooking",
+    "pantry",
+    "tuna",
+    "can"
+   ]
+  },
+  {
+   "id": "strawberry_chocolate_cake",
+   "name": "Strawberry Chocolate Cake",
+   "categories": [
+    "props",
+    "food"
+   ],
+   "tags": [
+    "cooking",
+    "culinary",
+    "cake",
+    "baked goods",
+    "bakery",
+    "treat"
+   ]
+  },
+  {
+   "id": "sweet_potato",
+   "name": "Sweet Potato",
+   "categories": [
+    "food",
+    "nature"
+   ],
+   "tags": [
+    "potato",
+    "root",
+    "vegetable",
+    "dirty",
+    "raw",
+    "organic",
+    "oblong",
+    "sweet potato",
+    "roots",
+    "tuberous"
+   ]
+  },
+  {
+   "id": "wooden_cutting_board",
+   "name": "Wooden Cutting Board",
+   "categories": [
+    "props",
+    "food"
+   ],
+   "tags": [
+    "culinary",
+    "cooking",
+    "kitchen",
+    "cutting",
+    "chopping",
+    "cheese",
+    "cooking equipment",
+    "wood"
+   ]
+  },
+  {
+   "id": "yellow_onion",
+   "name": "Yellow Onion",
+   "categories": [
+    "props",
+    "food"
+   ],
+   "tags": [
+    "culinary",
+    "kitchen",
+    "cooking",
+    "vegetables",
+    "organic",
+    "produce",
+    "nutrition",
+    "ingredients"
+   ]
+  }
+ ],
+ "chosen": {
+  "apple": {
+   "asset": "food_apple_01",
+   "name": "Food Apple 01"
+  },
+  "banana": {
+   "asset": "bananas",
+   "name": "Bananas"
+  },
+  "pear": {
+   "asset": "food_pears_asian_01",
+   "name": "Pears Asian 01"
+  },
+  "lemon": {
+   "asset": "lemon",
+   "name": "Lemon"
+  },
+  "lime": {
+   "asset": "food_lime_01",
+   "name": "Food Lime 01"
+  },
+  "kiwi": {
+   "asset": "food_kiwi_01",
+   "name": "Food Kiwi 01"
+  },
+  "pomegranate": {
+   "asset": "food_pomegranate_01",
+   "name": "Food Pomegranate 01"
+  },
+  "avocado": {
+   "asset": "food_avocado_01",
+   "name": "Food Avocado 01"
+  },
+  "lychee": {
+   "asset": "food_lychee_01",
+   "name": "Food Lychee 01"
+  }
+ }
+}
