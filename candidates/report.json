@@ -1,0 +1,872 @@
+{
+ "apple": [
+  {
+   "uid": "152ca55383b2491e816f5ed5ac127677",
+   "name": "Apple",
+   "license": "by",
+   "author": "fredfroehlich",
+   "url": "https://sketchfab.com/3d-models/152ca55383b2491e816f5ed5ac127677",
+   "likes": 87,
+   "faces": 9414
+  },
+  {
+   "uid": "0bfc697c50f447668b6f831a16f1f7a0",
+   "name": "Hello There!",
+   "license": "by",
+   "author": "Duhan",
+   "url": "https://sketchfab.com/3d-models/0bfc697c50f447668b6f831a16f1f7a0",
+   "likes": 86,
+   "faces": 7236
+  },
+  {
+   "uid": "50ffb91434ea4d978eaefe03220d36fe",
+   "name": "Apple",
+   "license": "by",
+   "author": "linfredriksson",
+   "url": "https://sketchfab.com/3d-models/50ffb91434ea4d978eaefe03220d36fe",
+   "likes": 72,
+   "faces": 132414
+  }
+ ],
+ "banana": [
+  {
+   "uid": "4d4c8d85a09b476c8136f0c4cd24c45a",
+   "name": "Banana",
+   "license": "by",
+   "author": "matousekfoto",
+   "url": "https://sketchfab.com/3d-models/4d4c8d85a09b476c8136f0c4cd24c45a",
+   "likes": 213,
+   "faces": 79272
+  },
+  {
+   "uid": "c1db1b10f9b14717ba731d7f49d25443",
+   "name": "Banana Dancing Fortnite",
+   "license": "by",
+   "author": "Jesús Dorado",
+   "url": "https://sketchfab.com/3d-models/c1db1b10f9b14717ba731d7f49d25443",
+   "likes": 100,
+   "faces": 14280
+  },
+  {
+   "uid": "e0c2951ac0ca47b8978b2a6eca426c3f",
+   "name": "Banana",
+   "license": "by",
+   "author": "ShekhirevaVictoria",
+   "url": "https://sketchfab.com/3d-models/e0c2951ac0ca47b8978b2a6eca426c3f",
+   "likes": 77,
+   "faces": 2500
+  }
+ ],
+ "orange": [
+  {
+   "uid": "e5015b222a6949478d68bd6b38fc6ee0",
+   "name": "Tangerine",
+   "license": "by",
+   "author": "andree",
+   "url": "https://sketchfab.com/3d-models/e5015b222a6949478d68bd6b38fc6ee0",
+   "likes": 78,
+   "faces": 3220
+  },
+  {
+   "uid": "fd47e62e36d74e8580616d60d935a99b",
+   "name": "Teatime_orange",
+   "license": "by",
+   "author": "NiklasG",
+   "url": "https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b",
+   "likes": 15,
+   "faces": 2280
+  },
+  {
+   "uid": "1315415fe2c7459aba9555c31fd68b31",
+   "name": "Orange with leafs",
+   "license": "by",
+   "author": "vanya",
+   "url": "https://sketchfab.com/3d-models/1315415fe2c7459aba9555c31fd68b31",
+   "likes": 12,
+   "faces": 134304
+  }
+ ],
+ "pear": [
+  {
+   "uid": "dd84cdb121754138a863d29d4feb5248",
+   "name": "Pear",
+   "license": "by",
+   "author": "fredfroehlich",
+   "url": "https://sketchfab.com/3d-models/dd84cdb121754138a863d29d4feb5248",
+   "likes": 66,
+   "faces": 6132
+  },
+  {
+   "uid": "fbecd3d497594041a5170e24d2d6bf40",
+   "name": "Pear",
+   "license": "by",
+   "author": "linfredriksson",
+   "url": "https://sketchfab.com/3d-models/fbecd3d497594041a5170e24d2d6bf40",
+   "likes": 39,
+   "faces": 82990
+  },
+  {
+   "uid": "618ad10c9f414e9d805e36fd514011e1",
+   "name": "Lowpoly pear",
+   "license": "by",
+   "author": "Zacxophone",
+   "url": "https://sketchfab.com/3d-models/618ad10c9f414e9d805e36fd514011e1",
+   "likes": 39,
+   "faces": 1528
+  }
+ ],
+ "peach": [
+  {
+   "uid": "21e1712c27b847e393ac39214f2762a0",
+   "name": "Peach",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/21e1712c27b847e393ac39214f2762a0",
+   "likes": 31,
+   "faces": 2176
+  },
+  {
+   "uid": "8cf8ce4a480e43dbafa390ae5394c627",
+   "name": "Japanese Peach",
+   "license": "by",
+   "author": "STUDIO DUCKBILL",
+   "url": "https://sketchfab.com/3d-models/8cf8ce4a480e43dbafa390ae5394c627",
+   "likes": 24,
+   "faces": 57770
+  },
+  {
+   "uid": "2f2bfd7940c9467c90362ad2b3e80cf5",
+   "name": "Peach",
+   "license": "by",
+   "author": "mjk",
+   "url": "https://sketchfab.com/3d-models/2f2bfd7940c9467c90362ad2b3e80cf5",
+   "likes": 18,
+   "faces": 200000
+  }
+ ],
+ "pineapple": [
+  {
+   "uid": "d9b8edf3526e429fa80758c285dac858",
+   "name": "Spongebob's House",
+   "license": "by",
+   "author": "Yanez Designs",
+   "url": "https://sketchfab.com/3d-models/d9b8edf3526e429fa80758c285dac858",
+   "likes": 100,
+   "faces": 8327
+  },
+  {
+   "uid": "3debe241ac7e401aa36ae944daa1708e",
+   "name": "Pineapple",
+   "license": "by",
+   "author": "Lassi Kaukonen",
+   "url": "https://sketchfab.com/3d-models/3debe241ac7e401aa36ae944daa1708e",
+   "likes": 90,
+   "faces": 179520
+  },
+  {
+   "uid": "fe9b39e004c34ed9b953ad2e91538b68",
+   "name": "Pineapple",
+   "license": "by",
+   "author": "Nevena Knežević",
+   "url": "https://sketchfab.com/3d-models/fe9b39e004c34ed9b953ad2e91538b68",
+   "likes": 91,
+   "faces": 199288
+  }
+ ],
+ "strawberry": [
+  {
+   "uid": "dd6a424807614544835c8cc4529d6f0d",
+   "name": "Strawberry",
+   "license": "by",
+   "author": "gelmi.com.br",
+   "url": "https://sketchfab.com/3d-models/dd6a424807614544835c8cc4529d6f0d",
+   "likes": 97,
+   "faces": 162000
+  },
+  {
+   "uid": "769a5fa758de449e8154a6bbd33e9220",
+   "name": "Cute Cat with Strawberries",
+   "license": "by",
+   "author": "jiayingc",
+   "url": "https://sketchfab.com/3d-models/769a5fa758de449e8154a6bbd33e9220",
+   "likes": 98,
+   "faces": 195884
+  },
+  {
+   "uid": "0b9867d98c154737b422fa5afacfc178",
+   "name": "Strawberry (Jumbo Poly) Freebie",
+   "license": "by",
+   "author": "Geug",
+   "url": "https://sketchfab.com/3d-models/0b9867d98c154737b422fa5afacfc178",
+   "likes": 63,
+   "faces": 67454
+  }
+ ],
+ "grape": [
+  {
+   "uid": "bf09c469e83045f9b91667fdbb277e22",
+   "name": "Grape (Downloadable)",
+   "license": "by",
+   "author": "Taiga Yonemoto",
+   "url": "https://sketchfab.com/3d-models/bf09c469e83045f9b91667fdbb277e22",
+   "likes": 111,
+   "faces": 102680
+  },
+  {
+   "uid": "fa048c4ac32a4d4988214a5e3fe70a86",
+   "name": "Octopus",
+   "license": "by",
+   "author": "Zainal Abd. Kahar",
+   "url": "https://sketchfab.com/3d-models/fa048c4ac32a4d4988214a5e3fe70a86",
+   "likes": 30,
+   "faces": 3852
+  },
+  {
+   "uid": "9396a10bd8804811a14b58f50d543575",
+   "name": "Grapes",
+   "license": "by",
+   "author": "3Dee",
+   "url": "https://sketchfab.com/3d-models/9396a10bd8804811a14b58f50d543575",
+   "likes": 13,
+   "faces": 143480
+  }
+ ],
+ "watermelon": [
+  {
+   "uid": "23197344dd544a679176e3a16fc8a544",
+   "name": "Watermelone 🍉",
+   "license": "by",
+   "author": "Soenon.obj",
+   "url": "https://sketchfab.com/3d-models/23197344dd544a679176e3a16fc8a544",
+   "likes": 479,
+   "faces": 146316
+  },
+  {
+   "uid": "c15e41a62b46487fa6dcc67af7f7acee",
+   "name": "Jiggly Watermelon Jello",
+   "license": "by",
+   "author": "Ari Crow",
+   "url": "https://sketchfab.com/3d-models/c15e41a62b46487fa6dcc67af7f7acee",
+   "likes": 378,
+   "faces": 26114
+  },
+  {
+   "uid": "5a0ae2276ac845c9a93b240c076aae19",
+   "name": "Watermelon",
+   "license": "by",
+   "author": "STUDIO DUCKBILL",
+   "url": "https://sketchfab.com/3d-models/5a0ae2276ac845c9a93b240c076aae19",
+   "likes": 91,
+   "faces": 65660
+  }
+ ],
+ "lemon": [
+  {
+   "uid": "ed58014072a64680b0fe5ce4cac6234c",
+   "name": "Lemon",
+   "license": "by",
+   "author": "moonsoon",
+   "url": "https://sketchfab.com/3d-models/ed58014072a64680b0fe5ce4cac6234c",
+   "likes": 41,
+   "faces": 116480
+  },
+  {
+   "uid": "ac3b7ab28bae4782841457e6ea6f957c",
+   "name": "Lemon",
+   "license": "by",
+   "author": "Yu",
+   "url": "https://sketchfab.com/3d-models/ac3b7ab28bae4782841457e6ea6f957c",
+   "likes": 39,
+   "faces": 10000
+  },
+  {
+   "uid": "87428dade9034cefac9eed6a1aeb14a1",
+   "name": "Cut Lemmon (3D scan)",
+   "license": "by",
+   "author": "3D scan studio \"iris\"",
+   "url": "https://sketchfab.com/3d-models/87428dade9034cefac9eed6a1aeb14a1",
+   "likes": 37,
+   "faces": 200100
+  }
+ ],
+ "lime": [
+  {
+   "uid": "54c4941347d441a7b3ec8341491382ef",
+   "name": "Green Limes",
+   "license": "by",
+   "author": "DigitalSouls",
+   "url": "https://sketchfab.com/3d-models/54c4941347d441a7b3ec8341491382ef",
+   "likes": 47,
+   "faces": 21330
+  },
+  {
+   "uid": "d879c2985526427b96a39733dc2a075c",
+   "name": "Lime (Game Ready / 2K PBR)",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/d879c2985526427b96a39733dc2a075c",
+   "likes": 32,
+   "faces": 2176
+  },
+  {
+   "uid": "f68ae1c354a64ea39e160c4fe881349e",
+   "name": "Lemon (Game Ready / 2K PBR)",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/f68ae1c354a64ea39e160c4fe881349e",
+   "likes": 30,
+   "faces": 896
+  }
+ ],
+ "kiwi": [
+  {
+   "uid": "11d8e1e33f544e5d85d0c5a6b8e2f29a",
+   "name": "3D Lime Fruit",
+   "license": "by",
+   "author": "Grand Dog Studio",
+   "url": "https://sketchfab.com/3d-models/11d8e1e33f544e5d85d0c5a6b8e2f29a",
+   "likes": 16,
+   "faces": 8100
+  },
+  {
+   "uid": "5ebb6b41072547189da584d9ba1e217c",
+   "name": "Kiwi (Game Ready / 2K PBR)",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/5ebb6b41072547189da584d9ba1e217c",
+   "likes": 9,
+   "faces": 768
+  },
+  {
+   "uid": "0ac51fc23d744b39a59d413a1a9d6eda",
+   "name": "New Zealand Kiwi",
+   "license": "by",
+   "author": "mjk",
+   "url": "https://sketchfab.com/3d-models/0ac51fc23d744b39a59d413a1a9d6eda",
+   "likes": 8,
+   "faces": 350584
+  }
+ ],
+ "cherry": [
+  {
+   "uid": "8e076ba031bb4969930dc8e49d35668d",
+   "name": "Cherry (Free Download)",
+   "license": "by",
+   "author": "pizzaguyty",
+   "url": "https://sketchfab.com/3d-models/8e076ba031bb4969930dc8e49d35668d",
+   "likes": 44,
+   "faces": 1260
+  },
+  {
+   "uid": "76e4c9afe41149558c07945a8a60a548",
+   "name": "Cherry",
+   "license": "by",
+   "author": "amalie.kma",
+   "url": "https://sketchfab.com/3d-models/76e4c9afe41149558c07945a8a60a548",
+   "likes": 47,
+   "faces": 19792
+  },
+  {
+   "uid": "841ac46c2932424f9609acd1c332159b",
+   "name": "Cherries",
+   "license": "by",
+   "author": "¡Jacques",
+   "url": "https://sketchfab.com/3d-models/841ac46c2932424f9609acd1c332159b",
+   "likes": 36,
+   "faces": 13824
+  }
+ ],
+ "coconut": [
+  {
+   "uid": "d10ab05314a043ff81602b59e0d479a2",
+   "name": "Rounded Wood Shingles",
+   "license": "by",
+   "author": "chrisg4919",
+   "url": "https://sketchfab.com/3d-models/d10ab05314a043ff81602b59e0d479a2",
+   "likes": 110,
+   "faces": 260096
+  },
+  {
+   "uid": "d65e1b9bbff9463ba5ac2ba1cc48beef",
+   "name": "Coco Scan",
+   "license": "by",
+   "author": "patritevi",
+   "url": "https://sketchfab.com/3d-models/d65e1b9bbff9463ba5ac2ba1cc48beef",
+   "likes": 31,
+   "faces": 89532
+  },
+  {
+   "uid": "0213a71af3314ac0aaae25030d565d44",
+   "name": "Low Poly Coconut game Ready",
+   "license": "by",
+   "author": "Arthur.Zim",
+   "url": "https://sketchfab.com/3d-models/0213a71af3314ac0aaae25030d565d44",
+   "likes": 29,
+   "faces": 192
+  }
+ ],
+ "papaya": [
+  {
+   "uid": "3331e1a05cad48ecb95d11e8d7930a20",
+   "name": "Papaya 3D photogrammetry",
+   "license": "by",
+   "author": "Grasiele Bastos",
+   "url": "https://sketchfab.com/3d-models/3331e1a05cad48ecb95d11e8d7930a20",
+   "likes": 44,
+   "faces": 15046
+  },
+  {
+   "uid": "2656ffb5112540e884ad7346929905e2",
+   "name": "Pumpkin Asset Free Download",
+   "license": "by",
+   "author": "Lesca 3D-Scan",
+   "url": "https://sketchfab.com/3d-models/2656ffb5112540e884ad7346929905e2",
+   "likes": 24,
+   "faces": 100000
+  },
+  {
+   "uid": "f7d22e5427174a9bb92d1e43e95acf0a",
+   "name": "Pear",
+   "license": "by",
+   "author": "HorusZ",
+   "url": "https://sketchfab.com/3d-models/f7d22e5427174a9bb92d1e43e95acf0a",
+   "likes": 15,
+   "faces": 5568
+  }
+ ],
+ "avocado": [
+  {
+   "uid": "fbc9211966e548f6a7c62025d559d89b",
+   "name": "Avocado",
+   "license": "by",
+   "author": "Francesco Coldesina",
+   "url": "https://sketchfab.com/3d-models/fbc9211966e548f6a7c62025d559d89b",
+   "likes": 122,
+   "faces": 2050
+  },
+  {
+   "uid": "c8b416221569445382a3a0f3bcc792ec",
+   "name": "Avacado",
+   "license": "by",
+   "author": "Batuhan13",
+   "url": "https://sketchfab.com/3d-models/c8b416221569445382a3a0f3bcc792ec",
+   "likes": 67,
+   "faces": 2498
+  },
+  {
+   "uid": "ceadf5bc19284ad89a60c2ae787d6d06",
+   "name": "Still Life : Avocado",
+   "license": "by",
+   "author": "Akiko.Tomiyoshi",
+   "url": "https://sketchfab.com/3d-models/ceadf5bc19284ad89a60c2ae787d6d06",
+   "likes": 38,
+   "faces": 40850
+  }
+ ],
+ "apricot": [
+  {
+   "uid": "0450b57c682d4454b3beb2f8724a73f5",
+   "name": "Colorful nectarine",
+   "license": "by",
+   "author": "cglib.team",
+   "url": "https://sketchfab.com/3d-models/0450b57c682d4454b3beb2f8724a73f5",
+   "likes": 32,
+   "faces": 7702
+  },
+  {
+   "uid": "154598525f904aae82c4ad29cf495a56",
+   "name": "225: Peach",
+   "license": "by",
+   "author": "alexdelker",
+   "url": "https://sketchfab.com/3d-models/154598525f904aae82c4ad29cf495a56",
+   "likes": 17,
+   "faces": 35725
+  },
+  {
+   "uid": "ca9d03af291b45d0b2a77e739c713754",
+   "name": "Grapefruit",
+   "license": "by",
+   "author": "rhcreations",
+   "url": "https://sketchfab.com/3d-models/ca9d03af291b45d0b2a77e739c713754",
+   "likes": 11,
+   "faces": 1216
+  }
+ ],
+ "blueberry": [
+  {
+   "uid": "62f6c6368c484dd6a85a2a162133d2e0",
+   "name": "Gourmet Blueberry",
+   "license": "by",
+   "author": "inciprocal",
+   "url": "https://sketchfab.com/3d-models/62f6c6368c484dd6a85a2a162133d2e0",
+   "likes": 40,
+   "faces": 1000
+  },
+  {
+   "uid": "facb6b3bea75488bb579ad893b8349b9",
+   "name": "Blueburry",
+   "license": "by",
+   "author": "M0hamed1brahemB0rha",
+   "url": "https://sketchfab.com/3d-models/facb6b3bea75488bb579ad893b8349b9",
+   "likes": 5,
+   "faces": 19800
+  },
+  {
+   "uid": "fd6eb6cff0a44166a4d57a7287182a41",
+   "name": "A Blue Pig",
+   "license": "by",
+   "author": "naves",
+   "url": "https://sketchfab.com/3d-models/fd6eb6cff0a44166a4d57a7287182a41",
+   "likes": 1,
+   "faces": 152120
+  }
+ ],
+ "raspberry": [
+  {
+   "uid": "c01b7abbedfa4e49bd25f14c4b2a756a",
+   "name": "Cake #1 - Maison Alyzée",
+   "license": "by",
+   "author": "Emm (Scenario)",
+   "url": "https://sketchfab.com/3d-models/c01b7abbedfa4e49bd25f14c4b2a756a",
+   "likes": 153,
+   "faces": 38736
+  },
+  {
+   "uid": "0033322379a24798a6875a5cb2de54f5",
+   "name": "Raspberry",
+   "license": "by",
+   "author": "gelmi.com.br",
+   "url": "https://sketchfab.com/3d-models/0033322379a24798a6875a5cb2de54f5",
+   "likes": 37,
+   "faces": 41588
+  },
+  {
+   "uid": "9415f57b6ed042ed81cecff7a981a0e0",
+   "name": "3D Raspberry Pi",
+   "license": "by",
+   "author": "davidhansson",
+   "url": "https://sketchfab.com/3d-models/9415f57b6ed042ed81cecff7a981a0e0",
+   "likes": 23,
+   "faces": 87833
+  }
+ ],
+ "blackberry": [
+  {
+   "uid": "796e4d17b0ac43dda78c3a3a89a9bb0f",
+   "name": "Prototype of unnamed smartphone",
+   "license": "by",
+   "author": "plzok",
+   "url": "https://sketchfab.com/3d-models/796e4d17b0ac43dda78c3a3a89a9bb0f",
+   "likes": 37,
+   "faces": 399
+  },
+  {
+   "uid": "aaaeaaff8f9b40569f0715471f30f750",
+   "name": "SB-555P Faiz Phone",
+   "license": "by",
+   "author": "Ahbangkun",
+   "url": "https://sketchfab.com/3d-models/aaaeaaff8f9b40569f0715471f30f750",
+   "likes": 39,
+   "faces": 17263
+  },
+  {
+   "uid": "1f5a007441124311a99d1f6156cb17f7",
+   "name": "BlackBerries",
+   "license": "by",
+   "author": "3Dee",
+   "url": "https://sketchfab.com/3d-models/1f5a007441124311a99d1f6156cb17f7",
+   "likes": 16,
+   "faces": 71900
+  }
+ ],
+ "fig": [
+  {
+   "uid": "105da0b01b414fceb2feac631b0f64e8",
+   "name": "Game Ready Fruit Asset Pack",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/105da0b01b414fceb2feac631b0f64e8",
+   "likes": 78,
+   "faces": 17096
+  },
+  {
+   "uid": "1d4afb668a714188935966d3ee9b2e33",
+   "name": "Fig (Ficus carica)",
+   "license": "by",
+   "author": "Digital Archive of Natural History (DiNArDa)",
+   "url": "https://sketchfab.com/3d-models/1d4afb668a714188935966d3ee9b2e33",
+   "likes": 27,
+   "faces": 126788
+  },
+  {
+   "uid": "72a394cdac1545e29100509a83a3e0c8",
+   "name": "Fig tart",
+   "license": "by",
+   "author": "alban",
+   "url": "https://sketchfab.com/3d-models/72a394cdac1545e29100509a83a3e0c8",
+   "likes": 24,
+   "faces": 39380
+  }
+ ],
+ "nectarine": [
+  {
+   "uid": "21e1712c27b847e393ac39214f2762a0",
+   "name": "Peach",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/21e1712c27b847e393ac39214f2762a0",
+   "likes": 31,
+   "faces": 2176
+  },
+  {
+   "uid": "8cf8ce4a480e43dbafa390ae5394c627",
+   "name": "Japanese Peach",
+   "license": "by",
+   "author": "STUDIO DUCKBILL",
+   "url": "https://sketchfab.com/3d-models/8cf8ce4a480e43dbafa390ae5394c627",
+   "likes": 24,
+   "faces": 57770
+  },
+  {
+   "uid": "2f2bfd7940c9467c90362ad2b3e80cf5",
+   "name": "Peach",
+   "license": "by",
+   "author": "mjk",
+   "url": "https://sketchfab.com/3d-models/2f2bfd7940c9467c90362ad2b3e80cf5",
+   "likes": 18,
+   "faces": 200000
+  }
+ ],
+ "tangerine": [
+  {
+   "uid": "e5015b222a6949478d68bd6b38fc6ee0",
+   "name": "Tangerine",
+   "license": "by",
+   "author": "andree",
+   "url": "https://sketchfab.com/3d-models/e5015b222a6949478d68bd6b38fc6ee0",
+   "likes": 78,
+   "faces": 3220
+  },
+  {
+   "uid": "fd47e62e36d74e8580616d60d935a99b",
+   "name": "Teatime_orange",
+   "license": "by",
+   "author": "NiklasG",
+   "url": "https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b",
+   "likes": 15,
+   "faces": 2280
+  },
+  {
+   "uid": "1315415fe2c7459aba9555c31fd68b31",
+   "name": "Orange with leafs",
+   "license": "by",
+   "author": "vanya",
+   "url": "https://sketchfab.com/3d-models/1315415fe2c7459aba9555c31fd68b31",
+   "likes": 12,
+   "faces": 134304
+  }
+ ],
+ "clementine": [
+  {
+   "uid": "e5015b222a6949478d68bd6b38fc6ee0",
+   "name": "Tangerine",
+   "license": "by",
+   "author": "andree",
+   "url": "https://sketchfab.com/3d-models/e5015b222a6949478d68bd6b38fc6ee0",
+   "likes": 78,
+   "faces": 3220
+  },
+  {
+   "uid": "cbdf758f21924c168c1c3da1afed9754",
+   "name": "orange fruit",
+   "license": "by",
+   "author": "polyplant3d",
+   "url": "https://sketchfab.com/3d-models/cbdf758f21924c168c1c3da1afed9754",
+   "likes": 57,
+   "faces": 920
+  },
+  {
+   "uid": "7ef1158b735841f4a3f3ecf43aa87c97",
+   "name": "Tangerine - Peeled",
+   "license": "by",
+   "author": "James West",
+   "url": "https://sketchfab.com/3d-models/7ef1158b735841f4a3f3ecf43aa87c97",
+   "likes": 52,
+   "faces": 12288
+  }
+ ],
+ "persimmon": [
+  {
+   "uid": "36e532ef9c454a9faa9ae3eb7282482c",
+   "name": "Lowpoly Apple | 256 Tris | 130 Verts",
+   "license": "by",
+   "author": "yreme",
+   "url": "https://sketchfab.com/3d-models/36e532ef9c454a9faa9ae3eb7282482c",
+   "likes": 9,
+   "faces": 256
+  },
+  {
+   "uid": "e9782ed153af4773b859ace13b3da426",
+   "name": "Red Apple (G7 + Polarizing)",
+   "license": "by",
+   "author": "mjk",
+   "url": "https://sketchfab.com/3d-models/e9782ed153af4773b859ace13b3da426",
+   "likes": 8,
+   "faces": 358838
+  },
+  {
+   "uid": "6c479a2d5dff48ada02804c446561ad4",
+   "name": "CALABAZA HOKKAIDO",
+   "license": "by",
+   "author": "Onironauta digital",
+   "url": "https://sketchfab.com/3d-models/6c479a2d5dff48ada02804c446561ad4",
+   "likes": 8,
+   "faces": 1936
+  }
+ ],
+ "date": [
+  {
+   "uid": "d241f8b58a304f788fbddec1c314bc8c",
+   "name": "Christmas fruit",
+   "license": "by",
+   "author": "3Dystopia",
+   "url": "https://sketchfab.com/3d-models/d241f8b58a304f788fbddec1c314bc8c",
+   "likes": 2,
+   "faces": 9944
+  },
+  {
+   "uid": "5291772a7a114a3384c5fc9248b9c251",
+   "name": "Recipiente - 253918 (Puruchuco)",
+   "license": "by",
+   "author": "Ministerio de Cultura Perú",
+   "url": "https://sketchfab.com/3d-models/5291772a7a114a3384c5fc9248b9c251",
+   "likes": 0,
+   "faces": 476
+  },
+  {
+   "uid": "35b7cb7698374921b336a0d3905178ad",
+   "name": "Pile of raisins",
+   "license": "by",
+   "author": "gaja",
+   "url": "https://sketchfab.com/3d-models/35b7cb7698374921b336a0d3905178ad",
+   "likes": 0,
+   "faces": 135030
+  }
+ ],
+ "cantaloupe": [
+  {
+   "uid": "a1d755dc91a24124be2cfab253664601",
+   "name": "Melon",
+   "license": "by",
+   "author": "STUDIO DUCKBILL",
+   "url": "https://sketchfab.com/3d-models/a1d755dc91a24124be2cfab253664601",
+   "likes": 41,
+   "faces": 161886
+  },
+  {
+   "uid": "f7d2757432f94a2bb366c9a41503647b",
+   "name": "The backrooms wallpaper texture",
+   "license": "by",
+   "author": "Scans and textures",
+   "url": "https://sketchfab.com/3d-models/f7d2757432f94a2bb366c9a41503647b",
+   "likes": 12,
+   "faces": 9800
+  },
+  {
+   "uid": "c88c3221f0b9436293a69a641948c36d",
+   "name": "Watermelon (Game Ready / 2K PBR)",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/c88c3221f0b9436293a69a641948c36d",
+   "likes": 32,
+   "faces": 768
+  }
+ ],
+ "honeydew": [
+  {
+   "uid": "f7d2757432f94a2bb366c9a41503647b",
+   "name": "The backrooms wallpaper texture",
+   "license": "by",
+   "author": "Scans and textures",
+   "url": "https://sketchfab.com/3d-models/f7d2757432f94a2bb366c9a41503647b",
+   "likes": 12,
+   "faces": 9800
+  },
+  {
+   "uid": "c88c3221f0b9436293a69a641948c36d",
+   "name": "Watermelon (Game Ready / 2K PBR)",
+   "license": "by",
+   "author": "Meerschaum Digital",
+   "url": "https://sketchfab.com/3d-models/c88c3221f0b9436293a69a641948c36d",
+   "likes": 32,
+   "faces": 768
+  },
+  {
+   "uid": "ff7eca213f1b4afcb22ec5457f244c1b",
+   "name": "Echinoid: Strongylocentrotus (PRI 78783)",
+   "license": "cc0",
+   "author": "Digital Atlas of Ancient Life",
+   "url": "https://sketchfab.com/3d-models/ff7eca213f1b4afcb22ec5457f244c1b",
+   "likes": 15,
+   "faces": 307006
+  }
+ ],
+ "plantain": [
+  {
+   "uid": "4d4c8d85a09b476c8136f0c4cd24c45a",
+   "name": "Banana",
+   "license": "by",
+   "author": "matousekfoto",
+   "url": "https://sketchfab.com/3d-models/4d4c8d85a09b476c8136f0c4cd24c45a",
+   "likes": 213,
+   "faces": 79272
+  },
+  {
+   "uid": "c1db1b10f9b14717ba731d7f49d25443",
+   "name": "Banana Dancing Fortnite",
+   "license": "by",
+   "author": "Jesús Dorado",
+   "url": "https://sketchfab.com/3d-models/c1db1b10f9b14717ba731d7f49d25443",
+   "likes": 100,
+   "faces": 14280
+  },
+  {
+   "uid": "e0c2951ac0ca47b8978b2a6eca426c3f",
+   "name": "Banana",
+   "license": "by",
+   "author": "ShekhirevaVictoria",
+   "url": "https://sketchfab.com/3d-models/e0c2951ac0ca47b8978b2a6eca426c3f",
+   "likes": 77,
+   "faces": 2500
+  }
+ ],
+ "blood-orange": [
+  {
+   "uid": "e5015b222a6949478d68bd6b38fc6ee0",
+   "name": "Tangerine",
+   "license": "by",
+   "author": "andree",
+   "url": "https://sketchfab.com/3d-models/e5015b222a6949478d68bd6b38fc6ee0",
+   "likes": 78,
+   "faces": 3220
+  },
+  {
+   "uid": "fd47e62e36d74e8580616d60d935a99b",
+   "name": "Teatime_orange",
+   "license": "by",
+   "author": "NiklasG",
+   "url": "https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b",
+   "likes": 15,
+   "faces": 2280
+  },
+  {
+   "uid": "1315415fe2c7459aba9555c31fd68b31",
+   "name": "Orange with leafs",
+   "license": "by",
+   "author": "vanya",
+   "url": "https://sketchfab.com/3d-models/1315415fe2c7459aba9555c31fd68b31",
+   "likes": 12,
+   "faces": 134304
+  }
+ ]
+}
