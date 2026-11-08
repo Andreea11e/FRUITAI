@@ -608,7 +608,7 @@
         "aspect": 1.3
       },
       "ai": {
-        "labels": ["papaya"], "prior": 0.4
+        "labels": ["papaya"], "prior": 0.8
       }
     },
     {
@@ -937,7 +937,7 @@
         "features": ["scales"]
       },
       "ai": {
-        "labels": ["dragon fruit", "pitaya"], "prior": 0.4
+        "labels": ["dragon fruit", "pitaya"], "prior": 0.8
       }
     },
     {
@@ -970,7 +970,7 @@
         "flesh": "#F2C14E"
       },
       "ai": {
-        "labels": ["passion fruit", "passion fruit halves"], "prior": 0.4
+        "labels": ["passion fruit", "passion fruit halves"], "prior": 0.8
       }
     },
     {
@@ -1001,7 +1001,7 @@
         "features": ["stem"]
       },
       "ai": {
-        "labels": ["lychee", "lychees"], "prior": 0.4
+        "labels": ["lychee", "lychees"], "prior": 0.8
       }
     },
     {
@@ -1229,7 +1229,7 @@
         "spikes": "cones"
       },
       "ai": {
-        "labels": ["durian"], "prior": 0.4
+        "labels": ["durian"], "prior": 0.8
       }
     },
     {
@@ -1260,7 +1260,7 @@
         "spikes": "bumps"
       },
       "ai": {
-        "labels": ["jackfruit"], "prior": 0.4
+        "labels": ["jackfruit"], "prior": 0.8
       }
     },
     {
@@ -1290,7 +1290,7 @@
         "texture": "smooth"
       },
       "ai": {
-        "labels": ["starfruit", "carambola"], "prior": 0.4
+        "labels": ["starfruit", "carambola"], "prior": 0.8
       }
     },
     {
@@ -1352,7 +1352,7 @@
         "spikeColor": "#6FAF3A"
       },
       "ai": {
-        "labels": ["rambutan"], "prior": 0.4
+        "labels": ["rambutan"], "prior": 0.8
       }
     },
     {
@@ -1546,7 +1546,7 @@
         "aspect": 0.9
       },
       "ai": {
-        "labels": ["tamarind"], "prior": 0.4
+        "labels": ["tamarind"], "prior": 0.8
       }
     },
     {
@@ -1682,7 +1682,7 @@
         "spikeColor": "#3E6B2A"
       },
       "ai": {
-        "labels": ["soursop"], "prior": 0.4
+        "labels": ["soursop"], "prior": 0.8
       }
     },
     {
@@ -1713,7 +1713,7 @@
         "features": ["stem"]
       },
       "ai": {
-        "labels": ["custard apple"], "prior": 0.4
+        "labels": ["custard apple"], "prior": 0.8
       }
     },
     {
@@ -1778,7 +1778,7 @@
         "calyxColor": "#5E7A2A"
       },
       "ai": {
-        "labels": ["mangosteen"], "prior": 0.4
+        "labels": ["mangosteen"], "prior": 0.8
       }
     },
     {
@@ -1938,7 +1938,7 @@
         "flesh": "#E0457B"
       },
       "ai": {
-        "labels": ["prickly pear"], "prior": 0.4
+        "labels": ["prickly pear"], "prior": 0.8
       }
     },
     {
@@ -1969,7 +1969,7 @@
         "features": ["stem"]
       },
       "ai": {
-        "labels": ["cherimoya"], "prior": 0.4
+        "labels": ["cherimoya"], "prior": 0.8
       }
     },
     {

@@ -146,7 +146,8 @@ function decide(p, usePrior = true) {
   const raw = new Map();
   p.forEach((v, k) => { const h = hits[k]; if (!h || (h.kind === "notfruit" && h.bg)) return; const key = h.kind === "fruit" ? h.id : "~" + h.label; g.set(key, (g.get(key) || 0) + v * (usePrior ? prior(k) : 1)); raw.set(key, (raw.get(key) || 0) + v); });
   const tot = [...raw.values()].reduce((a, b) => a + b, 0) || 1;       // total neponderat, ca în aplicație
-  return [...g.entries()].map(([k, v]) => [k, v / tot, raw.get(k)]).sort((a, b) => b[1] - a[1]);
+  // ca în aplicație: „prior”-ul decide doar ordinea (cine câștigă), siguranța e cea reală
+  return [...g.entries()].sort((a, b) => b[1] - a[1]).map(([k]) => [k, raw.get(k) / tot, raw.get(k)]);
 }
 function predict(img, P, alpha, beta) {
   const p = probs(img, chosen[0], P, alpha, beta);

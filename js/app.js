@@ -665,10 +665,11 @@ function decide(probs) {
   const bg = g.reduce((acc, x) => acc + (isBg(x) ? x.score : 0), 0);
   // fructele exotice (ai.prior < 1 în catalog) contează mai puțin, ca să nu „fure” fructele obișnuite care seamănă cu ele
   const fg = g.filter(x => !isBg(x)).map(x => ({ ...x, w: x.score * (x.hit.kind === "fruit" ? (catalog.get(x.hit.id)?.ai?.prior ?? 1) : 1) })).sort((a, b) => b.w - a.w);
-  // împărțim la totalul NEPONDERAT: „prior”-ul poate doar scădea fructele exotice, nu umflă scorul celorlalte
+  // „prior”-ul decide doar CINE câștigă între fructe asemănătoare (clementină vs portocală);
+  // siguranța raportată e cea reală, altfel un fruct exotic clar n-ar trece niciodată de prag
   const tot = Math.max(1e-6, fg.reduce((s, x) => s + x.score, 0));
   const top = fg[0];
-  return { top, bgTop: g.find(isBg), bg, score: top ? Math.min(1, top.w / tot) : 0, raw: top?.score || 0, list: g };
+  return { top, bgTop: g.find(isBg), bg, score: top ? Math.min(1, top.score / tot) : 0, raw: top?.score || 0, list: g };
 }
 
 /** Clasifică mai multe regiuni într-un singur apel (doar modelul de imagine rulează). */
