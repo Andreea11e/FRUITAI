@@ -27,6 +27,13 @@ let catalog = null, s = null, ui = {};
 function load() { try { localStorage.removeItem(KEY); } catch {} return null; }
 function save() {}
 const kidFruits = () => { const k = catalog.fruits.filter(f => f.emoji && catalog.hasNutrition(f.id)); return k.length >= 6 ? k : catalog.fruits; };
+// fructele descoperite cu camera (cu fișă nutrițională): quiz-ul pune întrebări DOAR despre ele
+const foundFruits = () => catalog.fruits.filter(f => collection.has(f.id) && catalog.hasNutrition(f.id));
+/** Variante greșite: întâi alte fructe descoperite, apoi (dacă nu ajung) fructe cunoscute din catalog. */
+const others = (exclude, n, ok = () => true) => {
+  const pool = [...shuffle(foundFruits()), ...shuffle(kidFruits())].filter((f, i, a) => !exclude.includes(f) && ok(f) && a.indexOf(f) === i);
+  return pool.slice(0, n);
+};
 const vitInfo = key => catalog.info.vitamins[key];
 const vitTitle = key => getLang() === "en" ? (vitInfo(key).title_en || vitInfo(key).title) : vitInfo(key).title;
 const ctx = () => ({ s, found: catalog.fruits.filter(f => collection.has(f.id)).length });
@@ -76,44 +83,67 @@ function paintChallenge() {
 
 // ---------------------------------------------------------------- quiz
 function makeQuestion() {
-  const kids = kidFruits(), types = shuffle(["vitFruit", "english", "fruitVit", "benefit"]);
+  const mine = foundFruits(), used = quiz?.types || [];
+  // tipurile de întrebări încă nefolosite în acest quiz vin primele, ca întrebările să fie variate
+  const types = shuffle(["vitFruit", "english", "fruitVit", "benefit"]).sort((x, y) => used.filter(u => u === x).length - used.filter(u => u === y).length);
+  const recent = quiz?.asked || [];
+  const fresh = list => { const f = list.filter(x => !recent.includes(x.id)); return f.length ? f : list; };
   for (const type of types) {
     if (type === "vitFruit") {
-      const vits = Object.keys(catalog.info.vitamins).filter(v => { const n = kids.filter(f => f.vitamins.includes(v)).length; return n >= 1 && kids.length - n >= 2; });
+      // „Care fruct este bogat în vitamina X?” — răspunsul corect e unul dintre fructele tale
+      const vits = [...new Set(mine.flatMap(f => f.vitamins))].filter(v => vitInfo(v) && others([], 2, f => !f.vitamins.includes(v)).length === 2);
       if (!vits.length) continue;
-      const v = pick(vits), yes = pick(kids.filter(f => f.vitamins.includes(v))), no = shuffle(kids.filter(f => !f.vitamins.includes(v))).slice(0, 2);
-      return { q: t("Care fruct este bogat în {v}?", { v: vitTitle(v) }), icon: nIcon({ kind: "vitamin", ...vitInfo(v) }), options: shuffle([yes, ...no]).map(f => ({ fruit: f, ok: f === yes })), explain: t("{fruit} are {v} printre vitaminele lui principale.", { fruit: names(yes)[0], v: vitTitle(v) }) };
+      const v = pick(vits), yes = pick(fresh(mine.filter(f => f.vitamins.includes(v)))), no = others([yes], 2, f => !f.vitamins.includes(v));
+      quiz && quiz.asked.push(yes.id);
+      return { type, q: t("Care fruct este bogat în {v}?", { v: vitTitle(v) }), icon: nIcon({ kind: "vitamin", ...vitInfo(v) }), options: shuffle([yes, ...no]).map(f => ({ fruit: f, ok: f === yes })), explain: t("{fruit} are {v} printre vitaminele lui principale.", { fruit: names(yes)[0], v: vitTitle(v) }) };
     }
     if (type === "english") {
-      const [a, ...rest] = shuffle(kids).slice(0, 3);
+      const a = pick(fresh(mine)), rest = others([a], 2);
+      if (rest.length < 2) continue;
+      quiz && quiz.asked.push(a.id);
       const en = getLang() === "en";
-      return { q: en ? t("Cum se spune „{name}” în română?", { name: a.en }) : t("Cum se spune „{name}” în engleză?", { name: a.ro }), icon: "🌍",
+      return { type, q: en ? t("Cum se spune „{name}” în română?", { name: a.en }) : t("Cum se spune „{name}” în engleză?", { name: a.ro }), icon: "🌍",
         options: shuffle([a, ...rest]).map(f => ({ text: en ? f.ro : f.en, fruit: f, ok: f === a, hideName: true })), explain: `${a.ro} = ${a.en}` };
     }
     if (type === "fruitVit") {
-      const cands = kids.filter(f => f.vitamins.length && Object.keys(catalog.info.vitamins).filter(v => !f.vitamins.includes(v)).length >= 2);
+      const cands = mine.filter(f => f.vitamins.length && Object.keys(catalog.info.vitamins).filter(v => !f.vitamins.includes(v)).length >= 2);
       if (!cands.length) continue;
-      const f = pick(cands), yes = pick(f.vitamins), no = shuffle(Object.keys(catalog.info.vitamins).filter(v => !f.vitamins.includes(v))).slice(0, 2);
-      return { q: t("Ce vitamină importantă are {fruit}?", { fruit: names(f)[0] }), icon: f.emoji || "🍓", options: shuffle([yes, ...no]).map(v => ({ text: vitTitle(v), nutrient: { kind: "vitamin", ...vitInfo(v) }, ok: v === yes })), explain: t("{fruit} are {v}.", { fruit: names(f)[0], v: vitTitle(yes) }) };
+      const f = pick(fresh(cands)), yes = pick(f.vitamins), no = shuffle(Object.keys(catalog.info.vitamins).filter(v => !f.vitamins.includes(v))).slice(0, 2);
+      quiz && quiz.asked.push(f.id);
+      return { type, q: t("Ce vitamină importantă are {fruit}?", { fruit: names(f)[0] }), icon: f.emoji || "🍓", options: shuffle([yes, ...no]).map(v => ({ text: vitTitle(v), nutrient: { kind: "vitamin", ...vitInfo(v) }, ok: v === yes })), explain: t("{fruit} are {v}.", { fruit: names(f)[0], v: vitTitle(yes) }) };
     }
     if (type === "benefit") {
-      const keys = Object.keys(catalog.info.vitamins), v = pick(keys), info = vitInfo(v);
+      // o vitamină pe care o au fructele tale: la ce te ajută?
+      const keys = [...new Set(mine.flatMap(f => f.vitamins))].filter(v => vitInfo(v)?.benefits?.length);
+      if (!keys.length) continue;
+      const v = pick(keys), info = vitInfo(v), from = pick(mine.filter(f => f.vitamins.includes(v)));
       const all = Object.keys(catalog.info.benefits), yes = pick(info.benefits), no = shuffle(all.filter(b => !info.benefits.includes(b))).slice(0, 2);
       const bn = b => { const x = catalog.info.benefits[b]; return `${x.icon} ${getLang() === "en" ? x.en : x.ro}`; };
-      return { q: t("La ce te ajută {v}?", { v: vitTitle(v) }), icon: nIcon({ kind: "vitamin", ...info }), options: shuffle([yes, ...no]).map(b => ({ text: bn(b), ok: b === yes })), explain: getLang() === "en" ? info.kid_en : info.kid };
+      return { type, q: t("{fruit} are {v}. La ce te ajută această vitamină?", { fruit: names(from)[0], v: vitTitle(v) }), icon: nIcon({ kind: "vitamin", ...info }), options: shuffle([yes, ...no]).map(b => ({ text: bn(b), ok: b === yes })), explain: getLang() === "en" ? info.kid_en : info.kid };
     }
   }
 }
 
 let quiz = null;
 function openQuiz() {
-  quiz = { i: 0, n: 5, correct: 0, q: null };
   if (!ui.dlg.open) ui.dlg.showModal();
+  const mine = foundFruits();
+  // quiz-ul e despre fructele TALE: fără niciun fruct descoperit, te invităm întâi să scanezi unul
+  if (!mine.length) {
+    quiz = null;
+    ui.body.innerHTML = `<div class="qz-end"><div class="qz-trophy">🔍</div>
+      <h3>${esc(t("Quiz-ul e despre fructele tale"))}</h3>
+      <p>${esc(t("Descoperă mai întâi un fruct cu camera, apoi te întreb despre el."))}</p>
+      <div class="qz-end-btns"><button type="button" class="dbtn big primary" data-g="scan">📷 ${esc(t("Pornește camera"))}</button></div></div>`;
+    return;
+  }
+  // mai puține fructe → mai puține întrebări (1 fruct: 3 întrebări; 3 sau mai multe: 5)
+  quiz = { i: 0, n: Math.min(5, 2 + mine.length), correct: 0, q: null, asked: [], types: [] };
   nextQuestion();
 }
 function nextQuestion() {
   if (quiz.i >= quiz.n) return quizEnd();
-  quiz.q = makeQuestion(); quiz.answered = false;
+  quiz.q = makeQuestion(); quiz.answered = false; quiz.types.push(quiz.q.type);
   const q = quiz.q;
   ui.body.innerHTML = `
     <div class="qz-top"><span>${esc(t("Întrebarea {i} din {n}", { i: quiz.i + 1, n: quiz.n }))}</span><span class="qz-dots">${Array.from({ length: quiz.n }, (_, k) => `<i class="${k < quiz.i ? "done" : k === quiz.i ? "now" : ""}"></i>`).join("")}</span></div>
@@ -193,6 +223,7 @@ export function initGame(cat, opts) {
     sound.tick();
     const k = b.dataset.g;
     if (k === "close") ui.dlg.close(); else if (k === "next") nextQuestion(); else if (k === "quiz") openQuiz(); else if (k === "collection") openCollection();
+    else if (k === "scan") { ui.dlg.close(); document.querySelector(".hero [data-start]")?.click(); }
   });
   document.querySelectorAll("[data-quiz]").forEach(b => b.addEventListener("click", () => { sound.tick(); openQuiz(); }));
   paintStars();
