@@ -90,7 +90,7 @@ export function initDiscovery(opts) {
         <button type="button" class="dbtn round" data-act="reset" title="Resetează">${svgIcon("reset")}</button>
       </div>
       <div class="disc-panel" id="discPanel" hidden role="dialog" aria-live="polite"></div>
-      <p class="disc-hint" id="discHint">Trage fructul ca să-l rotești · Atinge o vitamină</p>
+      <p class="disc-hint" id="discHint">Trage fructul ca să-l muți · Două degete îl rotesc · Atinge o vitamină</p>
     </section>
     <footer class="disc-bottom">
       <div class="disc-mascot">

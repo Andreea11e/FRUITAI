@@ -123,33 +123,36 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
   }
 
   // ---------- interacțiune ----------
-  // un deget / mouse: rotire (sau mutare, în modul „mută”); două degete: zoom + mutare; rotița: zoom
+  // un deget / mouse: MUTĂ fructul (rămâne sub deget); două degete: mărire/micșorare + rotire (răsucire);
+  // rotița: mărire; mouse cu clic dreapta sau Shift: rotire
   const state = { yaw: 0, pitch: 0.12, vYaw: 0, vPitch: 0, auto: true, idleUntil: 0, zoom: HOME_Z, targetZoom: HOME_Z, appear: 0, wobble: 0,
-    panX: 0, panY: 0, mode: "rotate", lastTouch: 0 };
-  const ptrs = new Map(); let pinch0 = 0, mid0 = null;
+    panX: 0, panY: 0, mode: "move", lastTouch: 0 };
+  const ptrs = new Map(); let pinch0 = 0, ang0 = null;
   const unitsPerPx = () => 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z / Math.max(1, canvas.clientHeight);
   const clampPan = () => { state.panX = THREE.MathUtils.clamp(state.panX, -3, 3); state.panY = THREE.MathUtils.clamp(state.panY, -2.2, 2.2); };
   if (interactive) {
     canvas.style.touchAction = "none";
-    canvas.addEventListener("pointerdown", e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); state.idleUntil = performance.now() + 2500; state.lastTouch = performance.now(); if (ptrs.size === 2) { pinch0 = 0; mid0 = null; } });
+    canvas.addEventListener("contextmenu", e => e.preventDefault());
+    canvas.addEventListener("pointerdown", e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, rot: e.button === 2 || e.shiftKey }); state.idleUntil = performance.now() + 2500; state.lastTouch = performance.now(); if (ptrs.size === 2) { pinch0 = 0; ang0 = null; } });
     canvas.addEventListener("pointermove", e => {
       const p = ptrs.get(e.pointerId); if (!p) return;
       state.lastTouch = performance.now();
       if (ptrs.size === 2) {
         const [a, b] = [...ptrs.values()]; const d0 = Math.hypot(a.x - b.x, a.y - b.y);
         p.x = e.clientX; p.y = e.clientY;
-        const [c, d] = [...ptrs.values()]; const d1 = Math.hypot(c.x - d.x, c.y - d.y), mid = { x: (c.x + d.x) / 2, y: (c.y + d.y) / 2 };
+        const [c, d] = [...ptrs.values()]; const d1 = Math.hypot(c.x - d.x, c.y - d.y), ang = Math.atan2(d.y - c.y, d.x - c.x);
         if (pinch0) state.targetZoom = THREE.MathUtils.clamp(state.targetZoom * (d0 / d1), 3.4, 10);
-        if (mid0) { const u = unitsPerPx(); state.panX += (mid.x - mid0.x) * u; state.panY -= (mid.y - mid0.y) * u; clampPan(); }
-        pinch0 = d1; mid0 = mid; return;
+        if (ang0 != null) { let da = ang - ang0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI; state.yaw += da; state.vYaw = 0; state.idleUntil = performance.now() + 2500; }
+        pinch0 = d1; ang0 = ang; return;
       }
       const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
-      if (state.mode === "move") { const u = unitsPerPx(); state.panX += dx * u; state.panY -= dy * u; clampPan(); return; }
+      // un deget: fructul se mută exact sub deget (sus, jos, stânga, dreapta)
+      if (state.mode === "move" && !p.rot) { const u = unitsPerPx(); state.panX += dx * u; state.panY -= dy * u; clampPan(); return; }
       state.vYaw = dx * 0.012; state.vPitch = dy * 0.008;
       state.yaw += state.vYaw; state.pitch = THREE.MathUtils.clamp(state.pitch + state.vPitch, -0.9, 0.9);
       state.idleUntil = performance.now() + 2500;
     });
-    const up = e => { ptrs.delete(e.pointerId); pinch0 = 0; mid0 = null; };
+    const up = e => { ptrs.delete(e.pointerId); pinch0 = 0; ang0 = null; };
     canvas.addEventListener("pointerup", up); canvas.addEventListener("pointercancel", up);
     canvas.addEventListener("wheel", e => { e.preventDefault(); state.lastTouch = performance.now(); state.targetZoom = THREE.MathUtils.clamp(state.targetZoom * (1 + Math.sign(e.deltaY) * 0.1), 3.4, 10); }, { passive: false });
   } else canvas.style.pointerEvents = "none";
@@ -219,8 +222,8 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
   return {
     zoom(dir) { state.targetZoom = THREE.MathUtils.clamp(state.targetZoom * (dir > 0 ? 0.82 : 1.22), 3.4, 10); },
     rotate(step = 1) { state.vYaw += 0.12 * step; state.idleUntil = performance.now() + 1500; },
-    reset() { state.targetZoom = HOME_Z; state.yaw = 0; state.pitch = 0.12; state.vYaw = state.vPitch = 0; state.auto = true; state.idleUntil = 0; state.panX = state.panY = 0; state.mode = "rotate"; },
-    /** „rotate”: un deget rotește fructul; „move”: un deget îl mută. */
+    reset() { state.targetZoom = HOME_Z; state.yaw = 0; state.pitch = 0.12; state.vYaw = state.vPitch = 0; state.auto = true; state.idleUntil = 0; state.panX = state.panY = 0; state.mode = "move"; },
+    /** „move” (implicit): un deget mută fructul; „rotate”: un deget îl rotește. */
     setMode(mode) { state.mode = mode; return state.mode; },
     get mode() { return state.mode; },
     /** Momentul ultimei atingeri (pentru a nu înlocui fructul cât timp copilul se joacă cu el). */

@@ -42,7 +42,6 @@ function ensureRoot(stage) {
       <button type="button" class="dbtn round" data-tool="auto" aria-pressed="true" title="Rotire automată">${svgIcon("auto")}</button>
       <button type="button" class="dbtn round" data-tool="zin" title="Mărește">${svgIcon("zin")}</button>
       <button type="button" class="dbtn round" data-tool="zout" title="Micșorează">${svgIcon("zout")}</button>
-      <button type="button" class="dbtn round" data-tool="move" aria-pressed="false" title="Mută fructul">${svgIcon("move")}</button>
       <button type="button" class="dbtn round" data-tool="reset" title="Resetează poziția">${svgIcon("reset")}</button>
     </div>
     <div class="rv-card" hidden role="dialog" aria-live="polite"></div>
@@ -57,7 +56,7 @@ function ensureRoot(stage) {
     else if (k === "zin") s.zoom(1);
     else if (k === "zout") s.zoom(-1);
     else if (k === "move") { const on = s.setMode(s.mode === "move" ? "rotate" : "move") === "move"; b.setAttribute("aria-pressed", String(on)); root.classList.toggle("moving", on); }
-    else if (k === "reset") { s.reset(); root.querySelector('[data-tool="auto"]').setAttribute("aria-pressed", "true"); root.querySelector('[data-tool="move"]').setAttribute("aria-pressed", "false"); root.classList.remove("moving"); }
+    else if (k === "reset") { s.reset(); root.querySelector('[data-tool="auto"]').setAttribute("aria-pressed", "true"); }
     cur.touched = performance.now();
   });
   return root;
@@ -202,7 +201,6 @@ export async function showReveal(stage, id, opts) {
   const art = root.querySelector(".rv-art"), canvas = root.querySelector(".rv-canvas");
   art.innerHTML = fruitArt(f, { size: 260 }); art.hidden = false; canvas.classList.remove("ready");
   root.querySelector('[data-tool="auto"]').setAttribute("aria-pressed", "true");
-  root.querySelector('[data-tool="move"]').setAttribute("aria-pressed", "false");
   cur = { id, scene: null, raf: 0, items, timers: [], opts, touched: 0 };
   sound.discover();
   items.forEach(it => cur.timers.push(setTimeout(() => sound.pop(), it.delay * 1000)));
