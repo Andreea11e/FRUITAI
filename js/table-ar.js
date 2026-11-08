@@ -3,6 +3,8 @@
 // rotește camera virtuală odată cu telefonul, așa că fructul rămâne pe loc când te uiți în jur.
 // Gesturi, fără butoane: un deget mută fructul, două degete îl măresc / micșorează și îl rotesc,
 // o atingere pe masă îl mută acolo, o atingere pe un nutrient deschide fișa lui.
+import { createPlay } from "./ar-play.js";
+import { sound } from "./sound.js";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { buildFruitModel, disposeObject } from "./fruit-models.js";
@@ -56,6 +58,8 @@ export async function startTableAR(fruit, nutrients, ui) {
   const lift = () => -model.userData.bottom * R + 0.002;   // fructul stă pe masă, indiferent de formă (și după ce se încarcă modelul real)
   model.position.y = lift();
   const spin = new THREE.Group(); spin.add(model); holder.add(spin);
+  // joaca: rostogolire cu două degete (și cu susul în jos) + săritură cu tumbă la atingerea fructului
+  const play = createPlay({ spin, model, R, color: fruit.visual.color, lift, sound });
   const shadow = new THREE.Mesh(new THREE.PlaneGeometry(R * 3.2, R * 3.2).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: softDisc(THREE, "0,0,0", 0.6), transparent: true, depthWrite: false }));
   shadow.position.y = 0.002; holder.add(shadow);
   const glowRing = new THREE.Mesh(new THREE.RingGeometry(R * 1.45, R * 1.55, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: new THREE.Color(fruit.visual.color).lerp(new THREE.Color(0xffffff), 0.3), transparent: true, opacity: 0.7 }));
@@ -141,17 +145,18 @@ export async function startTableAR(fruit, nutrients, ui) {
     ray.setFromCamera(ndc, camera);
     const hit = ray.intersectObjects(sprites, false)[0];
     if (hit) { showCard(hit.object.userData.nutrient); return; }
+    if (st.placed && play.hits(ray)) { play.jump(); return; }      // atingere pe fruct: sare și face o tumbă
     const p = tablePoint(x, y);
     if (p) target.copy(p);
   }
 
   // ---------- gesturi ----------
   const cv = renderer.domElement;
-  let pinch0 = 0, scale0 = 1, ang0 = 0, yaw0 = 0, start = null, moved = 0;
-  const two = e => { const [a, b] = e.touches; return { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), ang: Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) }; };
+  let pinch0 = 0, scale0 = 1, ang0 = 0, yaw0 = 0, start = null, moved = 0, mid0 = null;
+  const two = e => { const [a, b] = e.touches; return { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), ang: Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX), mid: { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 } }; };
   const ts = e => {
     e.preventDefault();
-    if (e.touches.length >= 2) { const g = two(e); pinch0 = g.d; ang0 = g.ang; scale0 = st.targetScale; yaw0 = st.yaw; st.dragging = false; moved = 99; }
+    if (e.touches.length >= 2) { const g = two(e); pinch0 = g.d; ang0 = g.ang; scale0 = st.targetScale; yaw0 = st.yaw; st.dragging = false; moved = 99; mid0 = g.mid; }
     else { start = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: performance.now() }; moved = 0; st.dragging = false; }
   };
   const tm = e => {
@@ -162,6 +167,7 @@ export async function startTableAR(fruit, nutrients, ui) {
       st.targetScale = THREE.MathUtils.clamp(scale0 * g.d / pinch0, 0.25, 2.5);
       let da = g.ang - ang0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
       st.yaw = yaw0 - da; st.auto = false;
+      if (mid0) { play.roll(g.mid.x - mid0.x, g.mid.y - mid0.y, camera.quaternion); mid0 = g.mid; }   // rostogolire, și peste cap
     } else if (start && e.touches.length === 1) {
       const x = e.touches[0].clientX, y = e.touches[0].clientY;
       moved = Math.max(moved, Math.hypot(x - start.x, y - start.y));
@@ -169,7 +175,7 @@ export async function startTableAR(fruit, nutrients, ui) {
     }
   };
   const te = e => {
-    if (e.touches.length < 2) pinch0 = 0;
+    if (e.touches.length < 2) { pinch0 = 0; mid0 = null; }
     if (!e.touches.length) {
       if (start && moved <= 10 && performance.now() - start.t < 400) tap(start.x, start.y);
       start = null; st.dragging = false;
@@ -217,7 +223,7 @@ export async function startTableAR(fruit, nutrients, ui) {
       holder.scale.setScalar(Math.max(0.001, elastic) * st.scale);
       if (st.auto) st.yaw += dt * 0.5;
       spin.rotation.y += (st.yaw - spin.rotation.y) * 0.2;
-      model.position.y = lift() + Math.sin(tt * 1.6) * 0.004;
+      play.tumble.position.y = lift() + Math.sin(tt * 1.6) * 0.004 + play.update(dt, 1);
       orbit.rotation.y = tt * 0.35;
       glowRing.material.opacity = 0.45 + Math.sin(tt * 2.2) * 0.25;
       sprites.forEach(s => { const k = s.userData.nutrient.key === st.picked ? 1.45 : 1; s.scale.x += (0.065 * k - s.scale.x) * 0.2; s.scale.y = s.scale.x * 326 / 256; });

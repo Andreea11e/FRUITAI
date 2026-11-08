@@ -75,6 +75,8 @@ export async function startSession(fruit, nutrients, ui) {
   const THREE = await import("three");
   const { RoomEnvironment } = await import("three/addons/environments/RoomEnvironment.js");
   const { buildFruitModel, disposeObject } = await import("./fruit-models.js");
+  const { createPlay } = await import("./ar-play.js");
+  const { sound } = await import("./sound.js");
   const t = ui.t || (s => s);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -111,6 +113,8 @@ export async function startSession(fruit, nutrients, ui) {
   const lift = () => -model.userData.bottom * R + 0.002;   // fructul stă pe masă, indiferent de formă (și după ce se încarcă modelul real)
   model.position.y = lift();
   const spin = new THREE.Group(); spin.add(model); holder.add(spin);
+  // joaca: rostogolire cu două degete (și cu susul în jos) + săritură cu tumbă la atingerea fructului
+  const play = createPlay({ spin, model, R, color: fruit.visual.color, lift, sound });
   const shadow = new THREE.Mesh(new THREE.PlaneGeometry(R * 3.2, R * 3.2).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: softDisc(THREE, "0,0,0", 0.55), transparent: true, depthWrite: false }));
   shadow.position.y = 0.002; holder.add(shadow);
   const glowRing = new THREE.Mesh(new THREE.RingGeometry(R * 1.45, R * 1.55, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: new THREE.Color(fruit.visual.color).lerp(new THREE.Color(0xffffff), 0.3), transparent: true, opacity: 0.7 }));
@@ -148,17 +152,17 @@ export async function startSession(fruit, nutrients, ui) {
   // ---------- gesturi, fără butoane ----------
   // un deget: trage fructul pe masă / podea (îl urmează sub deget)
   // două degete: apropie / depărtează = mărește / micșorează; răsucește = întoarce fructul
-  let pinch0 = 0, scale0 = 1, ang0 = 0, yaw0 = 0, moved = 0, start = null;
+  let pinch0 = 0, scale0 = 1, ang0 = 0, yaw0 = 0, moved = 0, start = null, mid0 = null;
   const ov = ui.overlay;
   const two = e => {
     const [a, b] = e.touches;
-    return { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), ang: Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) };
+    return { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), ang: Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX), mid: { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 } };
   };
   const onStart = e => {
     if (e.target.closest("button, .xr-card")) return;
     moved = 0;
     if (e.touches.length >= 2) {
-      const g = two(e); pinch0 = g.d; ang0 = g.ang; scale0 = st.targetScale; yaw0 = st.yaw; st.dragging = false;
+      const g = two(e); pinch0 = g.d; ang0 = g.ang; scale0 = st.targetScale; yaw0 = st.yaw; st.dragging = false; mid0 = g.mid;
     } else { start = { x: e.touches[0].clientX, y: e.touches[0].clientY }; st.dragging = false; }
   };
   const onMove = e => {
@@ -168,6 +172,7 @@ export async function startSession(fruit, nutrients, ui) {
       st.targetScale = THREE.MathUtils.clamp(scale0 * g.d / pinch0, 0.4, 3);
       let da = g.ang - ang0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
       st.yaw = yaw0 - da; st.auto = false; moved += 20;
+      if (mid0) { play.roll(g.mid.x - mid0.x, g.mid.y - mid0.y, renderer.xr.getCamera().quaternion); mid0 = g.mid; }
     } else if (start && e.touches.length === 1) {
       const dist = Math.hypot(e.touches[0].clientX - start.x, e.touches[0].clientY - start.y);
       if (dist > 10) { st.dragging = true; st.auto = false; }
@@ -176,7 +181,7 @@ export async function startSession(fruit, nutrients, ui) {
     if (moved > 12) st.ignoreSelectUntil = performance.now() + 400;   // a fost un gest, nu o atingere
   };
   const onEnd = e => {
-    if (e.touches.length < 2) pinch0 = 0;
+    if (e.touches.length < 2) { pinch0 = 0; mid0 = null; }
     if (!e.touches.length) { start = null; st.dragging = false; }
   };
   ov.addEventListener("touchstart", onStart, { passive: true });
@@ -222,6 +227,7 @@ export async function startSession(fruit, nutrients, ui) {
         ray.camera = renderer.xr.getCamera();
         const hit = ray.intersectObjects(sprites, false)[0];
         if (hit) { showCard(hit.object.userData.nutrient); return; }
+        if (play.hits(ray)) { play.jump(); return; }          // atingere pe fruct: sare și face o tumbă
       }
     }
     // 2) altfel, prima atingere pune fructul pe suprafața găsită (după aceea se mută trăgându-l cu degetul)
@@ -301,7 +307,7 @@ export async function startSession(fruit, nutrients, ui) {
       holder.scale.setScalar(Math.max(0.001, elastic) * st.scale);
       if (st.auto) st.yaw += dt * 0.5;
       spin.rotation.y += (st.yaw - spin.rotation.y) * 0.2;
-      model.position.y = lift() + Math.sin(tt * 1.6) * 0.004;       // plutire ușoară
+      play.tumble.position.y = lift() + Math.sin(tt * 1.6) * 0.004 + play.update(dt, 1);   // plutire ușoară + săritura
       orbit.rotation.y = tt * 0.35;
       glowRing.material.opacity = 0.45 + Math.sin(tt * 2.2) * 0.25;
       sprites.forEach(s => { const k = s.userData.nutrient.key === st.picked ? 1.45 : 1; s.scale.x += (0.05 * k - s.scale.x) * 0.2; s.scale.y = s.scale.x * 326 / 256; });

@@ -123,17 +123,21 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
   }
 
   // ---------- interacțiune ----------
-  // un deget / mouse: MUTĂ fructul (rămâne sub deget); două degete: mărire/micșorare + rotire (răsucire);
-  // rotița: mărire; mouse cu clic dreapta sau Shift: rotire
+  // un deget / mouse: MUTĂ fructul (rămâne sub deget); două degete: mărire/micșorare (depărtare), rostogolire în
+  // orice direcție, și cu susul în jos (trase împreună), înclinare (răsucire); rotița: mărire; clic dreapta / Shift: rotire
   const state = { yaw: 0, pitch: 0.12, vYaw: 0, vPitch: 0, auto: true, idleUntil: 0, zoom: HOME_Z, targetZoom: HOME_Z, appear: 0, wobble: 0,
     panX: 0, panY: 0, mode: "move", lastTouch: 0 };
-  const ptrs = new Map(); let pinch0 = 0, ang0 = null;
+  const ptrs = new Map(); let pinch0 = 0, ang0 = null, mid0 = null;
+  // rotirea făcută de copil cu două degete, în orice direcție (și cu susul în jos)
+  const qUser = new THREE.Quaternion(), qTmp = new THREE.Quaternion(), qBase = new THREE.Quaternion(), eBase = new THREE.Euler();
+  const AX = new THREE.Vector3(1, 0, 0), AY = new THREE.Vector3(0, 1, 0), AZ = new THREE.Vector3(0, 0, 1);
+  const turn = (axis, a) => { qTmp.setFromAxisAngle(axis, a); qUser.premultiply(qTmp); };
   const unitsPerPx = () => 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z / Math.max(1, canvas.clientHeight);
   const clampPan = () => { state.panX = THREE.MathUtils.clamp(state.panX, -3, 3); state.panY = THREE.MathUtils.clamp(state.panY, -2.2, 2.2); };
   if (interactive) {
     canvas.style.touchAction = "none";
     canvas.addEventListener("contextmenu", e => e.preventDefault());
-    canvas.addEventListener("pointerdown", e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, rot: e.button === 2 || e.shiftKey }); state.idleUntil = performance.now() + 2500; state.lastTouch = performance.now(); if (ptrs.size === 2) { pinch0 = 0; ang0 = null; } });
+    canvas.addEventListener("pointerdown", e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, rot: e.button === 2 || e.shiftKey }); state.idleUntil = performance.now() + 2500; state.lastTouch = performance.now(); if (ptrs.size === 2) { pinch0 = 0; ang0 = null; mid0 = null; } });
     canvas.addEventListener("pointermove", e => {
       const p = ptrs.get(e.pointerId); if (!p) return;
       state.lastTouch = performance.now();
@@ -142,17 +146,22 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
         p.x = e.clientX; p.y = e.clientY;
         const [c, d] = [...ptrs.values()]; const d1 = Math.hypot(c.x - d.x, c.y - d.y), ang = Math.atan2(d.y - c.y, d.x - c.x);
         if (pinch0) state.targetZoom = THREE.MathUtils.clamp(state.targetZoom * (d0 / d1), 3.4, 10);
-        if (ang0 != null) { let da = ang - ang0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI; state.yaw += da; state.vYaw = 0; state.idleUntil = performance.now() + 2500; }
-        pinch0 = d1; ang0 = ang; return;
+        const mid = { x: (c.x + d.x) / 2, y: (c.y + d.y) / 2 };
+        // două degete trase împreună: fructul se rostogolește în acea direcție (sus/jos = peste cap, stânga/dreapta = în jur)
+        if (mid0) { turn(AY, (mid.x - mid0.x) * 0.014); turn(AX, (mid.y - mid0.y) * 0.014); }
+        // două degete răsucite: fructul se înclină
+        if (ang0 != null) { let da = ang - ang0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI; turn(AZ, -da); }
+        state.vYaw = 0; state.idleUntil = performance.now() + 2500;
+        pinch0 = d1; ang0 = ang; mid0 = mid; return;
       }
       const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
       // un deget: fructul se mută exact sub deget (sus, jos, stânga, dreapta)
       if (state.mode === "move" && !p.rot) { const u = unitsPerPx(); state.panX += dx * u; state.panY -= dy * u; clampPan(); return; }
-      state.vYaw = dx * 0.012; state.vPitch = dy * 0.008;
-      state.yaw += state.vYaw; state.pitch = THREE.MathUtils.clamp(state.pitch + state.vPitch, -0.9, 0.9);
+      // mouse cu clic dreapta / Shift: rotire liberă, tot în orice direcție
+      turn(AY, dx * 0.012); turn(AX, dy * 0.012);
       state.idleUntil = performance.now() + 2500;
     });
-    const up = e => { ptrs.delete(e.pointerId); pinch0 = 0; ang0 = null; };
+    const up = e => { ptrs.delete(e.pointerId); pinch0 = 0; ang0 = null; mid0 = null; };
     canvas.addEventListener("pointerup", up); canvas.addEventListener("pointercancel", up);
     canvas.addEventListener("wheel", e => { e.preventDefault(); state.lastTouch = performance.now(); state.targetZoom = THREE.MathUtils.clamp(state.targetZoom * (1 + Math.sign(e.deltaY) * 0.1), 3.4, 10); }, { passive: false });
   } else canvas.style.pointerEvents = "none";
@@ -193,7 +202,8 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
     state.wobble = Math.max(0, state.wobble - dt * 2.2);
     const wob = 1 + Math.sin(t * 22) * 0.06 * state.wobble;
     pivot.scale.setScalar(Math.max(0.001, elastic) * wob);
-    pivot.rotation.set(state.pitch, state.yaw, 0);
+    qBase.setFromEuler(eBase.set(state.pitch, state.yaw, 0));
+    pivot.quaternion.copy(qUser).multiply(qBase);
     pivot.position.y = reducedMotion ? 0 : Math.sin(t * 1.4) * 0.06;
     world.position.x += (state.panX - world.position.x) * 0.25;
     world.position.y += (state.panY - world.position.y) * 0.25;
@@ -222,7 +232,7 @@ export function createFruitScene(canvas, fruit, { reducedMotion = false, distanc
   return {
     zoom(dir) { state.targetZoom = THREE.MathUtils.clamp(state.targetZoom * (dir > 0 ? 0.82 : 1.22), 3.4, 10); },
     rotate(step = 1) { state.vYaw += 0.12 * step; state.idleUntil = performance.now() + 1500; },
-    reset() { state.targetZoom = HOME_Z; state.yaw = 0; state.pitch = 0.12; state.vYaw = state.vPitch = 0; state.auto = true; state.idleUntil = 0; state.panX = state.panY = 0; state.mode = "move"; },
+    reset() { state.targetZoom = HOME_Z; state.yaw = 0; state.pitch = 0.12; state.vYaw = state.vPitch = 0; state.auto = true; state.idleUntil = 0; state.panX = state.panY = 0; state.mode = "move"; qUser.identity(); },
     /** „move” (implicit): un deget mută fructul; „rotate”: un deget îl rotește. */
     setMode(mode) { state.mode = mode; return state.mode; },
     get mode() { return state.mode; },

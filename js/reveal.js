@@ -188,7 +188,7 @@ export async function showReveal(stage, id, opts) {
   acts.style.setProperty("--d", end + "s");
   root.querySelector(".rv-tools").style.setProperty("--d", (T0 + 0.4) + "s");
   acts.innerHTML = `<button type="button" class="dbtn big primary" data-rv="more"><span aria-hidden="true">✨</span><span>${esc(t("Află mai multe"))}</span></button>
-    ${opts.canPlaceAR?.() ? `<button type="button" class="dbtn big ar" data-rv="space">${svgIcon("ar")}<span>${esc(t(portrait ? "Pe masă" : "Pune-l pe masă"))}</span></button>` : ""}
+    ${opts.canPlaceAR?.() ? `<button type="button" class="dbtn big ar" data-rv="space">${svgIcon("ar")}<span>${esc(t(portrait ? "Lângă tine" : "Adu-l lângă tine"))}</span></button>` : ""}
     <button type="button" class="dbtn big" data-rv="again"><span>${esc(t(opts.source === "photo" ? "Altă poză" : "Alt fruct"))}</span></button>`;
   acts.querySelector('[data-rv="more"]').onclick = () => { sound.tick(); opts.onMore(id); };
   acts.querySelector('[data-rv="again"]').onclick = () => { sound.tick(); opts.onAgain(); };

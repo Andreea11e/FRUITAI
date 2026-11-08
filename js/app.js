@@ -1245,7 +1245,7 @@ async function startTable(f, orientation) {
   state.xrActive = true; updateXRButton();
   const overlay = $("xrOverlay");
   try {
-    setStatus("Se pune fructul pe masă…", "busy");
+    setStatus("Aduc fructul lângă tine…", "busy");
     const mod = await import("./table-ar.js");
     await mod.startTableAR(f, catalog.nutrientsFor(f.id), {
       overlay, close: $("xrClose"), card: $("xrCard"), t, orientation,
@@ -1255,7 +1255,7 @@ async function startTable(f, orientation) {
         if (document.fullscreenElement === document.documentElement) document.exitFullscreen().catch(() => {});
       }
     });
-    setStatus("Fructul e pe masă", "ok");
+    setStatus("Fructul e lângă tine", "ok");
     return true;
   } catch (e) {
     console.error(e);
