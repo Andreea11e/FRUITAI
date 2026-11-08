@@ -18,6 +18,7 @@ const PREFERRED = {
 };
 // modele cu mai multe fructe: păstrăm unul singur (după numele nodului din glTF)
 const KEEP_NODE = { banana: "bananas_bunch", pear: "food_pears_asian_01_b" };
+const UPRIGHT = new Set(["pear"]);   // în scena originală para stă culcată
 const NOT_FRUIT = /(juice|bowl|crate|basket|box|tree|plant|bush|stand|cart|jar|bottle|can_|knife|board|cake|pie)/i;
 
 const getJSON = async u => { const r = await fetch(u, { headers: UA }); if (!r.ok) throw new Error(`${u}: ${r.status}`); return r.json(); };
@@ -28,13 +29,14 @@ const download = async (u, file) => {
 };
 
 /** Păstrează în scenă doar nodul `name`, așezat în origine (editează direct JSON-ul din fișierul GLB). */
-async function keepOnlyNode(file, name) {
+async function keepOnlyNode(file, name, upright = false) {
   const b = await fs.readFile(file);
   const jsonLen = b.readUInt32LE(12), json = JSON.parse(b.subarray(20, 20 + jsonLen).toString("utf8"));
   const idx = json.nodes.findIndex(n => n.name === name);
   if (idx < 0) return console.log(`  nodul ${name} nu există`);
   json.scenes[json.scene || 0].nodes = [idx];
   delete json.nodes[idx].translation;
+  if (upright) delete json.nodes[idx].rotation;
   let txt = JSON.stringify(json); while (Buffer.byteLength(txt) % 4) txt += " ";
   const jb = Buffer.from(txt), rest = b.subarray(20 + jsonLen), head = Buffer.alloc(20);
   head.writeUInt32LE(0x46546C67, 0); head.writeUInt32LE(2, 4); head.writeUInt32LE(20 + jb.length + rest.length, 8);
@@ -72,7 +74,7 @@ for (const [fruit, { asset, name }] of Object.entries(report.chosen)) {
     const glb = path.join(OUT, `${fruit}.glb`);
     const cli = (...a) => execFileSync("npx", ["--yes", "@gltf-transform/cli@4.1.1", ...a], { stdio: "inherit" });
     cli("copy", main, glb);
-    if (KEEP_NODE[fruit]) await keepOnlyNode(glb, KEEP_NODE[fruit]);
+    if (KEEP_NODE[fruit]) await keepOnlyNode(glb, KEEP_NODE[fruit], UPRIGHT.has(fruit));
     cli("dedup", glb, glb);
     cli("prune", glb, glb);
     cli("resize", glb, glb, "--width", "1024", "--height", "1024");
