@@ -1388,3 +1388,8 @@ header.nav { border-bottom: 1px solid rgba(255,255,255,.06); }
 .cat-reset-row { display: flex; justify-content: center; margin-top: 18px; }
 .cat-reset, .gc-reset { opacity: .8; }
 .cat-reset[hidden] { display: none; }
+
+/* fereastra stelelor: quiz sus, „Începe de la zero” chiar dedesubt */
+.gc-btns { flex-direction: column; align-items: center; }
+.gc-btns .dbtn { width: min(100%, 320px); justify-content: center; }
+.gc-btns .gc-reset { opacity: 1; background: transparent; border: 1px solid rgba(255,255,255,.22); }
