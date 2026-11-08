@@ -1,6 +1,7 @@
 // FruitAI — imaginea unui fruct, generată din catalog.
 // Dacă înregistrarea are „image”, se folosește fotografia; altfel se desenează
 // o ilustrație SVG din „visual.color” și „visual.shape”. Nimic specific unui fruct anume.
+import { realImg } from "./fruit-img.js";
 
 let uid = 0;
 
@@ -33,8 +34,10 @@ const SHAPES = {
 
 /** Întoarce marcajul HTML pentru imaginea fructului. */
 export function fruitArt(fruit, { size = 96, className = "art" } = {}) {
-  if (fruit.image) {
-    return `<img class="${className}" src="${esc(fruit.image)}" alt="" width="${size}" height="${size}" loading="lazy" decoding="async">`;
+  // imaginea fructului real (din modelul 3D realist), dacă există; altfel desenul de mai jos
+  const real = fruit.image || realImg(fruit.id);
+  if (real) {
+    return `<img class="${className} real" src="${esc(real)}" alt="" width="${size}" height="${size}" loading="lazy" decoding="async" style="object-fit:contain">`;
   }
   const id = "g" + (++uid);
   const c = fruit.visual.color;

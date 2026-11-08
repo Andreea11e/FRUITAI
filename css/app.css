@@ -1330,3 +1330,13 @@ header.nav { border-bottom: 1px solid rgba(255,255,255,.06); }
   background: rgba(255,255,255,.025); border: 1.5px dashed rgba(255,255,255,.16); border-top: 0; box-shadow: none; color: var(--lime); }
 .cat-meta.cat-start + .cat-cta:hover { background: rgba(255,255,255,.04); transform: none; }
 .cat-cta[hidden] { display: none; }
+
+/* Lumea 3D: imaginile fructelor reale în exemple */
+.ar-visual .brk::after { width: 86%; height: 86%; margin: 0; left: 7%; top: 7%; border-radius: 0; box-shadow: none;
+  background: var(--demo-img) center / contain no-repeat; filter: drop-shadow(0 12px 18px rgba(0,0,0,.55)); }
+.ar-visual .fruit { position: absolute; left: 50%; bottom: 21%; height: 52%; width: auto; transform: translateX(-50%);
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,.6)); animation: float 5s ease-in-out infinite; }
+.ar-visual .fruit:not([src]) { display: none; }
+.ar-visual .float { bottom: auto; top: 8%; }
+
+@media (max-width: 560px) { .hero .scene3d { margin-top: 36px; } }

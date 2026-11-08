@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FruitAI — descoperă fructele în 3D</title>
-<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=20261108f">
+<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=20261108g">
 <meta name="description" content="Îndreaptă camera spre un fruct. FruitAI îl recunoaște direct în browser și îi ancorează în imagine numele în română și engleză, împreună cu vitaminele lui.">
 <meta name="theme-color" content="#0D0926">
 <!-- site-ul e deja întunecat: browserele (Chrome, Samsung Internet) nu trebuie să-l „întunece” singure, ar face negrul gri -->
@@ -14,14 +14,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&family=Nunito:wght@700;800;900&display=swap">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<link rel="stylesheet" href="css/app.css?v=20261108f">
+<link rel="stylesheet" href="css/app.css?v=20261108g">
 </head>
 <body>
 <div class="aurora" aria-hidden="true"></div>
 
 <header class="nav">
   <div class="container nav-in">
-    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><img class="logo" src="img/logo.svg?v=20261108f" alt="" width="40" height="40"><span>Fruit<b>AI</b></span></a>
+    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><img class="logo" src="img/logo.svg?v=20261108g" alt="" width="40" height="40"><span>Fruit<b>AI</b></span></a>
     <nav class="nav-links" aria-label="Secțiuni">
       <a href="#scanner">Scanează</a>
       <a href="#catalog">Colecția mea</a>
@@ -30,7 +30,6 @@
       <a href="#beneficii">De ce FruitAI</a>
     </nav>
     <div class="nav-right">
-      <button type="button" class="star-pill" id="starPill" aria-label="Steluțele și colecția mea"><span aria-hidden="true">⭐</span><b>0</b></button>
       <div class="lang-switch" role="group" aria-label="Limba" data-no-i18n>
         <button type="button" data-lang="ro" aria-pressed="true">RO</button><button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
@@ -44,9 +43,8 @@
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <span class="kicker">Pentru copii curioși · AI + realitate augmentată</span>
         <h1>Descoperă <em>superputerile</em> fructelor!</h1>
-        <p class="lead">Arată camerei un fruct adevărat sau poza unui fruct. FruitAI îl recunoaște, îl transformă într-un fruct 3D pe care îl poți învârti, mări și chiar pune pe masă în realitate augmentată, și îți arată vitaminele lui, în română și engleză.</p>
+        <p class="lead">Ține un fruct în fața camerei și privește-l cum prinde viață: apare în 3D, își spune numele în română și engleză și îți arată ce vitamine ascunde. Apoi îl poți așeza pe masă, chiar lângă tine.</p>
         <div class="hero-cta">
           <button class="btn kid-cta" type="button" data-start>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
@@ -58,9 +56,9 @@
           </a>
         </div>
         <div class="facts">
-          <div><b data-count="scannable">—</b>fructe recunoscute</div>
-          <div><b>3D</b>fiecare fruct are modelul lui</div>
-          <div><b>2 × AR</b>în cameră și pe masă</div>
+          <div><b data-count="scannable">—</b>fructe pe care le cunoaște</div>
+          <div><b>3D</b>fructe aproape ca adevărate</div>
+          <div><b>RO + EN</b>numele în două limbi</div>
         </div>
       </div>
 
@@ -90,13 +88,13 @@
     <div class="container">
       <div class="sec-head reveal">
         <div class="eyebrow">Cum te joci</div>
-        <h2>Patru pași până la <em>superputerile fructelor</em></h2>
+        <h2>De la fructul din mână <em>la vitaminele lui</em></h2>
       </div>
       <div class="steps">
-        <div class="step reveal" style="--sc:#FFB547"><span class="sn">1</span><div class="si" aria-hidden="true">📷</div><h3>Scanează un fruct</h3><p>Arată camerei un fruct adevărat, o poză, o carte sau un desen.</p></div>
-        <div class="step reveal" style="--sc:#8B6CFF"><span class="sn">2</span><div class="si" aria-hidden="true">🧊</div><h3>Descoperă modelul 3D</h3><p>Fructul devine 3D. Îl învârți, îl mărești și îl pui pe masă.</p></div>
-        <div class="step reveal" style="--sc:#3DDC97"><span class="sn">3</span><div class="si" aria-hidden="true">✨</div><h3>Explorează vitaminele</h3><p>Atinge vitaminele din jurul fructului și află ce fac pentru corpul tău.</p></div>
-        <div class="step reveal" style="--sc:#FF6FB5"><span class="sn">4</span><div class="si" aria-hidden="true">🏆</div><h3>Învață prin joacă</h3><p>Strânge steluțe și insigne, rezolvă provocări și quiz-uri.</p></div>
+        <div class="step reveal" style="--sc:#FFB547"><span class="sn">1</span><div class="si" aria-hidden="true">📷</div><h3>Arată un fruct</h3><p>Ține în fața camerei un fruct adevărat sau poza unuia dintr-o carte.</p></div>
+        <div class="step reveal" style="--sc:#8B6CFF"><span class="sn">2</span><div class="si" aria-hidden="true">🧊</div><h3>Privește-l în 3D</h3><p>Fructul apare în 3D. Îl învârți, îl mărești și îl așezi pe masă.</p></div>
+        <div class="step reveal" style="--sc:#3DDC97"><span class="sn">3</span><div class="si" aria-hidden="true">✨</div><h3>Află ce vitamine are</h3><p>Atinge vitaminele din jurul lui și află cum te ajută să crești sănătos.</p></div>
+        <div class="step reveal" style="--sc:#FF6FB5"><span class="sn">4</span><div class="si" aria-hidden="true">🏆</div><h3>Învață jucându-te</h3><p>Câștigă insigne, primește provocări și răspunde la quiz-uri.</p></div>
       </div>
       <div class="steps-cta">
         <button class="btn kid-cta" type="button" id="btnDemo"><span aria-hidden="true">✨</span><span>Încearcă fără cameră</span></button>
@@ -110,8 +108,8 @@
     <div class="container">
       <div class="sec-head reveal">
         <div class="eyebrow">Scanează un fruct</div>
-        <h2>Arată-i un fruct. <em>Restul apare peste imagine.</em></h2>
-        <p>Pornește camera pentru modul AR live sau încarcă o fotografie. Eticheta urmărește fructul în cadru, iar senzorii ambientali îți spun ce să ajustezi ca rezultatul să fie bun.</p>
+        <h2>Ține un fruct în fața camerei. <em>Restul e magie.</em></h2>
+        <p>Pornește camera și apropie fructul. FruitAI îl găsește în imagine, îl recunoaște în câteva clipe și îți spune dacă e nevoie de mai multă lumină sau să ții telefonul nemișcat.</p>
       </div>
 
       <div class="scanner">
@@ -124,7 +122,7 @@
               <div class="inner">
                 <div class="reticle" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
                 <strong id="emptyTitle">Arată-mi un fruct</strong>
-                <span id="emptyText">Fă o fotografie sau încarcă o imagine. Poți și să o tragi aici ori să o lipești cu Ctrl+V.</span>
+                <span id="emptyText">Pornește camera și ține un fruct în fața ei.</span>
               </div>
             </div>
 
@@ -153,13 +151,9 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               <span>Pornește camera AR</span>
             </button>
-            <label class="btn" id="btnPhoto" for="fileCam">
+            <label class="btn" id="btnPhoto" for="fileCam" hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
               <span>Fă o fotografie</span>
-            </label>
-            <label class="btn" for="fileUp">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <span>Încarcă imagine</span>
             </label>
             <button class="btn" id="btnCapture" type="button" disabled title="Salvează imaginea cu eticheta AR">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -237,7 +231,7 @@
       <div class="sec-head reveal">
         <div class="eyebrow">Cum funcționează</div>
         <h2>Arăți fructul, <em>FruitAI îl recunoaște</em> în câteva clipe.</h2>
-        <p>Inteligența artificială se uită la imagine, găsește fructul, îl recunoaște dintre zeci de fructe și îl transformă într-un fruct 3D cu vitaminele lui.</p>
+        <p>FruitAI găsește fructul în imagine, îl recunoaște dintre peste 60 de fructe și îl transformă într-un fruct 3D, cu vitaminele lui în jur.</p>
       </div>
       <div class="pipe reveal">
         <div class="node"><span class="n">01</span><b>Găsește</b><small>O ramă galbenă arată imediat unde e fructul pe ecran.</small></div>
@@ -259,7 +253,7 @@
         <div class="card reveal">
           <div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M7 15V9M12 15V5M17 15v-3"/></svg></div>
           <h3>Fructe reale, poze și desene</h3>
-          <p>Merge cu un fruct adevărat, cu o fotografie, cu o imagine dintr-o carte sau cu un desen.</p>
+          <p>Merge cu un fruct adevărat, dar și cu poza unui fruct dintr-o carte, de pe o tabletă sau un desen.</p>
         </div>
       </div>
     </div>
@@ -271,7 +265,7 @@
       <div class="sec-head reveal">
         <div class="eyebrow">Camera isteață</div>
         <h2>Te ajută <em>să arăți fructul perfect.</em></h2>
-        <p>FruitAI verifică lumina, claritatea, mișcarea și distanța și îți spune pe loc ce să faci: să te apropii, să ții camera nemișcată sau să cauți mai multă lumină.</p>
+        <p>FruitAI se uită la lumină, claritate, mișcare și distanță și îți spune pe loc ce să faci: să te apropii, să ții telefonul nemișcat sau să cauți mai multă lumină.</p>
       </div>
       <div class="grid-4">
         <div class="card amb reveal">
@@ -279,28 +273,28 @@
           <h3>Lumină</h3>
           <div class="val"><i id="aLightDot"></i><span id="aLight">Pornește camera</span></div>
           <div class="meter"><i id="aLightBar"></i></div>
-          <p>Luminozitatea medie a cadrului. În lumină slabă primești un sfat, iar într-un cadru foarte luminos eticheta devine mai opacă.</p>
+          <p>Dacă e prea întuneric, îți spune să cauți mai multă lumină.</p>
         </div>
         <div class="card amb reveal">
           <div class="ico m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
           <h3>Claritate</h3>
           <div class="val"><i id="aSharpDot"></i><span id="aSharp">Pornește camera</span></div>
           <div class="meter"><i id="aSharpBar"></i></div>
-          <p>Cât detaliu are imaginea. O fotografie mișcată sau nefocalizată e semnalată înainte să primești un rezultat greșit.</p>
+          <p>Observă când imaginea e mișcată sau neclară, înainte să greșească.</p>
         </div>
         <div class="card amb reveal">
           <div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg></div>
           <h3>Mișcare</h3>
           <div class="val"><i id="aMotionDot"></i><span id="aMotion">Pornește camera</span></div>
           <div class="meter"><i id="aMotionBar"></i></div>
-          <p>Diferența dintre cadre. Când scena nu se schimbă, rezultatul e păstrat fără o nouă analiză, ca să economisească bateria.</p>
+          <p>Când ții fructul nemișcat, nu mai analizează degeaba, așa că bateria ține mai mult.</p>
         </div>
         <div class="card amb reveal">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><rect x="8" y="8" width="8" height="8" rx="1.5"/></svg></div>
           <h3>Distanță</h3>
           <div class="val"><i id="aDistDot"></i><span id="aDist">Fără fruct în cadru</span></div>
           <div class="meter"><i id="aDistBar"></i></div>
-          <p>Cât din cadru ocupă fructul detectat. Te ghidează să te apropii sau să te depărtezi pentru o identificare bună.</p>
+          <p>Îți spune când să apropii fructul sau să-l ții puțin mai departe.</p>
         </div>
       </div>
     </div>
@@ -312,7 +306,7 @@
       <div class="sec-head reveal">
         <div class="eyebrow">Lumea 3D</div>
         <h2>Fructul tău, în 3D. <em>Chiar pe masa ta.</em></h2>
-        <p>Fructul 3D apare peste imaginea camerei. Îl învârți și îl mărești cu degetele, apoi îl poți pune pe masă sau pe podea.</p>
+        <p>Fructul apare în 3D peste imaginea camerei. Îl învârți și îl mărești cu degetele, apoi îl așezi pe masă sau pe podea, cu vitaminele lui în jur.</p>
       </div>
       <div class="grid-2">
         <div class="card reveal">
@@ -322,7 +316,7 @@
             <div class="lbl" id="arDemo1"></div>
           </div>
           <h3>AR în cameră</h3>
-          <p>Fiecare fruct detectat e încadrat, iar eticheta cu numele și vitaminele e prinsă de el, cu vitaminele plutind în jurul lui. Atingi eticheta ca să deschizi fișa, treci pe tot ecranul și salvezi captura.</p>
+          <p>Fructul recunoscut apare în 3D chiar acolo unde l-ai ținut, cu numele și vitaminele lui în jur. Atinge o vitamină ca să afli ce face.</p>
           <div class="support" id="supCam"><i></i><span>Se verifică…</span></div>
           <div class="hub-actions"><button class="btn kid-cta" type="button" data-start id="hubCam"><span aria-hidden="true">📷</span><span>Pornește Camera AR</span></button></div>
         </div>
@@ -330,10 +324,11 @@
           <div class="ar-visual" aria-hidden="true">
             <div class="plane"></div>
             <div class="pin"></div>
+            <img class="fruit" id="arDemo2Img" alt="" width="120" height="120">
             <div class="float" id="arDemo2"></div>
           </div>
           <h3>Fructul pe masă</h3>
-          <p>Pui fructul 3D pe masă sau pe podea și îl privești prin cameră. Îl muți cu un deget, îl mărești și îl rotești cu două degete. Atinge vitaminele care orbitează ca să afli ce fac. Merge pe orice telefon sau tabletă cu cameră.</p>
+          <p>Așezi fructul pe masă sau pe podea și te uiți la el prin cameră. Îl muți cu un deget, îl mărești și îl rotești cu două. Vitaminele se rotesc în jurul lui: atinge-le ca să afli ce fac. Merge pe orice telefon sau tabletă cu cameră.</p>
           <div class="support" id="supXR"><i></i><span>Se verifică…</span></div>
           <div class="hub-xr" id="hubXR" hidden>
             <p class="hub-pick">Alege fructul pe care îl pui pe masă:</p>
@@ -350,19 +345,19 @@
     <div class="container">
       <div class="sec-head reveal">
         <div class="eyebrow">De ce FruitAI</div>
-        <h2>Utilă în bucătărie, <em>la piață</em> și la cumpărături.</h2>
+        <h2>Pentru acasă, <em>la grădiniță</em> și la școală.</h2>
       </div>
       <div class="grid-4">
         <div class="card benefit reveal"><div class="num">0 <em>instalări</em></div><h3>Direct în browser</h3><p>Se deschide pe telefon, tabletă sau calculator. Nu trebuie descărcată nicio aplicație.</p></div>
         <div class="card benefit reveal"><div class="num">2 <em>limbi</em></div><h3>Română și engleză</h3><p>Copiii învață numele fiecărui fruct în ambele limbi, iar toată aplicația se schimbă dintr-un singur buton.</p></div>
-        <div class="card benefit reveal"><div class="num">7 <em>insigne</em></div><h3>Învață prin joacă</h3><p>Steluțe, insigne, provocări și quiz-uri care îi motivează pe copii să descopere fructe noi.</p></div>
+        <div class="card benefit reveal"><div class="num">7 <em>insigne</em></div><h3>Învață prin joacă</h3><p>Insigne, provocări și quiz-uri care îi fac pe copii curioși să încerce fructe noi.</p></div>
         <div class="card benefit reveal"><div class="num"><span data-count="fruits">—</span> <em>fructe</em></div><h3>O colecție de descoperit</h3><p>Fiecare fruct găsit intră în colecția copilului, cu fișa lui: vitamine, minerale și curiozități.</p></div>
       </div>
       <div class="honest reveal">
         <div>
           <h3>Ce face FruitAI</h3>
           <ul>
-            <li>Recunoaște un fruct din cameră sau dintr-o fotografie.</li>
+            <li>Recunoaște fructul pe care îl ții în fața camerei.</li>
             <li>Îți arată numele în română și engleză, vitaminele și mineralele principale.</li>
             <li>Îți spune când imaginea e prea întunecată, mișcată sau prea departe.</li>
           </ul>
@@ -383,9 +378,9 @@
     <div class="container">
       <div class="final reveal">
         <h2>Ai un fruct la îndemână?</h2>
-        <p>Pornește scannerul și vezi eticheta apărând peste el. Durează câteva secunde, iar la prima utilizare se descarcă modelele.</p>
+        <p>Pornește camera și privește-l cum prinde viață. Prima dată durează puțin mai mult, apoi merge din prima.</p>
         <div class="hero-cta">
-          <button class="btn primary" type="button" data-start><span>Pornește scannerul</span></button>
+          <button class="btn primary" type="button" data-start><span>Pornește camera</span></button>
           <a class="btn" href="#cum">Cum funcționează</a>
         </div>
       </div>
@@ -404,6 +399,6 @@
   <div class="xr-card" id="xrCard" hidden></div>
 </div>
 
-<script type="module" src="js/app.js?v=20261108f"></script>
+<script type="module" src="js/app.js?v=20261108g"></script>
 </body>
 </html>

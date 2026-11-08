@@ -188,6 +188,15 @@ export async function startTableAR(fruit, nutrients, ui) {
     raf = requestAnimationFrame(loop);
     const dt = Math.min(0.05, clock.getDelta()), tt = clock.elapsedTime;
     if (gyro.ok) camera.quaternion.slerp(gyro.q, 0.35);
+    // plasă de siguranță: dacă fructul a ieșit din ecran de peste 1,5 s (giroscop ciudat, telefon întors),
+    // îl aducem înapoi în fața camerei
+    if (st.placed && !st.dragging) {
+      camera.updateMatrixWorld();
+      const v = holder.position.clone().project(camera);
+      const off = v.z > 1 || Math.abs(v.x) > 1.25 || Math.abs(v.y) > 1.25;
+      st.offFor = off ? (st.offFor || 0) + dt : 0;
+      if (st.offFor > 1.5) { st.offFor = 0; place(); }
+    }
     if (st.placed) {
       holder.position.lerp(target, 0.25);
       st.appear = Math.min(1, st.appear + dt / 0.9);
@@ -199,7 +208,7 @@ export async function startTableAR(fruit, nutrients, ui) {
       model.position.y = lift() + Math.sin(tt * 1.6) * 0.004;
       orbit.rotation.y = tt * 0.35;
       glowRing.material.opacity = 0.45 + Math.sin(tt * 2.2) * 0.25;
-      sprites.forEach(s => { const k = s.userData.nutrient.key === st.picked ? 1.45 : 1; s.scale.x += (0.05 * k - s.scale.x) * 0.2; s.scale.y = s.scale.x * 326 / 256; });
+      sprites.forEach(s => { const k = s.userData.nutrient.key === st.picked ? 1.45 : 1; s.scale.x += (0.065 * k - s.scale.x) * 0.2; s.scale.y = s.scale.x * 326 / 256; });
       camera.getWorldPosition(camPos);
       panel.lookAt(camPos.x, holder.position.y + panel.position.y * holder.scale.y, camPos.z);
     }

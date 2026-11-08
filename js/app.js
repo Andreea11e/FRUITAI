@@ -92,7 +92,6 @@ function setTop(tagText, tagClass, note) {
 
 function showFruitCard(fruit, opts = {}) {
   state.shownFruit = fruit;
-  prepareAndroidAR(fruit);
   const f = catalog.get(fruit);
   el.roName.textContent = f.ro;
   el.enName.innerHTML = "English: <b></b>";
@@ -898,7 +897,7 @@ async function handleFile(file) {
 [el.fileCam, el.fileUp].forEach(inp => inp.addEventListener("change", () => { handleFile(inp.files[0]); inp.value = ""; }));
 el.stage.addEventListener("dragover", e => { e.preventDefault(); el.stage.classList.add("drag"); });
 el.stage.addEventListener("dragleave", () => el.stage.classList.remove("drag"));
-el.stage.addEventListener("drop", e => { e.preventDefault(); el.stage.classList.remove("drag"); handleFile(e.dataTransfer.files[0]); });
+el.stage.addEventListener("drop", e => { e.preventDefault(); el.stage.classList.remove("drag"); });
 window.addEventListener("paste", e => {
   const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith("image/"));
   if (item) handleFile(item.getAsFile());
@@ -1027,7 +1026,7 @@ function restartFlow() {
   state.ambient = { light: null, sharp: null, motion: null, area: null };
   el.btnCapture.disabled = el.btnImm.disabled = true;
   renderAmbient();
-  el.fileUp.click();
+  if (state.engine === "local" && !el.btnCamera.hidden) startCamera();
 }
 
 // ---------------- Camera AR live (cu modelele locale) ----------------
@@ -1203,64 +1202,9 @@ async function placeOnTable(id) {
   if (id) showFromCatalog(id);
   const f = catalog.get(id || state.shownFruit);
   if (!f) return;
-  // Android: aplicația de AR a Google (Scene Viewer) găsește masa, pune fructul pe ea și are deja
-  // gesturile pentru mutare, mărire și rotire. E cea mai sigură variantă pe telefoanele Samsung / Android.
-  if (IS_ANDROID) {
-    const orientation = askOrientation();
-    if (await openAndroidAR(f)) return;
-    return startTable(f, orientation);              // fără AR pe telefon: fructul apare peste imaginea camerei
-  }
-  // iPhone cere voie pentru giroscop doar direct dintr-o atingere, deci întrebăm acum, înainte de orice await
-  const orientation = !state.xrSupported && !state.qlSupported ? askOrientation() : null;
-  if (state.xrSupported && await startXR()) return;
-  if (state.qlSupported && !state.xrSupported) {
-    stopCamera();
-    try {
-      setStatus("Se pregătește fructul pentru masă…", "busy");
-      const ql = await import("./quicklook.js");
-      await ql.openQuickLook(f);
-      setStatus("Fructul e gata de pus pe masă", "ok");
-      return;
-    } catch (e) { console.warn("AR Quick Look:", e); }
-  }
-  return startTable(f, orientation || Promise.resolve(true));
-}
-const IS_ANDROID = /Android/i.test(navigator.userAgent);
-/** Modelul pentru AR: cel scanat după fructul real, dacă există, altfel cel generat (data/ar/). */
-async function arModelURL(f) {
-  const fm = await import("./fruit-models.js");
-  return fm.realModelURL(f.id) || new URL(`data/ar/${f.id}.glb`, location.href).href;
-}
-/** Pe Android, pregătim din timp AR-ul pentru fructul afișat, ca „Pe masă” să pornească imediat. */
-function prepareAndroidAR(id) {
-  const f = IS_ANDROID && catalog?.get(id);
-  if (!f) return;
-  Promise.all([import("./ar-android.js"), arModelURL(f)]).then(([ar, url]) => ar.prepare(url, fruitName(f.id))).catch(() => {});
-}
-// aplicația Google de AR nu există pe telefon: browserul revine pe site cu acest semn; de acum folosim camera
-const NO_AR = "fruitai.noAndroidAR";
-const noAndroidAR = () => { try { return sessionStorage.getItem(NO_AR) === "1"; } catch { return false; } };
-if (location.hash === "#model-viewer-no-ar-fallback") {
-  try { sessionStorage.setItem(NO_AR, "1"); } catch {}
-  history.replaceState(null, "", location.pathname + location.search);
-}
-async function openAndroidAR(f) {
-  try {
-    setStatus("Se deschide fructul pe masă…", "busy");
-    stopCamera();                                   // AR-ul are nevoie de cameră: o eliberăm
-    // AR în pagină (WebXR) când Chrome îl are; aplicația Google doar în Samsung Internet (unde WebXR poate lipsi).
-    // Fără niciunul, telefonul nu are AR: folosim camera, ca fructul să apară oricum.
-    const modes = noAndroidAR() ? null : state.xrSupported ? "webxr scene-viewer" : /SamsungBrowser/i.test(navigator.userAgent) ? "scene-viewer" : null;
-    if (!modes) return false;
-    const ar = await import("./ar-android.js");
-    const ok = await ar.openAR(await arModelURL(f), fruitName(f.id), st => {
-      // AR-ul nu a pornit (de ex. telefonul nu a găsit camera AR): fructul apare peste imaginea camerei
-      if (st === "failed") startTable(f, Promise.resolve(true));
-      else setStatus("Gata: pune o imagine sau pornește camera", "ok");
-    }, modes);
-    if (ok) { setStatus("Fructul e pe masă", "ok"); return true; }
-  } catch (e) { console.warn("AR Android:", e); }
-  return false;
+  // Pe orice telefon: fructul 3D stă pe masă peste imaginea camerei, cu vitaminele pe orbită în jurul lui.
+  // Giroscopul îl ține pe loc când miști telefonul. (iPhone cere voie pentru giroscop direct din atingere.)
+  return startTable(f, askOrientation());
 }
 function askOrientation() {
   try {
@@ -1421,8 +1365,10 @@ function renderShowcase(rerender = false) {
   if (!rerender) heroScene(a);
   const demo = (node, f) => { node.innerHTML = "<b></b><span></span>"; node.firstChild.textContent = en ? f.en : f.ro; node.lastChild.textContent = ` · ${en ? f.ro : f.en} · Vit. ${f.vitamins.map(vitShort).slice(0, 3).join(", ") || "—"}`; };
   demo($("arDemo1"), b);
-  $("arDemo1Art").style.setProperty("--demo-bg", orbGradient(b));
+  // imaginile fructelor reale (randate din modelele 3D realiste, img/fruits/)
+  $("arDemo1Art").style.setProperty("--demo-img", `url("${new URL(`img/fruits/${b.id}.png`, location.href).href}")`);
   demo($("arDemo2"), c);
+  $("arDemo2Img").src = `img/fruits/${c.id}.png`;
 }
 
 // Fructul 3D mare din prima pagină, cu nutrienții pe orbită (se încarcă după ce pagina e afișată)
@@ -1505,7 +1451,7 @@ async function boot() {
     if (sample) { try { caps = await sample.limits(); } catch {} }
     if (sample && caps && caps.images) {
       state.sample = sample; state.engine = "claude";
-      $("btnPhoto").classList.add("primary");
+      $("btnPhoto").hidden = false; $("btnPhoto").classList.add("primary");
       el.fileUp.accept = el.fileCam.accept = caps.images.mediaTypes.join(",");
       el.hint.textContent = "Fotografia este analizată de Claude. Prima dată ți se cere permisiunea. Cel mai bine merge un singur fruct, bine luminat.";
       setStatus("Pregătit: fă o fotografie unui fruct", "ok");
@@ -1521,10 +1467,10 @@ async function boot() {
   state.engine = "local";
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     el.btnCamera.hidden = false;
-    el.emptyText.textContent = "Pornește camera AR și arată un fruct oriunde în cadru, sau încarcă o fotografie.";
+    el.emptyText.textContent = "Pornește camera și ține un fruct în fața ei.";
   } else {
-    // fără cameră live, fotografia devine acțiunea principală
-    $("btnPhoto").classList.add("primary");
+    // fără cameră live (browser foarte vechi): fotografia rămâne singura variantă
+    $("btnPhoto").hidden = false; $("btnPhoto").classList.add("primary");
   }
   el.hint.textContent = "Cel mai bine merge cu un singur fruct, bine luminat, pe un fundal simplu.";
   checkSupport();
@@ -1533,9 +1479,3 @@ async function boot() {
   loadLocal().catch(e => { console.error(e); setStatus(explainError(e), "err"); });
 }
 boot();
-
-// Android: încărcăm din timp componenta de AR (fără să încetinim pornirea paginii)
-if (/Android/i.test(navigator.userAgent)) {
-  const pre = () => import("./ar-android.js").then(m => m.preload()).catch(() => {});
-  (window.requestIdleCallback || (f => setTimeout(f, 2500)))(pre, { timeout: 6000 });
-}
