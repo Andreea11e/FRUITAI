@@ -1211,8 +1211,20 @@ async function placeOnTable(id) {
   if (id) showFromCatalog(id);
   const f = catalog.get(id || state.shownFruit);
   if (!f) return;
-  // Pe orice telefon: fructul 3D stă pe masă peste imaginea camerei, cu vitaminele pe orbită în jurul lui.
-  // Giroscopul îl ține pe loc când miști telefonul. (iPhone cere voie pentru giroscop direct din atingere.)
+  // 1) Telefoane cu ARCore (ex. Samsung S24, în Chrome): telefonul GĂSEȘTE masa sau podeaua, iar fructul rămâne
+  //    ancorat pe ea, cu vitaminele în jur. Sesiunea se cere chiar acum, în atingere (altfel browserul o refuză),
+  //    după ce eliberăm camera (AR-ul are nevoie de ea).
+  if (state.xrSupported && !state.noXR) {
+    stopCamera();
+    let session = null;
+    try {
+      const overlay = $("xrOverlay"); overlay.hidden = false;
+      session = navigator.xr.requestSession("immersive-ar", { requiredFeatures: ["hit-test"], optionalFeatures: ["dom-overlay", "local-floor"], domOverlay: { root: overlay } });
+    } catch (e) { console.warn("AR:", e); }
+    if (session && await startXR(f, session)) return;
+    state.noXR = true;                          // nu a mers: de acum folosim direct varianta cu camera
+  }
+  // 2) Restul telefoanelor (sau dacă AR-ul nu pornește): fructul pe masă peste imaginea camerei, ținut pe loc de giroscop
   return startTable(f, askOrientation());
 }
 function askOrientation() {
@@ -1259,19 +1271,23 @@ function updateXRButton() {
   el.btnXR.disabled = !ready || state.xrActive;
   el.btnXR.title = ready ? t("Pune fructul {name} pe o suprafață reală", { name: fruitName(state.shownFruit) }) : t("Identifică sau alege mai întâi un fruct");
 }
-async function startXR() {
-  if (state.xrActive || !catalog.has(state.shownFruit)) return false;
+async function startXR(f = catalog.get(state.shownFruit), session = null) {
+  if (state.xrActive || !f) return false;
   stopCamera();
   state.xrActive = true; updateXRButton();
-  const f = catalog.get(state.shownFruit);
   const overlay = $("xrOverlay");
   try {
     setStatus("Se pornește AR spațial…", "busy");
     const xr = await import("./xr.js");   // relativ la js/app.js
     await xr.startSession(f, catalog.nutrientsFor(f.id), {
-      overlay, msg: null, hint: null, close: $("xrClose"), tools: null, card: $("xrCard"), t,
+      overlay, msg: null, hint: null, close: $("xrClose"), tools: null, card: $("xrCard"), t, session,
       onNutrient: n => window.dispatchEvent(new CustomEvent("fruitai:nutrient", { detail: n.key })),
-      onEnd: () => { state.xrActive = false; overlay.hidden = true; updateXRButton(); setStatus("Sesiunea AR spațial s-a încheiat", "ok"); }
+      onEnd: reason => {
+        state.xrActive = false; overlay.hidden = true; updateXRButton();
+        // AR-ul a pornit, dar nu a primit imagine: trecem singuri pe varianta cu camera, ca să nu rămână ecranul gol
+        if (reason === "failed") { state.noXR = true; startTable(f, Promise.resolve(true)); }
+        else setStatus("Gata: pornește camera și arată un fruct", "ok");
+      }
     });
     setStatus("AR spațial activ", "ok");
     return true;

@@ -189,21 +189,20 @@ export async function startSession(fruit, nutrients, ui) {
 
   if (ui.overlay) { ui.overlay.hidden = false; ui.overlay.style.pointerEvents = "auto"; ui.overlay.style.touchAction = "none"; }
   if (ui.card) ui.card.hidden = true;
-  let session;
+  let session, hitSource;
   try {
-    session = await navigator.xr.requestSession("immersive-ar", {
-      requiredFeatures: ["hit-test"],
-      optionalFeatures: ["dom-overlay"],
-      domOverlay: { root: ui.overlay }
-    });
+    // sesiunea e cerută chiar în momentul atingerii (vezi requestARSession), altfel browserul o refuză
+    session = await (ui.session || requestARSession(ui.overlay));
+    await renderer.xr.setSession(session);
+    const viewerSpace = await session.requestReferenceSpace("viewer");
+    hitSource = await session.requestHitTestSource({ space: viewerSpace });
   } catch (e) {
-    if (ui.overlay) { ui.overlay.style.pointerEvents = ""; ui.overlay.style.touchAction = ""; }
-    renderer.dispose(); renderer.domElement.remove(); pmrem.dispose();
+    // dacă ceva nu merge după ce AR-ul a pornit, îl închidem curat (altfel rămâne camera fără fruct)
+    try { await session?.end(); } catch {}
+    if (ui.overlay) { ui.overlay.hidden = true; ui.overlay.style.pointerEvents = ""; ui.overlay.style.touchAction = ""; }
+    renderer.setAnimationLoop(null); renderer.dispose(); renderer.domElement.remove(); pmrem.dispose();
     throw e;
   }
-  await renderer.xr.setSession(session);
-  const viewerSpace = await session.requestReferenceSpace("viewer");
-  const hitSource = await session.requestHitTestSource({ space: viewerSpace });
   // punctul de sub deget (pentru mutarea fructului cu degetul); dacă browserul nu-l oferă, folosim centrul ecranului
   let touchSource = null;
   try { touchSource = await session.requestHitTestSourceForTransientInput({ profile: "generic-touchscreen" }); } catch {}
@@ -253,8 +252,12 @@ export async function startSession(fruit, nutrients, ui) {
   ui.close?.addEventListener("click", onClose);
 
   const clock = new THREE.Clock(), camPos = new THREE.Vector3();
+  // siguranță: dacă în 4 s nu vine nicio imagine cu poziția telefonului, AR-ul nu merge aici → închidem și trecem pe cameră
+  let posed = 0, failed = false;
+  const watchdog = setTimeout(() => { if (!posed) { failed = true; session.end().catch(() => {}); } }, 4000);
   renderer.setAnimationLoop((time, frame) => {
     const dt = Math.min(0.05, clock.getDelta()), tt = clock.elapsedTime;
+    if (frame && !posed && frame.getViewerPose(renderer.xr.getReferenceSpace())) posed++;
     if (frame) {
       const hits = frame.getHitTestResults(hitSource);
       const p = hits.length ? hits[0].getPose(renderer.xr.getReferenceSpace()) : null;
@@ -310,6 +313,7 @@ export async function startSession(fruit, nutrients, ui) {
   });
 
   session.addEventListener("end", () => {
+    clearTimeout(watchdog);
     renderer.setAnimationLoop(null);
     try { hitSource.cancel(); } catch {}
     try { touchSource?.cancel(); } catch {}
@@ -320,7 +324,17 @@ export async function startSession(fruit, nutrients, ui) {
     scene.environment?.dispose?.(); pmrem.dispose(); renderer.dispose();
     renderer.domElement.remove();
     if (ui.overlay) { ui.overlay.hidden = true; ui.overlay.style.pointerEvents = ""; ui.overlay.style.touchAction = ""; }
-    ui.onEnd?.();
+    ui.onEnd?.(failed ? "failed" : "ended");
   });
   return session;
+}
+
+/** Cere sesiunea AR. Se apelează DIRECT din atingerea butonului (înainte de orice await), altfel browserul o refuză. */
+export function requestARSession(overlay) {
+  if (overlay) overlay.hidden = false;
+  return navigator.xr.requestSession("immersive-ar", {
+    requiredFeatures: ["hit-test"],
+    optionalFeatures: ["dom-overlay", "local-floor"],
+    domOverlay: { root: overlay }
+  });
 }
