@@ -120,7 +120,6 @@ export function mountCatalogUI(catalog, opts) {
       : t("Încă nu ai descoperit niciun fruct. Arată camerei unul și apare aici!");
     meta.classList.toggle("cat-start", !mine.length);
     const cta = document.getElementById("catCta"); if (cta) cta.hidden = !!mine.length;
-    const rs = document.getElementById("catReset"); if (rs) rs.hidden = !mine.length;
   }
   sync();
   // colecția crește când descoperi un fruct nou (cu camera sau dintr-o poză)
