@@ -354,10 +354,6 @@
    "asset": "bananas",
    "name": "Bananas"
   },
-  "pear": {
-   "asset": "food_pears_asian_01",
-   "name": "Pears Asian 01"
-  },
   "lemon": {
    "asset": "lemon",
    "name": "Lemon"
