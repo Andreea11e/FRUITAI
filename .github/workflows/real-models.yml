@@ -1,0 +1,27 @@
+name: Modele 3D reale (Poly Haven)
+# Descarcă modele scanate după fructe reale (CC0) în data/models/ și actualizează data/models/index.json.
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/fetch-real-models.mjs
+      - .github/workflows/real-models.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: real-models, cancel-in-progress: true }
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Descarcă și convertește modelele
+        run: node scripts/fetch-real-models.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Salvează în proiect
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/models
+          git diff --cached --quiet || (git commit -m "Modele 3D reale (Poly Haven, CC0)" && git pull --rebase && git push)
