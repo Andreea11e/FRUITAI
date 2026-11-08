@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FruitAI – verificare AR</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #0D0926; color: #F4F2FF; font: 16px/1.45 system-ui, sans-serif; padding: 18px; }
+  h1 { font-size: 20px; margin: 0 0 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td { padding: 8px 6px; border-bottom: 1px solid #2a2450; vertical-align: top; }
+  td:first-child { color: #B4AED3; width: 42%; }
+  .ok { color: #9BF0A0; } .no { color: #FF8F8F; } .wait { color: #FFD66B; }
+  button { margin-top: 16px; width: 100%; padding: 14px; border: 0; border-radius: 14px; background: #D7FF5C; color: #111; font-weight: 700; font-size: 16px; }
+  p { color: #B4AED3; font-size: 14px; }
+</style></head>
+<body>
+<h1>Verificare AR pentru FruitAI</h1>
+<p>Fă o captură de ecran după ce apeși butonul și trimite-o.</p>
+<table id="t"></table>
+<button id="go">Testează AR (apasă aici)</button>
+<script type="module">
+const rows = [];
+const T = document.getElementById("t");
+function row(k, v, cls = "") { const tr = document.createElement("tr"); tr.innerHTML = `<td>${k}</td><td class="${cls}">${v}</td>`; T.appendChild(tr); return tr.lastChild; }
+const set = (cell, v, cls) => { cell.textContent = v; cell.className = cls; };
+const ua = navigator.userAgent;
+row("Telefon / browser", ua.replace(/^Mozilla\/5\.0 /, ""));
+row("Browser", /SamsungBrowser/.test(ua) ? "Samsung Internet" : /Chrome\//.test(ua) ? "Chrome" : /Firefox/.test(ua) ? "Firefox" : "altul");
+row("HTTPS", isSecureContext ? "da" : "nu", isSecureContext ? "ok" : "no");
+const xr = row("WebXR AR (în pagină)", "se verifică…", "wait");
+try { const s = navigator.xr ? await navigator.xr.isSessionSupported("immersive-ar") : false; set(xr, s ? "DA" : "NU", s ? "ok" : "no"); }
+catch (e) { set(xr, "eroare: " + e.message, "no"); }
+const cam = row("Camera", "se verifică…", "wait");
+try { const st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); st.getTracks().forEach(t => t.stop()); set(cam, "merge", "ok"); }
+catch (e) { set(cam, "nu: " + e.name, "no"); }
+const gy = row("Giroscop", "mișcă puțin telefonul…", "wait");
+let got = false;
+addEventListener("deviceorientation", e => { if (!got && e.beta != null) { got = true; set(gy, "merge", "ok"); } });
+setTimeout(() => { if (!got) set(gy, "nu trimite date", "no"); }, 4000);
+const mvr = row("Componenta Google (model-viewer)", "se încarcă…", "wait");
+let mv = null;
+try {
+  await import("https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js");
+  mv = document.createElement("model-viewer");
+  mv.setAttribute("ar", ""); mv.setAttribute("ar-modes", "webxr scene-viewer"); mv.setAttribute("src", "../data/models/apple.glb");
+  mv.style.cssText = "position:fixed;left:0;top:0;width:4px;height:4px;opacity:0";
+  document.body.appendChild(mv);
+  await new Promise(r => { mv.addEventListener("load", r, { once: true }); setTimeout(r, 10000); });
+  set(mvr, mv.loaded ? `încărcată; AR posibil: ${mv.canActivateAR ? "DA" : "NU"}` : "modelul nu s-a încărcat", mv.canActivateAR ? "ok" : "no");
+} catch (e) { set(mvr, "nu s-a încărcat: " + e.message, "no"); }
+const res = row("Rezultatul testului", "apasă butonul de mai jos", "wait");
+document.getElementById("go").onclick = async () => {
+  if (!mv) return set(res, "componenta Google nu s-a încărcat", "no");
+  set(res, "pornește…", "wait");
+  mv.addEventListener("ar-status", e => set(res, "stare AR: " + e.detail.status, e.detail.status === "failed" ? "no" : "ok"));
+  try { await mv.activateAR(); } catch (e) { set(res, "eroare: " + e.message, "no"); }
+};
+</script>
+</body></html>
