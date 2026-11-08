@@ -1,50 +1,113 @@
-Fotografii reale de pe Wikimedia Commons: 671 (învățare 70%, test 30%). Model de imagine q8, 30 ms/imagine pe serverul GitHub.
-Doar din text:            corect din prima 45%, în primele 3 61%, fructe obișnuite 55% (test pe 136 poze)
-Text + fotografii reale:  corect din prima 47%, în primele 3 63%, fructe obișnuite 57% (α=8, β=4)
+Fotografii reale de pe Wikimedia Commons: 484 (învățare 70%, test 30%). Model de imagine q8, 54 ms/imagine pe serverul GitHub.
+Doar din text:            corect din prima 56%, în primele 3 71%, fructe obișnuite 63% (test pe 52 poze)
+Text + fotografii reale:  corect din prima 62%, în primele 3 77%, fructe obișnuite 67% (α=4, β=4)
 
 Praguri (cu fotografii):
-brut ≥ 0.1, relativ ≥ 0.45: fructe recunoscute corect 32% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.1, relativ ≥ 0.55: fructe recunoscute corect 29% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.1, relativ ≥ 0.65: fructe recunoscute corect 26% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.2, relativ ≥ 0.45: fructe recunoscute corect 32% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.2, relativ ≥ 0.55: fructe recunoscute corect 29% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.2, relativ ≥ 0.65: fructe recunoscute corect 26% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.3, relativ ≥ 0.45: fructe recunoscute corect 32% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.3, relativ ≥ 0.55: fructe recunoscute corect 29% · alarme false 2% (1/62 poze fără fruct)
-brut ≥ 0.3, relativ ≥ 0.65: fructe recunoscute corect 26% · alarme false 2% (1/62 poze fără fruct)
+brut ≥ 0.1, relativ ≥ 0.45: fructe recunoscute corect 46% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.1, relativ ≥ 0.55: fructe recunoscute corect 42% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.1, relativ ≥ 0.65: fructe recunoscute corect 42% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.2, relativ ≥ 0.45: fructe recunoscute corect 46% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.2, relativ ≥ 0.55: fructe recunoscute corect 42% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.2, relativ ≥ 0.65: fructe recunoscute corect 42% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.3, relativ ≥ 0.45: fructe recunoscute corect 46% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.3, relativ ≥ 0.55: fructe recunoscute corect 42% · alarme false 3% (1/36 poze fără fruct)
+brut ≥ 0.3, relativ ≥ 0.65: fructe recunoscute corect 42% · alarme false 3% (1/36 poze fără fruct)
 
-α=4 β=2: 44.1% (obișnuite 54.9%)
-α=4 β=4: 44.1% (obișnuite 54.9%)
-α=4 β=6: 44.9% (obișnuite 56.0%)
-α=4 β=8: 44.9% (obișnuite 56.0%)
-α=4 β=12: 44.1% (obișnuite 54.9%)
-α=8 β=2: 46.3% (obișnuite 57.1%)
-α=8 β=4: 47.1% (obișnuite 57.1%)
-α=8 β=6: 47.1% (obișnuite 57.1%)
-α=8 β=8: 47.1% (obișnuite 57.1%)
-α=8 β=12: 47.1% (obișnuite 57.1%)
-α=12 β=2: 47.1% (obișnuite 57.1%)
-α=12 β=4: 46.3% (obișnuite 56.0%)
-α=12 β=6: 45.6% (obișnuite 54.9%)
-α=12 β=8: 45.6% (obișnuite 54.9%)
-α=12 β=12: 46.3% (obișnuite 56.0%)
-α=16 β=2: 46.3% (obișnuite 56.0%)
-α=16 β=4: 42.6% (obișnuite 51.6%)
-α=16 β=6: 44.1% (obișnuite 52.7%)
-α=16 β=8: 44.9% (obișnuite 53.8%)
-α=16 β=12: 44.9% (obișnuite 53.8%)
-α=24 β=2: 43.4% (obișnuite 52.7%)
-α=24 β=4: 44.1% (obișnuite 52.7%)
-α=24 β=6: 44.9% (obișnuite 53.8%)
-α=24 β=8: 44.9% (obișnuite 53.8%)
-α=24 β=12: 46.3% (obișnuite 54.9%)
-α=32 β=2: 44.9% (obișnuite 53.8%)
-α=32 β=4: 41.9% (obișnuite 49.5%)
-α=32 β=6: 41.9% (obișnuite 49.5%)
-α=32 β=8: 43.4% (obișnuite 51.6%)
-α=32 β=12: 44.9% (obișnuite 52.7%)
-α=48 β=2: 43.4% (obișnuite 51.6%)
-α=48 β=4: 41.2% (obișnuite 49.5%)
-α=48 β=6: 41.2% (obișnuite 49.5%)
-α=48 β=8: 41.2% (obișnuite 48.4%)
-α=48 β=12: 43.4% (obișnuite 51.6%)
+Pe fiecare fruct (toate fotografiile; corect cu prototipuri / doar text; confundat cu):
+greengage         4 poze    0% /   0%  plum×1, ~flower×1, grape×1
+cherry            5 poze   20% /  20%  ~candy×1, longan×1, blackcurrant×1
+clementine        5 poze   20% /   0%  orange×3, apricot×1
+tangerine         5 poze   20% /   0%  orange×1, lime×1, apricot×1
+blackberry        5 poze   20% /  20%  mulberry×2, blackcurrant×1, ~plant×1
+nectarine         5 poze   20% /   0%  plum×1, apricot×1, fig×1
+honeydew          5 poze   20% /  20%  ~cheese×1, ~flower×1, cantaloupe×1
+blood-orange      5 poze   20% /  20%  orange×2, passion-fruit×1, honeydew×1
+quince            4 poze   25% /  25%  pear×1, apricot×1, ~flower×1
+custard-apple     7 poze   29% /  14%  soursop×1, cherimoya×1, ~cardboard box×1
+guava             7 poze   29% /  14%  lime×2, gooseberry×1, apricot×1
+date             13 poze   31% /  31%  ~tree×6, ~plant×2, elderberry×1
+grapefruit        6 poze   33% /  17%  lemon×1, lime×1, pomelo×1
+lemon             6 poze   33% /  33%  orange×1, medlar×1, longan×1
+medlar            6 poze   33% /  33%  apricot×1, quince×1, coconut×1
+cherimoya         8 poze   38% /  25%  custard-apple×2, passion-fruit×1, olive×1
+kumquat           8 poze   38% /  25%  orange×3, lemon×2
+papaya            5 poze   40% /  40%  blueberry×1, fig×1, ~cucumber×1
+cantaloupe        5 poze   40% /  40%  mulberry×1, fig×1, lime×1
+peach             5 poze   40% /  40%  plum×1, apricot×1, passion-fruit×1
+avocado           7 poze   43% /  29%  fig×4
+longan            7 poze   43% /  43%  apricot×1, fig×1, ~egg×1
+pear              7 poze   43% /  43%  lemon×1, starfruit×1, persimmon×1
+pomelo            7 poze   43% /  43%  lemon×1, grapefruit×1, lime×1
+mulberry          9 poze   44% /  33%  ~lamp×2, grape×1, blueberry×1
+persimmon         6 poze   50% /  50%  olive×2, apricot×1
+durian            4 poze   50% /  50%  pineapple×1, kiwi×1
+soursop          10 poze   50% /  50%  cherimoya×1, ~bread×1, ~cardboard box×1
+orange           10 poze   50% /  50%  passion-fruit×2, kumquat×1, lime×1
+gooseberry       39 poze   51% /  46%  grape×4, fig×3, mulberry×2
+mangosteen        7 poze   57% /  71%  plum×1, date×1, kumquat×1
+apple             7 poze   57% /  57%  ~laptop computer×1, custard-apple×1, peach×1
+olive             7 poze   57% /  57%  lime×1, ~cup×1, fig×1
+pomegranate       7 poze   57% /  43%  gooseberry×1, quince×1, passion-fruit×1
+grape             7 poze   57% /  57%  grapefruit×1, ~plant×1, orange×1
+plantain          5 poze   60% /  40%  banana×2
+blackcurrant      5 poze   60% /  60%  ~ice cream×1, cranberry×1
+dragon-fruit      5 poze   60% /  60%  passion-fruit×2
+passion-fruit     5 poze   60% /  60%  lime×1, tamarind×1
+fig               5 poze   60% /  60%  tamarind×1, starfruit×1
+blueberry        40 poze   63% /  60%  grape×2, blackcurrant×2, blackberry×2
+kiwi              8 poze   63% /  63%  ~cardboard box×1, lime×1, strawberry×1
+redcurrant        6 poze   67% /  67%  cranberry×2
+prickly-pear      6 poze   67% /  67%  lychee×1, dragon-fruit×1
+raspberry         6 poze   67% /  67%  strawberry×1, blackberry×1
+lime              7 poze   71% /  43%  lemon×1, fig×1
+cranberry         7 poze   71% /  57%  ~cookie×1, ~bottle×1
+jackfruit         4 poze   75% /  75%  starfruit×1
+coconut           8 poze   75% /  75%  gooseberry×1, fig×1
+plum              4 poze   75% /  75%  ~egg×1
+pineapple        36 poze   78% /  75%  ~glass of juice×3, jackfruit×2, passion-fruit×1
+apricot           9 poze   78% /  78%  orange×1, date×1
+lychee            6 poze   83% /  83%  strawberry×1
+mango             6 poze   83% /  67%  pear×1
+tamarind          6 poze   83% /  83%  date×1
+rambutan          7 poze   86% /  57%  lychee×1
+banana            8 poze   88% /  88%  ~bottle×1
+starfruit         8 poze   88% /  75%  jackfruit×1
+strawberry        8 poze  100% / 100%  
+watermelon        4 poze  100% / 100%  
+elderberry        5 poze  100% / 100%  
+
+α=4 β=2: 57.7% (obișnuite 65.1%)
+α=4 β=4: 61.5% (obișnuite 67.4%)
+α=4 β=6: 61.5% (obișnuite 67.4%)
+α=4 β=8: 61.5% (obișnuite 67.4%)
+α=4 β=12: 57.7% (obișnuite 65.1%)
+α=8 β=2: 59.6% (obișnuite 65.1%)
+α=8 β=4: 57.7% (obișnuite 62.8%)
+α=8 β=6: 57.7% (obișnuite 62.8%)
+α=8 β=8: 57.7% (obișnuite 62.8%)
+α=8 β=12: 61.5% (obișnuite 67.4%)
+α=12 β=2: 57.7% (obișnuite 62.8%)
+α=12 β=4: 57.7% (obișnuite 62.8%)
+α=12 β=6: 59.6% (obișnuite 65.1%)
+α=12 β=8: 59.6% (obișnuite 65.1%)
+α=12 β=12: 59.6% (obișnuite 65.1%)
+α=16 β=2: 57.7% (obișnuite 62.8%)
+α=16 β=4: 61.5% (obișnuite 67.4%)
+α=16 β=6: 61.5% (obișnuite 67.4%)
+α=16 β=8: 61.5% (obișnuite 67.4%)
+α=16 β=12: 59.6% (obișnuite 65.1%)
+α=24 β=2: 61.5% (obișnuite 67.4%)
+α=24 β=4: 59.6% (obișnuite 65.1%)
+α=24 β=6: 59.6% (obișnuite 65.1%)
+α=24 β=8: 59.6% (obișnuite 65.1%)
+α=24 β=12: 61.5% (obișnuite 67.4%)
+α=32 β=2: 59.6% (obișnuite 65.1%)
+α=32 β=4: 57.7% (obișnuite 62.8%)
+α=32 β=6: 59.6% (obișnuite 65.1%)
+α=32 β=8: 59.6% (obișnuite 65.1%)
+α=32 β=12: 59.6% (obișnuite 65.1%)
+α=48 β=2: 53.8% (obișnuite 60.5%)
+α=48 β=4: 55.8% (obișnuite 62.8%)
+α=48 β=6: 55.8% (obișnuite 62.8%)
+α=48 β=8: 57.7% (obișnuite 62.8%)
+α=48 β=12: 61.5% (obișnuite 67.4%)
