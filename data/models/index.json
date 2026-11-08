@@ -1,0 +1,11 @@
+{
+ "models": {
+  "avocado": {
+   "file": "avocado.glb",
+   "source": "Khronos glTF Sample Assets – Avocado (test)",
+   "license": "CC0 1.0",
+   "url": ""
+  }
+ },
+ "note": "Modele 3D scanate, folosite în locul celor procedurale. Vezi licența fiecărei surse."
+}

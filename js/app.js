@@ -1201,6 +1201,9 @@ async function placeOnTable(id) {
   if (id) showFromCatalog(id);
   const f = catalog.get(id || state.shownFruit);
   if (!f) return;
+  // Android: aplicația de AR a Google (Scene Viewer) găsește masa, pune fructul pe ea și are deja
+  // gesturile pentru mutare, mărire și rotire. E cea mai sigură variantă pe telefoanele Samsung / Android.
+  if (IS_ANDROID && !noSceneViewer()) { openSceneViewer(f); return; }
   // iPhone cere voie pentru giroscop doar direct dintr-o atingere, deci întrebăm acum, înainte de orice await
   const orientation = !state.xrSupported && !state.qlSupported ? askOrientation() : null;
   if (state.xrSupported && await startXR()) return;
@@ -1215,6 +1218,25 @@ async function placeOnTable(id) {
     } catch (e) { console.warn("AR Quick Look:", e); }
   }
   return startTable(f, orientation || Promise.resolve(true));
+}
+const IS_ANDROID = /Android/i.test(navigator.userAgent);
+const SV_FLAG = "fruitai.noSceneViewer";
+const noSceneViewer = () => { try { return sessionStorage.getItem(SV_FLAG) === "1"; } catch { return false; } };
+/** Deschide fructul în Google Scene Viewer (modelele .glb sunt în data/ar/, generate cu scripts/export-ar.py). */
+function openSceneViewer(f) {
+  stopCamera();
+  const file = new URL(`data/ar/${f.id}.glb`, location.href).href;
+  const params = new URLSearchParams({ file, mode: "ar_preferred", title: fruitName(f.id), resizable: "true" });
+  // dacă telefonul nu are aplicația Google, browserul revine pe site cu #fara-ar și folosim varianta cu camera
+  const back = location.href.split("#")[0] + "#fara-ar-" + f.id;
+  setStatus("Se deschide fructul pe masă…", "busy");
+  location.href = `intent://arvr.google.com/scene-viewer/1.0?${params}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(back)};end;`;
+  setTimeout(() => setStatus("Fructul e gata de pus pe masă", "ok"), 2500);
+}
+// revenire din Scene Viewer indisponibil: ținem minte și folosim de acum AR-ul din pagină
+if (/^#fara-ar-/.test(location.hash)) {
+  try { sessionStorage.setItem(SV_FLAG, "1"); } catch {}
+  history.replaceState(null, "", location.pathname + location.search);
 }
 function askOrientation() {
   try {

@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- FruitAI — generează modelele 3D (.glb) pentru „Pune-l pe masă” pe Android (Google Scene Viewer).
+     Se deschide cu un server local (vezi scripts/export-ar.py); fișierele ajung în data/ar/. -->
+<meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFExporter } from "three/addons/exporters/GLTFExporter.js";
+import { buildFruitModel, disposeObject } from "../js/fruit-models.js";
+const R = 0.085;   // raza fructului în metri, ca în celelalte moduri AR
+const doc = await (await fetch("../data/fruits.json")).json();
+window.__ids = doc.fruits.map(f => f.id);
+window.__export = async id => {
+  const fruit = doc.fruits.find(f => f.id === id);
+  const scene = new THREE.Scene();
+  const model = buildFruitModel(fruit);
+  await model.userData.ready;
+  model.scale.setScalar(R);
+  model.position.y = -(model.userData.bottom ?? -1) * R;   // fructul stă pe masă, nu în ea
+  scene.add(model);
+  scene.updateMatrixWorld(true);
+  const buf = await new GLTFExporter().parseAsync(scene, { binary: true, maxTextureSize: 512, onlyVisible: true });
+  disposeObject(model);
+  let s = ""; const u = new Uint8Array(buf);
+  for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000));
+  return btoa(s);
+};
+window.__ready = true;
+</script>

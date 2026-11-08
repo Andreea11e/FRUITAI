@@ -107,7 +107,9 @@ export async function startSession(fruit, nutrients, ui) {
   // fructul, cu umbră, inel luminos, numele deasupra și nutrienții pe orbită
   const holder = new THREE.Group(); holder.visible = false; scene.add(holder);
   const R = 0.085;                                   // raza fructului: ~8,5 cm, cât un fruct mare
-  const model = buildFruitModel(fruit); model.scale.setScalar(R); model.position.y = R * 1.05;
+  const model = buildFruitModel(fruit); model.scale.setScalar(R);
+  const lift = () => -model.userData.bottom * R + 0.002;   // fructul stă pe masă, indiferent de formă (și după ce se încarcă modelul real)
+  model.position.y = lift();
   const spin = new THREE.Group(); spin.add(model); holder.add(spin);
   const shadow = new THREE.Mesh(new THREE.PlaneGeometry(R * 3.2, R * 3.2).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: softDisc(THREE, "0,0,0", 0.55), transparent: true, depthWrite: false }));
   shadow.position.y = 0.002; holder.add(shadow);
@@ -296,7 +298,7 @@ export async function startSession(fruit, nutrients, ui) {
       holder.scale.setScalar(Math.max(0.001, elastic) * st.scale);
       if (st.auto) st.yaw += dt * 0.5;
       spin.rotation.y += (st.yaw - spin.rotation.y) * 0.2;
-      model.position.y = R * 1.05 + Math.sin(tt * 1.6) * 0.004;       // plutire ușoară
+      model.position.y = lift() + Math.sin(tt * 1.6) * 0.004;       // plutire ușoară
       orbit.rotation.y = tt * 0.35;
       glowRing.material.opacity = 0.45 + Math.sin(tt * 2.2) * 0.25;
       sprites.forEach(s => { const k = s.userData.nutrient.key === st.picked ? 1.45 : 1; s.scale.x += (0.05 * k - s.scale.x) * 0.2; s.scale.y = s.scale.x * 326 / 256; });

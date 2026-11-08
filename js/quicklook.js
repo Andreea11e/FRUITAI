@@ -36,8 +36,9 @@ export async function buildUSDZ(fruit) {
   if (cache.has(fruit.id)) return cache.get(fruit.id);
   const scene = new THREE.Scene();
   const model = buildFruitModel(fruit);
+  await model.userData.ready;           // modelul scanat, dacă există
   model.scale.setScalar(R);
-  model.position.y = R;                 // fructul stă pe masă, nu în ea
+  model.position.y = -model.userData.bottom * R;   // fructul stă pe masă, nu în ea
   scene.add(model);
   flattenVertexColors(model);
   scene.updateMatrixWorld(true);

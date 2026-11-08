@@ -4,6 +4,40 @@
 // din data/fruits.json. Același modul e folosit în ecranul „Descoperă”, în Camera AR și în AR spațial.
 
 import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+
+// ---------- Modele reale (fructe scanate 3D, data/models/) ----------
+// data/models/index.json spune ce fructe au un model scanat (.glb). Pentru ele, aplicația afișează întâi modelul
+// procedural (instant), apoi îl înlocuiește cu cel real imediat ce s-a descărcat. Restul fructelor rămân procedurale.
+let REAL = {};
+try {
+  const r = await fetch(new URL("../data/models/index.json", import.meta.url));
+  if (r.ok) REAL = (await r.json()).models || {};
+} catch {}
+export const hasRealModel = id => !!REAL[id];
+const gltf = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+const realCache = new Map();
+/** Descarcă (o singură dată) și pregătește modelul real: centrat, încadrat într-un cub de latură 2, ca cel procedural. */
+export function loadRealModel(id) {
+  if (!REAL[id]) return Promise.resolve(null);
+  if (!realCache.has(id)) realCache.set(id, gltf.loadAsync(new URL(`../data/models/${REAL[id].file}`, import.meta.url).href).then(g => {
+    const s = g.scene;
+    s.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(s), size = box.getSize(new THREE.Vector3()), ctr = box.getCenter(new THREE.Vector3());
+    s.position.sub(ctr);
+    const k = 2 / Math.max(size.x, size.y, size.z);
+    const wrap = new THREE.Group(); wrap.add(s); wrap.scale.setScalar(k);
+    s.traverse(o => {
+      if (!o.isMesh) return;
+      o.userData.shared = true;                       // geometria și texturile sunt refolosite: nu le eliberăm la închidere
+      const m = o.material;
+      (Array.isArray(m) ? m : [m]).forEach(x => { if (x.map) x.map.anisotropy = 4; x.envMapIntensity = 1; });
+    });
+    return { node: wrap, bottom: -size.y / 2 * k };
+  }).catch(e => { console.warn("Model 3D real:", id, e); return null; }));
+  return realCache.get(id);
+}
 
 const V = new THREE.Vector3();
 const C = c => new THREE.Color(c);
@@ -558,12 +592,24 @@ export function buildFruitModel(fruit, { slice = false } = {}) {   // felia din 
     s.position.set(0.98, -0.66, 0.62); s.rotation.set(1.05, 0.25, -0.12); s.scale.setScalar(0.92);
     out.add(s);
   }
-  out.userData = { fruitId: fruit.id, hasSlice: !!(slice && v.slice) };
+  out.userData = { fruitId: fruit.id, hasSlice: !!(slice && v.slice), bottom: -size.y / 2 * k, real: false };
+  // există un model scanat? îl punem în locul celui procedural de îndată ce s-a descărcat
+  out.userData.ready = !REAL[fruit.id] ? Promise.resolve(out) : loadRealModel(fruit.id).then(r => {
+    if (!r || out.userData.disposed) return out;
+    out.clear();
+    disposeObject(root);
+    out.add(r.node.clone(true));
+    out.userData.bottom = r.bottom; out.userData.real = true; out.userData.hasSlice = false;
+    out.dispatchEvent({ type: "real" });
+    return out;
+  });
   return out;
 }
 
 export function disposeObject(obj) {
+  obj.userData.disposed = true;
   obj.traverse(o => {
+    if (o.userData.shared) return;                    // model scanat, refolosit din memorie
     o.geometry?.dispose?.();
     const m = o.material; (Array.isArray(m) ? m : m ? [m] : []).forEach(x => { x.map?.dispose?.(); x.bumpMap?.dispose?.(); x.dispose?.(); });
   });
