@@ -847,8 +847,8 @@ header.nav { background: rgba(13,9,38,.62); }
 /* =====================================================================
    Fluxul automat: arată → scoate → fructul 3D cu etichete
    ===================================================================== */
-.stage:is([data-flow="scan"], [data-flow="remove"], [data-flow="prepare"]) .anchor :is(.ar-card, .ar-orbit, .ar-link) { display: none; }
-.stage[data-flow="remove"] .anchor .ar-frame i { border-color: #FFE27A; filter: drop-shadow(0 0 8px rgba(255,226,122,.8)); }
+.stage:is([data-flow="scan"], [data-flow="found"], [data-flow="nofruit"], [data-flow="prepare"]) .anchor :is(.ar-card, .ar-orbit, .ar-link) { display: none; }
+.stage[data-flow="found"] .anchor .ar-frame i { border-color: #FFE27A; filter: drop-shadow(0 0 8px rgba(255,226,122,.8)); }
 .stage.revealing #ar, .stage.revealing .hud, .stage.revealing .imm-shot { display: none !important; }
 .stage canvas.frame { transition: opacity .6s ease, transform .6s ease, filter .6s ease; }
 .stage.photo-out canvas.frame { opacity: 0; transform: scale(.85); filter: blur(10px); }
@@ -1340,3 +1340,47 @@ header.nav { border-bottom: 1px solid rgba(255,255,255,.06); }
 .ar-visual .float { bottom: auto; top: 8%; }
 
 @media (max-width: 560px) { .hero .scene3d { margin-top: 36px; } }
+
+/* ---------------- Identificarea: „Am găsit!” (verde) sau „Nu e un fruct” (portocaliu) ---------------- */
+/* mesajul stă jos, ca rama din jurul obiectului să rămână vizibilă */
+.stage:is([data-flow="found"], [data-flow="nofruit"]) .flow-msg { top: auto; bottom: 16px; transform: translateX(-50%); padding: 14px 18px 14px; gap: 4px;
+  grid-template-columns: auto 1fr; align-items: center; justify-items: start; text-align: left; column-gap: 14px; width: min(400px, calc(100% - 24px)); }
+.stage:is([data-flow="found"], [data-flow="nofruit"]) .flow-msg.in { animation: fmUp .45s cubic-bezier(.2,1.4,.4,1); }
+@keyframes fmUp { from { opacity: 0; transform: translate(-50%, 24px) scale(.92); } }
+.stage:is([data-flow="found"], [data-flow="nofruit"]) .fm-badge { grid-row: span 2; width: 52px; height: 52px; font-size: 28px; }
+.stage[data-flow="found"] .flow-msg { border-color: rgba(170,255,140,.7); box-shadow: 0 24px 60px -20px rgba(0,0,0,.85), 0 0 46px -10px rgba(170,255,140,.7); }
+.stage[data-flow="found"] .fm-name { justify-content: flex-start; }
+.flow-msg.no { border-color: rgba(255,159,67,.75); box-shadow: 0 24px 60px -20px rgba(0,0,0,.85), 0 0 46px -12px rgba(255,159,67,.7); }
+.fm-badge.no { background: linear-gradient(135deg, #FFC86B, #FF7A45); color: #2A0E00; box-shadow: 0 0 0 8px rgba(255,159,67,.18); }
+.flow-msg.no b { font-size: clamp(20px, 3vw, 26px); }
+/* rama: caută (galben, cu o linie care scanează) → găsit (verde, ✓) / nu e fruct (portocaliu, ✕) */
+.seek-box::before { content: ""; position: absolute; left: 6%; right: 6%; height: 3px; top: 8%; border-radius: 3px;
+  background: linear-gradient(90deg, transparent, #FFE27A, transparent); box-shadow: 0 0 12px rgba(255,226,122,.9); animation: seekScan 1.6s ease-in-out infinite alternate; }
+@keyframes seekScan { to { top: 90%; } }
+.seek-box.found, .seek-box.nofruit { animation: seekHit .5s cubic-bezier(.2,1.6,.4,1); border-style: solid; }
+.seek-box.found { border-color: rgba(170,255,140,.9); background: radial-gradient(closest-side, rgba(170,255,140,.16), transparent); }
+.seek-box.found i { border-color: #AAFF8C; filter: drop-shadow(0 0 10px rgba(170,255,140,.95)); }
+.seek-box.nofruit { border-color: rgba(255,159,67,.9); background: radial-gradient(closest-side, rgba(255,159,67,.14), transparent); animation: seekShake .5s ease; }
+.seek-box.nofruit i { border-color: #FF9F43; filter: drop-shadow(0 0 10px rgba(255,159,67,.9)); }
+.seek-box:is(.found, .nofruit)::before { display: none; }
+.seek-box:is(.found, .nofruit)::after { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%;
+  display: grid; place-items: center; font: 900 34px/1 "Nunito", var(--f-sans); animation: badgePop .5s cubic-bezier(.2,1.8,.4,1); }
+.seek-box.found::after { content: "✓"; color: #0F1A00; background: linear-gradient(135deg, #DFFF7A, #8EF0C9); box-shadow: 0 0 0 10px rgba(170,255,140,.2); }
+.seek-box.nofruit::after { content: "✕"; color: #2A0E00; background: linear-gradient(135deg, #FFC86B, #FF7A45); box-shadow: 0 0 0 10px rgba(255,159,67,.2); }
+@keyframes seekHit { 40% { transform-origin: center; filter: brightness(1.6); } }
+@keyframes seekShake { 20%, 60% { margin-left: -8px; } 40%, 80% { margin-left: 8px; } }
+@media (prefers-reduced-motion: reduce) { .seek-box::before { animation: none; } .seek-box.nofruit { animation: none; } }
+.stage:is([data-flow="found"], [data-flow="nofruit"]) :is(.anchor, .imm-shot) { display: none !important; }
+
+/* „Pe masă”: îndreaptă telefonul în jos (fără text) */
+.tbl-hint { position: fixed; left: 50%; top: 50%; z-index: 101; width: 120px; height: 120px; margin: -60px 0 0 -60px; pointer-events: none;
+  opacity: 0; transition: opacity .3s ease; }
+.tbl-hint.on { opacity: 1; }
+.tbl-phone { position: absolute; left: 42px; top: 8px; width: 36px; height: 62px; border-radius: 9px; border: 4px solid #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,.5); transform-origin: 50% 100%; animation: tblTilt 2s ease-in-out infinite; }
+.tbl-surface { position: absolute; left: 10px; right: 10px; bottom: 6px; height: 22px; border-radius: 50%; border: 3px dashed #D7FF5C;
+  box-shadow: 0 0 18px rgba(215,255,92,.6); animation: tblGlow 2s ease-in-out infinite; }
+@keyframes tblTilt { 0%, 15% { transform: rotateX(0deg); } 55%, 80% { transform: perspective(200px) rotateX(55deg) translateY(6px); } 100% { transform: rotateX(0deg); } }
+@keyframes tblGlow { 50%, 80% { opacity: 1; } 0%, 20%, 100% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .tbl-phone, .tbl-surface { animation: none; } }
+.challenge-chip .cc-star { flex: none; font: 800 12px "Nunito", var(--f-sans); color: #1A1033; background: #FFE27A; padding: 3px 8px; border-radius: 999px; }

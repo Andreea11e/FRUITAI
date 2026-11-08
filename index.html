@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FruitAI — descoperă fructele în 3D</title>
-<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=20261108g">
+<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=20261108h">
 <meta name="description" content="Îndreaptă camera spre un fruct. FruitAI îl recunoaște direct în browser și îi ancorează în imagine numele în română și engleză, împreună cu vitaminele lui.">
 <meta name="theme-color" content="#0D0926">
 <!-- site-ul e deja întunecat: browserele (Chrome, Samsung Internet) nu trebuie să-l „întunece” singure, ar face negrul gri -->
@@ -14,14 +14,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&family=Nunito:wght@700;800;900&display=swap">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<link rel="stylesheet" href="css/app.css?v=20261108g">
+<link rel="stylesheet" href="css/app.css?v=20261108h">
 </head>
 <body>
 <div class="aurora" aria-hidden="true"></div>
 
 <header class="nav">
   <div class="container nav-in">
-    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><img class="logo" src="img/logo.svg?v=20261108g" alt="" width="40" height="40"><span>Fruit<b>AI</b></span></a>
+    <a class="brand" href="#top" aria-label="FruitAI, începutul paginii"><img class="logo" src="img/logo.svg?v=20261108h" alt="" width="40" height="40"><span>Fruit<b>AI</b></span></a>
     <nav class="nav-links" aria-label="Secțiuni">
       <a href="#scanner">Scanează</a>
       <a href="#catalog">Colecția mea</a>
@@ -30,6 +30,7 @@
       <a href="#beneficii">De ce FruitAI</a>
     </nav>
     <div class="nav-right">
+      <button type="button" class="star-pill" id="starPill" aria-label="Stelele din provocări și colecția mea"><span aria-hidden="true">⭐</span><b>0</b></button>
       <div class="lang-switch" role="group" aria-label="Limba" data-no-i18n>
         <button type="button" data-lang="ro" aria-pressed="true">RO</button><button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
@@ -94,7 +95,7 @@
         <div class="step reveal" style="--sc:#FFB547"><span class="sn">1</span><div class="si" aria-hidden="true">📷</div><h3>Arată un fruct</h3><p>Ține în fața camerei un fruct adevărat sau poza unuia dintr-o carte.</p></div>
         <div class="step reveal" style="--sc:#8B6CFF"><span class="sn">2</span><div class="si" aria-hidden="true">🧊</div><h3>Privește-l în 3D</h3><p>Fructul apare în 3D. Îl învârți, îl mărești și îl așezi pe masă.</p></div>
         <div class="step reveal" style="--sc:#3DDC97"><span class="sn">3</span><div class="si" aria-hidden="true">✨</div><h3>Află ce vitamine are</h3><p>Atinge vitaminele din jurul lui și află cum te ajută să crești sănătos.</p></div>
-        <div class="step reveal" style="--sc:#FF6FB5"><span class="sn">4</span><div class="si" aria-hidden="true">🏆</div><h3>Învață jucându-te</h3><p>Câștigă insigne, primește provocări și răspunde la quiz-uri.</p></div>
+        <div class="step reveal" style="--sc:#FF6FB5"><span class="sn">4</span><div class="si" aria-hidden="true">🏆</div><h3>Învață jucându-te</h3><p>Rezolvă provocări ca să câștigi stele, adună insigne și răspunde la quiz-uri.</p></div>
       </div>
       <div class="steps-cta">
         <button class="btn kid-cta" type="button" id="btnDemo"><span aria-hidden="true">✨</span><span>Încearcă fără cameră</span></button>
@@ -350,7 +351,7 @@
       <div class="grid-4">
         <div class="card benefit reveal"><div class="num">0 <em>instalări</em></div><h3>Direct în browser</h3><p>Se deschide pe telefon, tabletă sau calculator. Nu trebuie descărcată nicio aplicație.</p></div>
         <div class="card benefit reveal"><div class="num">2 <em>limbi</em></div><h3>Română și engleză</h3><p>Copiii învață numele fiecărui fruct în ambele limbi, iar toată aplicația se schimbă dintr-un singur buton.</p></div>
-        <div class="card benefit reveal"><div class="num">7 <em>insigne</em></div><h3>Învață prin joacă</h3><p>Insigne, provocări și quiz-uri care îi fac pe copii curioși să încerce fructe noi.</p></div>
+        <div class="card benefit reveal"><div class="num">7 <em>insigne</em></div><h3>Învață prin joacă</h3><p>Provocări cu stele, insigne și quiz-uri care îi fac pe copii curioși să încerce fructe noi.</p></div>
         <div class="card benefit reveal"><div class="num"><span data-count="fruits">—</span> <em>fructe</em></div><h3>O colecție de descoperit</h3><p>Fiecare fruct găsit intră în colecția copilului, cu fișa lui: vitamine, minerale și curiozități.</p></div>
       </div>
       <div class="honest reveal">
@@ -399,6 +400,6 @@
   <div class="xr-card" id="xrCard" hidden></div>
 </div>
 
-<script type="module" src="js/app.js?v=20261108g"></script>
+<script type="module" src="js/app.js?v=20261108h"></script>
 </body>
 </html>

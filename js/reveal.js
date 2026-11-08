@@ -127,7 +127,7 @@ function openCard(n, labelEl) {
 
 /**
  * Arată fructul 3D în scenă.
- * opts: { catalog, reduceMotion, source, confidence: {level,text}|null, canPlaceAR(), onPlaceAR(id), onMore(id), onAgain(), onNutrient(n) }
+ * opts: { catalog, reduceMotion, source, identified: bool, canPlaceAR(), onPlaceAR(id), onMore(id), onAgain(), onNutrient(n) }
  */
 export async function showReveal(stage, id, opts) {
   const { catalog } = opts;
@@ -145,8 +145,8 @@ export async function showReveal(stage, id, opts) {
 
   // insigna de sus: confirmarea + încrederea (fără procente)
   const top = root.querySelector(".rv-top");
-  top.innerHTML = opts.confidence ? `<span class="rv-ok">✓</span><span>${esc(t("Identificat"))}</span><span class="conf conf-${opts.confidence.level}"><i></i><i></i><i></i></span><b>${esc(t(opts.confidence.text))}</b>` : "";
-  top.hidden = !opts.confidence;
+  top.innerHTML = opts.identified ? `<span class="rv-ok">✓</span><span>${esc(t("Identificat"))}</span>` : "";
+  top.hidden = !opts.identified;
 
   // etichetele, în ordinea apariției: română → engleză → nutrienți
   const left = root.querySelector(".rv-col.left"), right = root.querySelector(".rv-col.right"), svg = root.querySelector(".rv-links");
@@ -209,7 +209,9 @@ export async function showReveal(stage, id, opts) {
   drawLinks();
 
   try {
-    const { createFruitScene } = await import("./fruit3d.js");
+    const [{ createFruitScene }, fm] = await Promise.all([import("./fruit3d.js"), import("./fruit-models.js")]);
+    // așteptăm modelul realist (de obicei e deja descărcat), ca să apară direct el, nu desenul vechi
+    if (fm.hasRealModel(id)) await Promise.race([fm.loadRealModel(id), new Promise(r => setTimeout(r, 5000))]);
     if (!cur || cur.id !== id) return;
     cur.scene = createFruitScene(canvas, f, { reducedMotion: !!opts.reduceMotion, distance: portrait ? 1.05 : 1.3 });
     cur.scene.celebrate();

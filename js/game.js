@@ -1,4 +1,4 @@
-// FruitAI — jocul: insigne, provocări și quiz-uri.
+// FruitAI — jocul: provocări (fiecare reușită = o stea), insigne și quiz-uri.
 // Toate întrebările sunt generate din datele verificate ale catalogului (fructe, vitamine, beneficii),
 // deci nu se inventează nimic. Progresul începe de la zero la fiecare deschidere a paginii, ca și colecția.
 
@@ -19,7 +19,7 @@ const BADGES = [
   { id: "detective", icon: "🔬", ro: "Detectiv de vitamine", how: "Atinge 5 vitamine sau minerale diferite", test: g => g.s.nutrients.length >= 5 },
   { id: "quiz", icon: "🧠", ro: "Campion la quiz", how: "Răspunde corect la 5 întrebări", test: g => g.s.quizCorrect >= 5 },
   { id: "challenge", icon: "🎯", ro: "Provocare reușită", how: "Termină o provocare din scanner", test: g => g.s.challengesDone >= 1 },
-  { id: "explorer", icon: "🧭", ro: "Explorator", how: "Descoperă 3 fructe și răspunde corect la 3 întrebări", test: g => g.found >= 3 && g.s.quizCorrect >= 3 }
+  { id: "stars3", icon: "⭐", ro: "3 stele", how: "Câștigă 3 stele rezolvând provocări", test: g => g.s.stars >= 3 }
 ];
 
 let catalog = null, s = null, ui = {};
@@ -40,9 +40,18 @@ function toast(icon, title, sub = "") {
 }
 /** Un pas înainte în joc (fruct găsit, răspuns corect): verificăm insignele și, dacă e cazul, anunțăm. */
 function progress(n, why, icon = "✨") {
-  s.stars += n;
   if (why) toast(icon, why);
   checkBadges();
+}
+/** Stelele vin DOAR din provocări: fiecare provocare reușită = o stea. */
+function addStar() {
+  s.stars++; paintStars();
+  ui.pill?.classList.remove("bump"); void ui.pill?.offsetWidth; ui.pill?.classList.add("bump");
+}
+function paintStars() {
+  if (!ui.pill) return;
+  ui.pill.querySelector("b").textContent = s.stars;
+  ui.pill.title = t("Stele câștigate din provocări: {n}", { n: s.stars });
 }
 function checkBadges() {
   const c = ctx();
@@ -61,7 +70,7 @@ function newChallenge() {
 function paintChallenge() {
   if (!ui.chip || !s.challenge) return;
   const v = vitInfo(s.challenge.vitamin);
-  ui.chip.innerHTML = `<span class="cc-i">🎯</span><span>${esc(t("Provocare: găsește un fruct bogat în {v}!", { v: vitTitle(s.challenge.vitamin) }))}</span><span class="nicon vitamin" style="--nc:${v.color}"><b>${esc(v.symbol)}</b></span>`;
+  ui.chip.innerHTML = `<span class="cc-i">🎯</span><span>${esc(t("Provocare: găsește un fruct bogat în {v}!", { v: vitTitle(s.challenge.vitamin) }))}</span><span class="cc-star">+1 ⭐</span><span class="nicon vitamin" style="--nc:${v.color}"><b>${esc(v.symbol)}</b></span>`;
   ui.chip.hidden = false;
 }
 
@@ -154,8 +163,8 @@ function openCollection() {
   const c = ctx(), v = s.challenge && vitInfo(s.challenge.vitamin);
   const found = catalog.fruits.filter(f => collection.has(f.id));
   ui.body.innerHTML = `
-    <div class="gc-head"><div class="gc-stars">🏅 <b>${s.badges.length}</b><span>${esc(t("din {n} insigne", { n: BADGES.length }))}</span></div><div class="gc-found">🧺 <b>${c.found}</b><span>${esc(t("din {n} fructe", { n: catalog.count }))}</span></div></div>
-    ${v ? `<div class="gc-chal"><span class="cc-i">🎯</span><div><b>${esc(t("Provocarea ta"))}</b><span>${esc(t("Găsește cu camera un fruct bogat în {v}.", { v: vitTitle(s.challenge.vitamin) }))}</span></div><span class="nicon vitamin" style="--nc:${v.color}"><b>${esc(v.symbol)}</b></span></div>` : ""}
+    <div class="gc-head"><div class="gc-stars">⭐ <b>${s.stars}</b><span>${esc(t("stele din provocări"))}</span></div><div class="gc-stars">🏅 <b>${s.badges.length}</b><span>${esc(t("din {n} insigne", { n: BADGES.length }))}</span></div><div class="gc-found">🧺 <b>${c.found}</b><span>${esc(t("din {n} fructe", { n: catalog.count }))}</span></div></div>
+    ${v ? `<div class="gc-chal"><span class="cc-i">🎯</span><div><b>${esc(t("Provocarea ta"))}</b><span>${esc(t("Găsește cu camera un fruct bogat în {v}. Primești o stea.", { v: vitTitle(s.challenge.vitamin) }))}</span></div><span class="nicon vitamin" style="--nc:${v.color}"><b>${esc(v.symbol)}</b></span></div>` : ""}
     <h4>${esc(t("Insigne"))}</h4>
     <div class="gc-badges">${BADGES.map(b => { const ok = s.badges.includes(b.id); return `<div class="gb ${ok ? "ok" : ""}" title="${esc(t(b.how))}"><span class="gi">${ok ? b.icon : "🔒"}</span><b>${esc(t(b.ro))}</b><small>${esc(t(b.how))}</small></div>`; }).join("")}</div>
     <h4>${esc(t("Fructele descoperite"))}</h4>
@@ -171,6 +180,8 @@ export function initGame(cat, opts) {
   s = Object.assign({ stars: 0, nutrients: [], quizCorrect: 0, challengesDone: 0, badges: [], challenge: null }, load() || {});
   ui.openFruit = opts.openFruit;
   ui.chip = document.getElementById("challengeChip");
+  ui.pill = document.getElementById("starPill");
+  ui.pill?.addEventListener("click", () => { sound.tick(); openCollection(); });
   ui.toast = document.createElement("div"); ui.toast.className = "game-toast"; ui.toast.hidden = true; ui.toast.setAttribute("role", "status"); document.body.appendChild(ui.toast);
   ui.dlg = document.createElement("dialog"); ui.dlg.className = "game";
   ui.dlg.innerHTML = `<button type="button" class="dbtn round game-x" data-g="close" aria-label="Închide">×</button><div class="game-body"></div>`;
@@ -184,6 +195,7 @@ export function initGame(cat, opts) {
     if (k === "close") ui.dlg.close(); else if (k === "next") nextQuestion(); else if (k === "quiz") openQuiz(); else if (k === "collection") openCollection();
   });
   document.querySelectorAll("[data-quiz]").forEach(b => b.addEventListener("click", () => { sound.tick(); openQuiz(); }));
+  paintStars();
   if (!s.challenge) newChallenge(); else paintChallenge();
 
   // evenimentele aplicației
@@ -193,7 +205,7 @@ export function initGame(cat, opts) {
     if (s.challenge && f.vitamins.includes(s.challenge.vitamin)) {
       s.challengesDone++; save();
       const v = vitTitle(s.challenge.vitamin);
-      setTimeout(() => { sound.discover(); toast("🎯", t("Provocare reușită!"), t("{fruit} e bogat în {v}.", { fruit: names(f)[0], v })); checkBadges(); newChallenge(); }, 3400);
+      setTimeout(() => { sound.discover(); addStar(); toast("⭐", t("Provocare reușită! +1 stea"), t("{fruit} e bogat în {v}.", { fruit: names(f)[0], v })); checkBadges(); newChallenge(); }, 3400);
     }
   });
   window.addEventListener("fruitai:nutrient", e => {

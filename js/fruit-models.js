@@ -596,7 +596,13 @@ export function buildFruitModel(fruit, { slice = false } = {}) {   // felia din 
   }
   out.userData = { fruitId: fruit.id, hasSlice: !!(slice && v.slice), bottom: -size.y / 2 * k, real: false };
   // există un model scanat? îl punem în locul celui procedural de îndată ce s-a descărcat
+  // fructele cu model realist: nu arătăm deloc modelul vechi (desenat); doar dacă cel real nu vine în 6 s
+  if (REAL[fruit.id]) {
+    root.visible = false;
+    setTimeout(() => { if (!out.userData.real) root.visible = true; }, 6000);
+  }
   out.userData.ready = !REAL[fruit.id] ? Promise.resolve(out) : loadRealModel(fruit.id).then(r => {
+    if (!r) root.visible = true;
     if (!r || out.userData.disposed) return out;
     out.clear();
     disposeObject(root);

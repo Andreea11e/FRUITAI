@@ -363,7 +363,7 @@ function renderGuide() {
   const a = state.ambient, r = state.result;
   let text = null, ok = false;
   if (!state.live && !state.frameShown) { el.guide.hidden = true; return; }
-  if (flow.phase === "remove" || flow.phase === "reveal" || flow.phase === "prepare") { el.guide.hidden = true; return; }
+  if (["found", "nofruit", "reveal", "prepare"].includes(flow.phase)) { el.guide.hidden = true; return; }
   if (state.busy && !state.live) { el.guide.hidden = true; return; }
   const fruit = r && r.kind === "fruit";
   if (fruit && state.live) { text = "Ține fructul nemișcat o clipă… îl recunosc!"; ok = true; }
@@ -609,7 +609,7 @@ function loadLocal() {
     try { await navigator.storage?.persist?.(); } catch {}
     el.progress.hidden = true;
     local.ready = true;
-    setStatus("Gata: pune o imagine sau pornește camera", "ok");
+    setStatus("Gata: pornește camera și arată un fruct", "ok");
     if (!state.frameShown && !state.live) el.emptyTitle.textContent = "Gata. Arată-mi un fruct";
     // detectorul (pentru mai multe fructe într-o poză) doar pe calculator cu WebGPU, în fundal
     if (!IS_MOBILE && local.backend?.device === "webgpu") call("loadDetector").then(() => { local.detOK = true; }).catch(e => console.warn("Detectorul nu s-a încărcat:", e));
@@ -903,10 +903,11 @@ window.addEventListener("paste", e => {
   if (item) handleFile(item.getAsFile());
 });
 
-// ---------------- Fluxul automat: arată fructul → scoate-l → fructul 3D cu etichete ----------------
+// ---------------- Fluxul automat: arată fructul → „Am găsit!” → fructul 3D cu etichete ----------------
 // scan:    camera caută un fruct (real sau poză)
-// remove:  fructul a fost recunoscut stabil → „Scoate fructul din fața camerei”
-// reveal:  fructul nu mai e în cadru → apare fructul 3D, apoi liniuțele către RO, EN și vitamine
+// found:   fructul a fost recunoscut stabil → rama devine verde, apare ✓ și numele, apoi singur fructul 3D
+// nofruit: în cadru e un obiect care nu e fruct (o cană, o roșie) → rama devine portocalie, ✕ „Nu e un fruct”
+// reveal:  fructul 3D, apoi liniuțele către RO, EN și vitamine
 // prepare: (doar pentru poze încărcate) scurtă pauză înainte de 3D
 const flow = { phase: "idle", cand: null, candNew: false, streak: 0, miss: 0, id: null, isNew: false, t: 0, src: "camera" };
 const LOCK_STREAK = 3;
@@ -914,7 +915,9 @@ const CLEAR_SCORE = 0.85;     // „fruct clar”: scor relativ foarte mare…
 const CLEAR_RAW = 0.35;       // …și scor brut mare (nu doar „cel mai bun dintr-un fundal”)        // de câte ori la rând trebuie văzut același fruct ca să fie „sigur”
 const REMOVE_MISS = 2;        // de câte ori la rând nu trebuie să mai fie văzut ca să considerăm că a fost scos
 const REMOVE_MIN_MS = 1400;   // cât rămâne mesajul „scoate fructul” cel puțin
-const REVEAL_MIN_MS = 7000;   // după cât timp un fruct nou arătat camerei poate porni un flux nou
+const REVEAL_MIN_MS = 7000;
+const FOUND_MS = 1300;        // cât stă animația „Am găsit fructul!” înainte de fructul 3D
+const NOFRUIT_MS = 2200;      // cât stă mesajul „Nu e un fruct”   // după cât timp un fruct nou arătat camerei poate porni un flux nou
 const flowMsg = $("flowMsg");
 
 function setFlow(phase) {
@@ -924,38 +927,27 @@ function setFlow(phase) {
   renderGuide();
 }
 
-/** Indicatorul de încredere, fără procente: 3 niveluri după scorul modelului. */
-function confidenceOf(score) {
-  if (score == null) return null;
-  return score >= 0.6 ? { level: 3, text: "Sigur" } : score >= 0.42 ? { level: 2, text: "Destul de sigur" } : { level: 1, text: "Nu foarte sigur" };
-}
 function foundHtml() {
-  const f = catalog.get(flow.id), c = confidenceOf(flow.score);
+  const f = catalog.get(flow.id);
   const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
   return `<div class="fm-badge" aria-hidden="true">✓</div>
-    <div class="fm-name" data-no-i18n>${f.emoji ? `<span>${esc(f.emoji)}</span>` : ""}<span>${esc(f.ro.toLocaleUpperCase("ro-RO"))}</span><em>${esc(f.en.toUpperCase())}</em></div>
-    ${c ? `<span class="fm-conf"><span class="conf conf-${c.level}"><i></i><i></i><i></i></span>${esc(t(c.text))}</span>` : ""}`;
+    <div class="fm-name" data-no-i18n>${f.emoji ? `<span>${esc(f.emoji)}</span>` : ""}<span>${esc(f.ro.toLocaleUpperCase("ro-RO"))}</span><em>${esc(f.en.toUpperCase())}</em></div>`;
 }
 function renderFlowMsg() {
   const p = flow.phase;
-  clearTimeout(flow.slowTimer);
-  if (p === "remove") {
-    flowMsg.innerHTML = `${foundHtml()}
-      <span>Acum scoate fructul sau poza din fața camerei</span>
-      <div class="fm-anim" aria-hidden="true"><i class="fm-frame"></i><i class="fm-item"></i><i class="fm-arrow">➜</i></div>
-      <button type="button" class="dbtn fm-now" data-flow-now hidden>Arată-mi-l acum</button>`;
-    flowMsg.querySelector("[data-flow-now]").onclick = () => { sound.tick(); startReveal(); };
-    // dacă fructul nu e scos în câteva secunde, apare și un buton
-    // dacă fructul nu e scos, apare un buton după 3 s, iar după 6 s fructul 3D apare oricum (totul rămâne automat)
-    flow.slowTimer = setTimeout(() => {
-      const b = flowMsg.querySelector("[data-flow-now]"); if (b && flow.phase === "remove") b.hidden = false;
-      flow.slowTimer = setTimeout(() => { if (flow.phase === "remove") startReveal(); }, 3000);
-    }, 3000);
+  const esc = x => String(x).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
+  if (p === "found") {
+    flowMsg.innerHTML = foundHtml();
+  } else if (p === "nofruit") {
+    flowMsg.innerHTML = `<div class="fm-badge no" aria-hidden="true">✕</div><b>${esc(t("Nu e un fruct"))}</b><span>${esc(cap(nfText(flow.nfLabel)))}</span>`;
   } else if (p === "prepare") {
-    flowMsg.innerHTML = `${foundHtml()}<span>Îl transform în 3D…</span><div class="fm-spin" aria-hidden="true"></div>`;
+    flowMsg.innerHTML = `${foundHtml()}<div class="fm-spin" aria-hidden="true"></div>`;
   } else { flowMsg.innerHTML = ""; }
-  flowMsg.hidden = !(p === "remove" || p === "prepare");
-  if (!flowMsg.hidden) { flowMsg.classList.remove("in"); void flowMsg.offsetWidth; flowMsg.classList.add("in"); }
+  flowMsg.className = "flow-msg" + (p === "nofruit" ? " no" : "");
+  flowMsg.hidden = !(p === "found" || p === "nofruit" || p === "prepare");
+  if (!flowMsg.hidden) { void flowMsg.offsetWidth; flowMsg.classList.add("in"); }
+  seekEl.classList.toggle("found", p === "found");
+  seekEl.classList.toggle("nofruit", p === "nofruit");
 }
 
 /** Primește fiecare rezultat brut din camera live și avansează fluxul. */
@@ -967,13 +959,17 @@ function flowOnResult(r) {
     if (!fruit) { flow.gone = (flow.gone || 0) + 1; if (flow.gone >= 2) flow.cleared = true; }
     else { flow.gone = 0; if (r.label === flow.id && !flow.cleared) fruit = false; }
   }
-  if (flow.phase === "scan" || flow.phase === "reveal") {
+  if (flow.phase === "scan" || flow.phase === "nofruit" || flow.phase === "reveal") {
     // vot pe ultimele 3 rezultate: un cadru ratat (mișcare, reflexie) nu mai anulează recunoașterea
     flow.votes = [...(flow.votes || []), fruit ? r.label : null].slice(-4);
     const count = fruit ? flow.votes.filter(v => v === r.label).length : 0;
-    if (fruit && r.label !== flow.cand) { flow.cand = r.label; flow.candNew = !collection.has(r.label); }
+    if (fruit && r.label !== flow.cand) {
+      flow.cand = r.label; flow.candNew = !collection.has(r.label);
+      // descărcăm din timp modelul realist al fructului, ca să apară direct el
+      import("./fruit-models.js").then(m => m.loadRealModel(r.label)).catch(() => {});
+    }
     flow.streak = count;
-    const canLock = flow.phase === "scan" || (Date.now() - flow.t > REVEAL_MIN_MS && !revealBusy());
+    const canLock = flow.phase === "scan" || flow.phase === "nofruit" || (Date.now() - flow.t > REVEAL_MIN_MS && !revealBusy());
     // foarte sigur → acceptat din prima; altfel trebuie văzut în 2 din ultimele 3 cadre
     // un mic „timp de gândire”, ca recunoașterea să pară naturală: fructul trebuie urmărit ~1,8 s
     if (fruit && !flow.seenAt) flow.seenAt = Date.now();
@@ -984,21 +980,34 @@ function flowOnResult(r) {
     const clear = fruit && r.score >= CLEAR_SCORE && (r.raw ?? 0) >= CLEAR_RAW;
     const twoInRow = clear && flow.votes.slice(-2).every(v => v === r.label);
     if (fruit && (flow.streak >= LOCK_STREAK || twoInRow) && canLock && thought) {
-      showSeek(null);
-      hideReveal();
+      clearTimeout(flow.nfTimer);
+      if (flow.phase === "reveal") { hideReveal(); showSeek(state.seek); }
       flow.id = r.label; flow.isNew = flow.candNew; flow.miss = 0; flow.score = r.score;
       sound.pop();
-      setFlow("remove");
+      setFlow("found");
+      clearTimeout(flow.foundTimer);
+      flow.foundTimer = setTimeout(() => { if (flow.phase === "found") startReveal(); }, FOUND_MS);
+      return;
     }
-  } else if (flow.phase === "remove") {
-    flow.miss = fruit ? 0 : flow.miss + 1;
-    if (flow.miss >= REMOVE_MISS && Date.now() - flow.t >= REMOVE_MIN_MS) startReveal();
+    // un obiect care nu e fruct (o cană, o roșie), văzut în 3 din ultimele 4 analize → „Nu e un fruct”
+    if (flow.phase === "scan") {
+      const nf = r.kind === "notfruit" ? r.label : null;
+      flow.nfVotes = [...(flow.nfVotes || []), nf].slice(-4);
+      if (nf && flow.nfVotes.filter(v => v === nf).length >= 3 && Date.now() > (flow.nfUntil || 0)) {
+        flow.nfLabel = nf; flow.nfUntil = Date.now() + NOFRUIT_MS + 5000;
+        sound.tick();
+        setFlow("nofruit");
+        clearTimeout(flow.nfTimer);
+        flow.nfTimer = setTimeout(() => { if (flow.phase === "nofruit") { flow.nfVotes = []; setFlow("scan"); } }, NOFRUIT_MS);
+      }
+    }
   }
 }
 
 function startReveal() {
   if (!flow.id) return;
-  clearTimeout(state.discTimer);
+  clearTimeout(state.discTimer); clearTimeout(flow.foundTimer); clearTimeout(flow.nfTimer);
+  showSeek(null);
   setFlow("reveal");
   flow.cand = null; flow.streak = 0; flow.votes = []; flow.cleared = false; flow.gone = 0; flow.seenAt = 0;
   setArTarget(null);
@@ -1006,7 +1015,7 @@ function startReveal() {
   setStatus(t("{name}, în 3D", { name: fruitName(flow.id) }), "ok");
   window.dispatchEvent(new CustomEvent("fruitai:reveal", { detail: { id: flow.id, isNew: flow.isNew } }));
   showReveal(el.stage, flow.id, {
-    catalog, reduceMotion, source: flow.src, confidence: confidenceOf(flow.score),
+    catalog, reduceMotion, source: flow.src, identified: true,
     canPlaceAR: () => canPlace(),
     onPlaceAR: id => placeOnTable(id),
     onNutrient: n => window.dispatchEvent(new CustomEvent("fruitai:nutrient", { detail: n.key })),
@@ -1084,7 +1093,7 @@ async function ambientLoop() {
       // caută imediat obiectul pe ecran și arată rama „Caut fructul…” peste el
       state.seek = locate(el.video);
       seekLabel(flow.seenAt ? "Îl analizez…" : "Caut fructul…");
-      showSeek(flow.phase === "scan" ? state.seek : null);
+      showSeek(["scan", "found", "nofruit"].includes(flow.phase) ? state.seek : null);
     }
     await new Promise(r => setTimeout(r, 200));
   }
@@ -1097,7 +1106,7 @@ async function liveLoop() {
     if (el.video.videoWidth) {
       const a = state.ambient;
       // Scenă nemișcată + rezultat valid → păstrăm rezultatul fără a rula modelele (economie de baterie)
-      const still = a.motion != null && a.motion < AMB.still && flow.phase !== "remove";
+      const still = a.motion != null && a.motion < AMB.still && flow.phase !== "found";
       const fresh = state.result && state.result.kind === "fruit" && Date.now() - state.lastModelRun < SKIP_MAX;
       if (still && fresh) {
         state.result.time = Date.now();
@@ -1230,7 +1239,7 @@ async function startTable(f, orientation) {
       overlay, close: $("xrClose"), card: $("xrCard"), t, orientation,
       onNutrient: n => window.dispatchEvent(new CustomEvent("fruitai:nutrient", { detail: n.key })),
       onEnd: () => {
-        state.xrActive = false; updateXRButton(); setStatus("Gata: pune o imagine sau pornește camera", "ok");
+        state.xrActive = false; updateXRButton(); setStatus("Gata: pornește camera și arată un fruct", "ok");
         if (document.fullscreenElement === document.documentElement) document.exitFullscreen().catch(() => {});
       }
     });

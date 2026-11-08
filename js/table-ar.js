@@ -113,7 +113,15 @@ export async function startTableAR(fruit, nutrients, ui) {
     st.placed = true; st.appear = 0; holder.visible = true;
   }
   // așteptăm puțin primele date de la giroscop, ca fructul să apară exact pe masa din fața telefonului
-  setTimeout(place, 450);
+  // telefonul trebuie să privească în jos (spre masă sau podea); privind un perete sau înainte, fructul nu se pune
+  const fwd = new THREE.Vector3();
+  const lookingDown = () => { fwd.set(0, 0, -1).applyQuaternion(camera.quaternion); return fwd.y < -0.3; };   // > ~17° sub orizont
+  const hint = document.createElement("div");
+  hint.className = "tbl-hint"; hint.setAttribute("aria-hidden", "true");
+  hint.innerHTML = `<i class="tbl-phone"></i><i class="tbl-surface"></i>`;
+  document.body.appendChild(hint);
+  // așteptăm datele de la giroscop; fără giroscop (calculator), punem fructul direct
+  setTimeout(() => { if (!gyro.ok) place(); }, 700);
 
   // ---------- fișa nutrientului ----------
   function showCard(n) {
@@ -187,7 +195,11 @@ export async function startTableAR(fruit, nutrients, ui) {
   const loop = () => {
     raf = requestAnimationFrame(loop);
     const dt = Math.min(0.05, clock.getDelta()), tt = clock.elapsedTime;
-    if (gyro.ok) camera.quaternion.slerp(gyro.q, 0.35);
+    if (gyro.ok) camera.quaternion.slerp(gyro.q, 0.22);       // mișcare lină, fără tremurat
+    const down = !gyro.ok || lookingDown();
+    if (gyro.ok && !st.placed && down) { st.downFor = (st.downFor || 0) + dt; if (st.downFor > 0.35) place(); }
+    else if (!down) st.downFor = 0;
+    hint.classList.toggle("on", gyro.ok && !down && (!st.placed || st.offFor > 0.4));
     // plasă de siguranță: dacă fructul a ieșit din ecran de peste 1,5 s (giroscop ciudat, telefon întors),
     // îl aducem înapoi în fața camerei
     if (st.placed && !st.dragging) {
@@ -195,7 +207,7 @@ export async function startTableAR(fruit, nutrients, ui) {
       const v = holder.position.clone().project(camera);
       const off = v.z > 1 || Math.abs(v.x) > 1.25 || Math.abs(v.y) > 1.25;
       st.offFor = off ? (st.offFor || 0) + dt : 0;
-      if (st.offFor > 1.5) { st.offFor = 0; place(); }
+      if (st.offFor > 1.5 && down) { st.offFor = 0; place(); }     // îl readucem doar pe masă, nu pe perete
     }
     if (st.placed) {
       holder.position.lerp(target, 0.25);
@@ -236,6 +248,7 @@ export async function startTableAR(fruit, nutrients, ui) {
     disposeObject(scene);
     scene.environment?.dispose?.(); pmrem.dispose(); renderer.dispose();
     renderer.domElement.remove();
+    hint.remove();
     document.documentElement.classList.remove("imm-lock");
     if (ui.card) ui.card.hidden = true;
     if (ui.overlay) ui.overlay.hidden = true;
