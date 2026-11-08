@@ -34,4 +34,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/clip-text.bin data/clip-text.json scripts/eval-report.txt
-          git diff --cached --quiet || (git commit -m "Vectori CLIP recalculați automat" && git push)
+          git diff --cached --quiet || (git commit -m "Vectori CLIP recalculați automat" && git pull --rebase && git push)
