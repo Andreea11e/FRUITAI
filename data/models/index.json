@@ -20,9 +20,9 @@
   },
   "pear": {
    "file": "pear.glb",
-   "source": "Poly Haven – Pears Asian 01",
-   "license": "CC0 1.0",
-   "url": "https://polyhaven.com/a/food_pears_asian_01"
+   "source": "Objaverse / Sketchfab – „Lowpoly pear”, autor: Zacxophone",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/618ad10c9f414e9d805e36fd514011e1"
   },
   "lemon": {
    "file": "lemon.glb",
@@ -53,6 +53,126 @@
    "source": "Poly Haven – Food Lychee 01",
    "license": "CC0 1.0",
    "url": "https://polyhaven.com/a/food_lychee_01"
+  },
+  "orange": {
+   "file": "orange.glb",
+   "source": "Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b"
+  },
+  "tangerine": {
+   "file": "tangerine.glb",
+   "source": "Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b"
+  },
+  "clementine": {
+   "file": "clementine.glb",
+   "source": "Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b"
+  },
+  "blood-orange": {
+   "file": "blood-orange.glb",
+   "source": "Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b"
+  },
+  "peach": {
+   "file": "peach.glb",
+   "source": "Objaverse / Sketchfab – „Japanese Peach”, autor: STUDIO DUCKBILL",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/8cf8ce4a480e43dbafa390ae5394c627"
+  },
+  "nectarine": {
+   "file": "nectarine.glb",
+   "source": "Objaverse / Sketchfab – „Colorful nectarine”, autor: cglib.team",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/0450b57c682d4454b3beb2f8724a73f5"
+  },
+  "pineapple": {
+   "file": "pineapple.glb",
+   "source": "Objaverse / Sketchfab – „Pineapple”, autor: Lassi Kaukonen",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/3debe241ac7e401aa36ae944daa1708e"
+  },
+  "strawberry": {
+   "file": "strawberry.glb",
+   "source": "Objaverse / Sketchfab – „Strawberry (Jumbo Poly) Freebie”, autor: Geug",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/0b9867d98c154737b422fa5afacfc178"
+  },
+  "grape": {
+   "file": "grape.glb",
+   "source": "Objaverse / Sketchfab – „Grapes”, autor: 3Dee",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/9396a10bd8804811a14b58f50d543575"
+  },
+  "watermelon": {
+   "file": "watermelon.glb",
+   "source": "Objaverse / Sketchfab – „Watermelon”, autor: STUDIO DUCKBILL",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/5a0ae2276ac845c9a93b240c076aae19"
+  },
+  "cherry": {
+   "file": "cherry.glb",
+   "source": "Objaverse / Sketchfab – „Cherry (Free Download)”, autor: pizzaguyty",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/8e076ba031bb4969930dc8e49d35668d"
+  },
+  "coconut": {
+   "file": "coconut.glb",
+   "source": "Objaverse / Sketchfab – „Low Poly Coconut game Ready”, autor: Arthur.Zim",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/0213a71af3314ac0aaae25030d565d44"
+  },
+  "papaya": {
+   "file": "papaya.glb",
+   "source": "Objaverse / Sketchfab – „Papaya 3D photogrammetry”, autor: Grasiele Bastos",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/3331e1a05cad48ecb95d11e8d7930a20"
+  },
+  "apricot": {
+   "file": "apricot.glb",
+   "source": "Objaverse / Sketchfab – „225: Peach”, autor: alexdelker",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/154598525f904aae82c4ad29cf495a56"
+  },
+  "blueberry": {
+   "file": "blueberry.glb",
+   "source": "Objaverse / Sketchfab – „Blueburry”, autor: M0hamed1brahemB0rha",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/facb6b3bea75488bb579ad893b8349b9"
+  },
+  "blackberry": {
+   "file": "blackberry.glb",
+   "source": "Objaverse / Sketchfab – „BlackBerries”, autor: 3Dee",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/1f5a007441124311a99d1f6156cb17f7"
+  },
+  "fig": {
+   "file": "fig.glb",
+   "source": "Objaverse / Sketchfab – „Fig (Ficus carica)”, autor: Digital Archive of Natural History (DiNArDa)",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/1d4afb668a714188935966d3ee9b2e33"
+  },
+  "cantaloupe": {
+   "file": "cantaloupe.glb",
+   "source": "Objaverse / Sketchfab – „Melon”, autor: STUDIO DUCKBILL",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/a1d755dc91a24124be2cfab253664601"
+  },
+  "persimmon": {
+   "file": "persimmon.glb",
+   "source": "Objaverse / Sketchfab – „CALABAZA HOKKAIDO”, autor: Onironauta digital",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/6c479a2d5dff48ada02804c446561ad4"
+  },
+  "plantain": {
+   "file": "plantain.glb",
+   "source": "Objaverse / Sketchfab – „Banana”, autor: ShekhirevaVictoria",
+   "license": "CC BY 4.0",
+   "url": "https://sketchfab.com/3d-models/e0c2951ac0ca47b8978b2a6eca426c3f"
   }
  },
  "note": "Modele 3D scanate, folosite în locul celor procedurale. Vezi licența fiecărei surse."

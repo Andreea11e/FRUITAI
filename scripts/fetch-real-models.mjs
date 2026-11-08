@@ -14,7 +14,7 @@ const RES = process.env.RES || "1k";
 // potriviri sigure (verificate pe polyhaven.com); restul se caută automat după nume
 const PREFERRED = {
   apple: "food_apple_01", banana: "bananas", kiwi: "food_kiwi_01", lemon: "lemon", lime: "food_lime_01",
-  lychee: "food_lychee_01", avocado: "food_avocado_01", pear: "food_pears_asian_01",
+  lychee: "food_lychee_01", avocado: "food_avocado_01",
 };
 // modele cu mai multe fructe: păstrăm unul singur (după numele nodului din glTF)
 const KEEP_NODE = { banana: "bananas_bunch", pear: "food_pears_asian_01_b" };
@@ -64,6 +64,8 @@ console.log("Modele alese:", report.chosen);
 
 const index = JSON.parse(await fs.readFile(path.join(OUT, "index.json"), "utf8"));
 for (const [fruit, { asset, name }] of Object.entries(report.chosen)) {
+  // fructele care au deja un model din altă sursă (ex. Objaverse) rămân neschimbate
+  if (index.models[fruit] && !String(index.models[fruit].source).startsWith("Poly Haven")) { delete report.chosen[fruit]; continue; }
   try {
     const files = await getJSON(`${API}/files/${asset}`);
     const g = files.gltf?.[RES]?.gltf || files.gltf?.["1k"]?.gltf;

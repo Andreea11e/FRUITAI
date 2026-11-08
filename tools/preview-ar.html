@@ -3,6 +3,7 @@
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 const q = new URLSearchParams(location.search), ids = q.get("ids").split(","), dir = q.get("dir") || "ar";
 const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.setSize(220 * ids.length, 240); document.body.appendChild(r.domElement);
@@ -10,8 +11,9 @@ r.setScissorTest(true);
 const env = new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(), 0.04).texture;
 let i = 0;
 for (const id of ids) {
-  const g = await new GLTFLoader().loadAsync(`../data/${dir}/${id}.glb`);
+  const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(`../data/${dir}/${id}.glb`);
   const s = new THREE.Scene(); s.environment = env; s.background = new THREE.Color(0xe8e4dc); s.add(g.scene);
+  if (q.get("fit")) { const b0 = new THREE.Box3().setFromObject(g.scene), s0 = b0.getSize(new THREE.Vector3()); g.scene.scale.multiplyScalar(0.2 / Math.max(s0.x, s0.y, s0.z)); g.scene.updateMatrixWorld(true); }
   const box = new THREE.Box3().setFromObject(g.scene), c = box.getCenter(new THREE.Vector3()), sz = box.getSize(new THREE.Vector3());
   const cam = new THREE.PerspectiveCamera(35, 220 / 240, 0.001, 10); cam.position.set(c.x, c.y + sz.y * .6, c.z + Math.max(sz.x, sz.y) * 2.6); cam.lookAt(c);
   r.setViewport(i * 220, 0, 220, 240); r.setScissor(i * 220, 0, 220, 240); r.render(s, cam);

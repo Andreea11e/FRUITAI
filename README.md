@@ -89,7 +89,7 @@ Dacă fructul nu e scos din cadru în 6 secunde, apare și butonul „Arată-mi-
 - **Salvează captura:** descarcă imaginea cu toate încadrările și etichetele, la rezoluția sursei.
 - **AR spațial (WebXR):** pe dispozitivele compatibile (ex. Chrome pe Android cu ARCore), telefonul găsește masa sau podeaua și pui acolo **modelul 3D al fructului**, cu numele în română și engleză deasupra și nutrienții pe orbită. Îl rotești cu un deget, îl scalezi cu două, îl muți atingând altă suprafață; atingi un nutrient și apare fișa bilingvă. Butoanele AR spațial apar doar dacă browserul suportă `immersive-ar`; altfel secțiunea AR recomandă Camera AR.
 - **Fructul pe masă pe Android (Samsung etc.):** prin `<model-viewer>` de la Google (`js/ar-android.js`): AR în pagină (WebXR) în Chrome sau aplicația Google de AR în Samsung Internet; telefonul găsește masa, iar fructul se mută, se mărește și se rotește cu degetele. Fără AR pe telefon, fructul apare peste imaginea camerei.
-- **Fructe scanate după fructe reale:** măr, banană, pară, lămâie, lime, kiwi, rodie, avocado (Poly Haven, CC0), descărcate de `scripts/fetch-real-models.mjs` în `data/models/`; restul fructelor sunt modele generate.
+- **Fructe realiste:** 29 de fructe au modele 3D scanate sau modelate după fructe reale (Poly Haven, CC0, prin `scripts/fetch-real-models.mjs`; Objaverse/Sketchfab, CC BY, prin `scripts/find-objaverse.py`), în `data/models/`, la mărimea lor reală. Creditele sunt la finalul acestui fișier.
 - **Fructul pe masă pe orice telefon:** dacă dispozitivul nu are WebXR sau AR Quick Look (ori acestea nu pornesc), fructul 3D e pus pe masă peste imaginea camerei, cu umbră sub el; giroscopul ține fructul pe loc când miști telefonul. Un deget îl mută, două degete îl măresc și îl rotesc, o atingere pe o vitamină deschide fișa ei.
 
 ### Inteligență ambientală
@@ -195,3 +195,37 @@ O înregistrare invalidă e ignorată în browser (cu un avertisment în consol�
 ## Publicare online
 
 Poți urca dosarul pe orice hosting static cu HTTPS: GitHub Pages, Netlify, Vercel sau Cloudflare Pages. Nu are nevoie de server propriu. WebXR și camera cer HTTPS.
+
+## Modele 3D folosite (credite)
+
+Modelele 3D realiste ale fructelor provin din surse cu licențe libere, care permit și uzul comercial:
+
+- **apple**: Poly Haven – Food Apple 01 – CC0 1.0 – https://polyhaven.com/a/food_apple_01
+- **apricot**: Objaverse / Sketchfab – „225: Peach”, autor: alexdelker – CC BY 4.0 – https://sketchfab.com/3d-models/154598525f904aae82c4ad29cf495a56
+- **avocado**: Poly Haven – Food Avocado 01 – CC0 1.0 – https://polyhaven.com/a/food_avocado_01
+- **banana**: Poly Haven – Bananas – CC0 1.0 – https://polyhaven.com/a/bananas
+- **blackberry**: Objaverse / Sketchfab – „BlackBerries”, autor: 3Dee – CC BY 4.0 – https://sketchfab.com/3d-models/1f5a007441124311a99d1f6156cb17f7
+- **blood-orange**: Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG – CC BY 4.0 – https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b
+- **blueberry**: Objaverse / Sketchfab – „Blueburry”, autor: M0hamed1brahemB0rha – CC BY 4.0 – https://sketchfab.com/3d-models/facb6b3bea75488bb579ad893b8349b9
+- **cantaloupe**: Objaverse / Sketchfab – „Melon”, autor: STUDIO DUCKBILL – CC BY 4.0 – https://sketchfab.com/3d-models/a1d755dc91a24124be2cfab253664601
+- **cherry**: Objaverse / Sketchfab – „Cherry (Free Download)”, autor: pizzaguyty – CC BY 4.0 – https://sketchfab.com/3d-models/8e076ba031bb4969930dc8e49d35668d
+- **clementine**: Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG – CC BY 4.0 – https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b
+- **coconut**: Objaverse / Sketchfab – „Low Poly Coconut game Ready”, autor: Arthur.Zim – CC BY 4.0 – https://sketchfab.com/3d-models/0213a71af3314ac0aaae25030d565d44
+- **fig**: Objaverse / Sketchfab – „Fig (Ficus carica)”, autor: Digital Archive of Natural History (DiNArDa) – CC BY 4.0 – https://sketchfab.com/3d-models/1d4afb668a714188935966d3ee9b2e33
+- **grape**: Objaverse / Sketchfab – „Grapes”, autor: 3Dee – CC BY 4.0 – https://sketchfab.com/3d-models/9396a10bd8804811a14b58f50d543575
+- **kiwi**: Poly Haven – Food Kiwi 01 – CC0 1.0 – https://polyhaven.com/a/food_kiwi_01
+- **lemon**: Poly Haven – Lemon – CC0 1.0 – https://polyhaven.com/a/lemon
+- **lime**: Poly Haven – Food Lime 01 – CC0 1.0 – https://polyhaven.com/a/food_lime_01
+- **lychee**: Poly Haven – Food Lychee 01 – CC0 1.0 – https://polyhaven.com/a/food_lychee_01
+- **nectarine**: Objaverse / Sketchfab – „Colorful nectarine”, autor: cglib.team – CC BY 4.0 – https://sketchfab.com/3d-models/0450b57c682d4454b3beb2f8724a73f5
+- **orange**: Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG – CC BY 4.0 – https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b
+- **papaya**: Objaverse / Sketchfab – „Papaya 3D photogrammetry”, autor: Grasiele Bastos – CC BY 4.0 – https://sketchfab.com/3d-models/3331e1a05cad48ecb95d11e8d7930a20
+- **peach**: Objaverse / Sketchfab – „Japanese Peach”, autor: STUDIO DUCKBILL – CC BY 4.0 – https://sketchfab.com/3d-models/8cf8ce4a480e43dbafa390ae5394c627
+- **pear**: Objaverse / Sketchfab – „Lowpoly pear”, autor: Zacxophone – CC BY 4.0 – https://sketchfab.com/3d-models/618ad10c9f414e9d805e36fd514011e1
+- **persimmon**: Objaverse / Sketchfab – „CALABAZA HOKKAIDO”, autor: Onironauta digital – CC BY 4.0 – https://sketchfab.com/3d-models/6c479a2d5dff48ada02804c446561ad4
+- **pineapple**: Objaverse / Sketchfab – „Pineapple”, autor: Lassi Kaukonen – CC BY 4.0 – https://sketchfab.com/3d-models/3debe241ac7e401aa36ae944daa1708e
+- **plantain**: Objaverse / Sketchfab – „Banana”, autor: ShekhirevaVictoria – CC BY 4.0 – https://sketchfab.com/3d-models/e0c2951ac0ca47b8978b2a6eca426c3f
+- **pomegranate**: Poly Haven – Food Pomegranate 01 – CC0 1.0 – https://polyhaven.com/a/food_pomegranate_01
+- **strawberry**: Objaverse / Sketchfab – „Strawberry (Jumbo Poly) Freebie”, autor: Geug – CC BY 4.0 – https://sketchfab.com/3d-models/0b9867d98c154737b422fa5afacfc178
+- **tangerine**: Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG – CC BY 4.0 – https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b
+- **watermelon**: Objaverse / Sketchfab – „Watermelon”, autor: STUDIO DUCKBILL – CC BY 4.0 – https://sketchfab.com/3d-models/5a0ae2276ac845c9a93b240c076aae19
