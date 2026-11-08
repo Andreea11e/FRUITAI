@@ -89,7 +89,7 @@ Dacă fructul nu e scos din cadru în 6 secunde, apare și butonul „Arată-mi-
 - **Salvează captura:** descarcă imaginea cu toate încadrările și etichetele, la rezoluția sursei.
 - **AR spațial (WebXR):** pe dispozitivele compatibile (ex. Chrome pe Android cu ARCore), telefonul găsește masa sau podeaua și pui acolo **modelul 3D al fructului**, cu numele în română și engleză deasupra și nutrienții pe orbită. Îl rotești cu un deget, îl scalezi cu două, îl muți atingând altă suprafață; atingi un nutrient și apare fișa bilingvă. Butoanele AR spațial apar doar dacă browserul suportă `immersive-ar`; altfel secțiunea AR recomandă Camera AR.
 - **Fructul pe masă pe Android (Samsung etc.):** prin `<model-viewer>` de la Google (`js/ar-android.js`): AR în pagină (WebXR) în Chrome sau aplicația Google de AR în Samsung Internet; telefonul găsește masa, iar fructul se mută, se mărește și se rotește cu degetele. Fără AR pe telefon, fructul apare peste imaginea camerei.
-- **Fructe realiste:** 40 de fructe au modele 3D scanate sau modelate după fructe reale (Poly Haven, CC0, prin `scripts/fetch-real-models.mjs`; Objaverse/Sketchfab, CC BY, prin `scripts/find-objaverse.py`), în `data/models/`, la mărimea lor reală. Creditele sunt la finalul acestui fișier.
+- **Fructe realiste:** 40 de fructe au modele 3D scanate sau modelate după fructe reale (Poly Haven, CC0, prin `scripts/fetch-real-models.mjs`; Objaverse/Sketchfab, CC BY, prin `scripts/find-objaverse.py` și `scripts/find-objaverse-names.py`), în `data/models/`, la mărimea lor reală. Creditele sunt la finalul acestui fișier.
 - **Fructul pe masă pe orice telefon:** dacă dispozitivul nu are WebXR sau AR Quick Look (ori acestea nu pornesc), fructul 3D e pus pe masă peste imaginea camerei, cu umbră sub el; giroscopul ține fructul pe loc când miști telefonul. Un deget îl mută, două degete îl măresc și îl rotesc, o atingere pe o vitamină deschide fișa ei.
 
 ### Inteligență ambientală
@@ -206,11 +206,11 @@ Modelele 3D realiste ale fructelor provin din surse cu licențe libere, care per
 - **banana**: Poly Haven – Bananas – CC0 1.0 – https://polyhaven.com/a/bananas
 - **blackberry**: Objaverse / Sketchfab – „BlackBerries”, autor: 3Dee – CC BY 4.0 – https://sketchfab.com/3d-models/1f5a007441124311a99d1f6156cb17f7
 - **blood-orange**: Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG – CC BY 4.0 – https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b
-- **blueberry**: Objaverse / Sketchfab – „Blueburry”, autor: M0hamed1brahemB0rha – CC BY 4.0 – https://sketchfab.com/3d-models/facb6b3bea75488bb579ad893b8349b9
+- **blueberry**: Objaverse / Sketchfab – „Gourmet Blueberry”, autor: inciprocal – CC BY 4.0 – https://sketchfab.com/3d-models/62f6c6368c484dd6a85a2a162133d2e0
 - **cantaloupe**: Objaverse / Sketchfab – „Melon”, autor: STUDIO DUCKBILL – CC BY 4.0 – https://sketchfab.com/3d-models/a1d755dc91a24124be2cfab253664601
 - **cherimoya**: Objaverse / Sketchfab – „Custard Apple [Autodesk ReMake]”, autor: Thomas Flynn – CC BY 4.0 – https://sketchfab.com/3d-models/3f05e2db3ceb43669cbbd525ac6ed6ca
 - **cherry**: Objaverse / Sketchfab – „Cherry (Free Download)”, autor: pizzaguyty – CC BY 4.0 – https://sketchfab.com/3d-models/8e076ba031bb4969930dc8e49d35668d
-- **clementine**: Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG – CC BY 4.0 – https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b
+- **clementine**: Objaverse / Sketchfab – „Tangerine”, autor: andree – CC BY 4.0 – https://sketchfab.com/3d-models/e5015b222a6949478d68bd6b38fc6ee0
 - **coconut**: Objaverse / Sketchfab – „Low Poly Coconut game Ready”, autor: Arthur.Zim – CC BY 4.0 – https://sketchfab.com/3d-models/0213a71af3314ac0aaae25030d565d44
 - **custard-apple**: Objaverse / Sketchfab – „Custard Apple [Autodesk ReMake]”, autor: Thomas Flynn – CC BY 4.0 – https://sketchfab.com/3d-models/3f05e2db3ceb43669cbbd525ac6ed6ca
 - **dragon-fruit**: Objaverse / Sketchfab – „Dragon Fruit”, autor: CHEI - UC San Diego – CC BY 4.0 – https://sketchfab.com/3d-models/e69e134aac6149a3afe9068026d1bd72
@@ -238,5 +238,5 @@ Modelele 3D realiste ale fructelor provin din surse cu licențe libere, care per
 - **raspberry**: Objaverse / Sketchfab – „Raspberry”, autor: gelmi.com.br – CC BY 4.0 – https://sketchfab.com/3d-models/0033322379a24798a6875a5cb2de54f5
 - **starfruit**: Objaverse / Sketchfab – „Starfruit setup Model”, autor: seleneledain – CC BY 4.0 – https://sketchfab.com/3d-models/1e7ab4326b5e44088561b67c4ba55e67
 - **strawberry**: Objaverse / Sketchfab – „Strawberry (Jumbo Poly) Freebie”, autor: Geug – CC BY 4.0 – https://sketchfab.com/3d-models/0b9867d98c154737b422fa5afacfc178
-- **tangerine**: Objaverse / Sketchfab – „Teatime_orange”, autor: NiklasG – CC BY 4.0 – https://sketchfab.com/3d-models/fd47e62e36d74e8580616d60d935a99b
+- **tangerine**: Objaverse / Sketchfab – „Tangerine”, autor: andree – CC BY 4.0 – https://sketchfab.com/3d-models/e5015b222a6949478d68bd6b38fc6ee0
 - **watermelon**: Objaverse / Sketchfab – „Watermelon”, autor: STUDIO DUCKBILL – CC BY 4.0 – https://sketchfab.com/3d-models/5a0ae2276ac845c9a93b240c076aae19
